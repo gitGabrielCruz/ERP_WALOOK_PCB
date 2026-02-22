@@ -14,9 +14,9 @@
 ## ESTADO ACTUAL (SNAPSHOT)
 **Ultima Sincronizacion:** 2026-02-22 | 10:05 AM
 **Modulo Activo:** Gobernanza de Código Dual (ERP + Agente)
-**Fase del Proyecto:** Etapa 2 - Desarrollo e Integracion
-**Backend:** Activo (Puerto 9090)
-**Agente DevIAn:** ACTIVO (Perfil DevIAn v5.0 con 11 Directivas Especiales)
+**Fase del Proyecto:** Etapa 2 - Desarrollo e Integración
+**Backend:** Pendiente de Compilación
+**Agente DevIAn:** ACTIVO (Perfil v5.2 con Alerta de Compilación)
 
 ### REGLA DE ORO (Protocolo de Operacion)
 **PROHIBIDO REALIZAR CAMBIOS EN EL CODIGO** sin instruccion explicita y directa del usuario. Toda interaccion debe priorizar el analisis, diseno y propuesta. Ante cualquier interpretacion ambigua, se debe solicitar autorizacion antes de codificar.
@@ -904,6 +904,20 @@
 3. Validación de consistencia transaccional.
 4. Sincronización a GitHub.
 **Estatus:** ✅ CORRECCIÓN FUNCIONAL COMPLETADA.
+
+---
+
+**Solicitud [Evolución v5.2] [22/02/2026 12:25]:** Actualización de Protocolo de Gobernanza.
+**Solicitud del Ingeniero:** Integrar una alerta obligatoria de compilación para evitar inconsistencias entre código y ejecución.
+**Acciones REALIZADAS:** 
+1. Actualización de `ids5v-profile.md` a la versión **v5.2**.
+2. Modificación del Punto 7 (Auditoría) y Fase C (Ejecución) para incluir la alerta **REQUIERE COMPILACIÓN OBLIGATORIA**.
+3. Ajustes visuales finales en Kardex (Solicitud 50):
+   - Cambio de cabecera a **"REFERENCIA / DETALLE"**.
+   - Dinamización de afectación con signos **[+] / [-]**.
+   - Eliminación de redundancia de tipo en el concepto.
+4. Sincronización a GitHub.
+**Estatus:** ✅ PERFIL V5.2 ACTIVO.
 
 ---
 

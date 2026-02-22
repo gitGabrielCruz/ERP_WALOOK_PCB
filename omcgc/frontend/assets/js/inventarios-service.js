@@ -661,10 +661,15 @@ const InventariosService = {
             const isSuma = parseInt(m.cantidad) > 0;
             const tipoClass = isSuma ? 'txt-success' : 'txt-danger';
 
-            // [REESTRUCTURACIÓN SOLICITUD 49 - Humanización de Datos]
+            // [REESTRUCTURACIÓN SOLICITUD 49/50 - Humanización y Limpieza]
             const idMovInstitucional = m.folio || 'S/FOLIO';
             const documentoUsuario = m.origenId || 'S/DOC';
-            const conceptoDetalle = ((m.tipoMovimiento || '').replace(/_/g, ' ') + (m.observaciones ? ' - ' + m.observaciones : '')).toUpperCase();
+
+            // Eliminamos la redundancia del tipo en la descripción (ya está en la columna Afectación)
+            const conceptoDetalle = (m.observaciones || 'SIN OBSERVACIONES').toUpperCase();
+
+            // Formateo de Afectación explícita (Referencia operativa)
+            const indicadorFlujo = isSuma ? '[+] ENTRADA' : '[-] SALIDA';
 
             // Guardamos el saldo actual de la fila antes de retroceder
             const saldoFila = saldoRastreado;
@@ -682,9 +687,12 @@ const InventariosService = {
                     </div>
                 </td>
                 <td style="vertical-align: middle;">
-                    <span class="badge ${tipoClass}" style="font-size: 0.75rem;">
-                        ${(m.tipoMovimiento || 'AJUSTE').replace(/_/g, ' ')}
+                    <span class="badge ${tipoClass}" style="font-size: 0.75rem; letter-spacing: 0.5px;">
+                        ${indicadorFlujo}
                     </span>
+                    <div style="font-size: 0.65rem; color: #6b7280; margin-top: 2px;">
+                        ${(m.tipoMovimiento || '').replace(/_/g, ' ')}
+                    </div>
                 </td>
                 <td class="${tipoClass}" style="font-weight: 700; text-align: center; vertical-align: middle; font-size: 0.95rem;">
                     ${m.cantidad}
