@@ -277,7 +277,7 @@ public class InventarioRepository {
      * Basado en la vista v_stock_actual.
      */
     public Integer getCurrentStock(String idProducto, String idSucursal) {
-        String vr_sql = "SELECT existencia_operativa FROM v_stock_actual WHERE id_producto = ? AND id_sucursal = ?";
+        String vr_sql = "SELECT cantidad FROM existencia WHERE id_producto = ? AND id_sucursal = ?";
         try {
             return jdbcTemplate.queryForObject(vr_sql, Integer.class, idProducto, idSucursal);
         } catch (Exception e) {

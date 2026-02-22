@@ -1075,6 +1075,7 @@ const InventariosService = {
         }
     },
 
+
     ejecutarGuardarMovimiento: async function () {
         const idMov = document.getElementById('mov_idMovimiento').value;
         const user = JSON.parse(sessionStorage.getItem('user') || '{}');
@@ -1153,7 +1154,30 @@ const InventariosService = {
         const hoy = new Date().toISOString().split('T')[0];
         document.getElementById('bitacoraDesde').value = hoy;
         document.getElementById('bitacoraHasta').value = hoy;
+
+        // [CARGA DINÁMICA V5.2] Poblar select de usuarios
+        this.cargarUsuariosBitacora();
+
         this.cargarBitacora();
+    },
+
+    cargarUsuariosBitacora: async function () {
+        try {
+            const response = await fetch(AppConfig.getEndpoint('usuarios'));
+            if (response.ok) {
+                const usuarios = await response.json();
+                const select = document.getElementById('bitacoraUsuario');
+                const valAnt = select.value;
+                select.innerHTML = '<option value="">Todos los usuarios</option>';
+                usuarios.forEach(u => {
+                    const opt = document.createElement('option');
+                    opt.value = u.id; // El modelo Usuario.java usa 'id' como el campo principal
+                    opt.textContent = u.nombre;
+                    select.appendChild(opt);
+                });
+                select.value = valAnt;
+            }
+        } catch (e) { console.error("Error cargando usuarios:", e); }
     },
 
     cerrarBitacoraModal: function () {
@@ -1168,9 +1192,10 @@ const InventariosService = {
             const d = document.getElementById('bitacoraDesde').value;
             const h = document.getElementById('bitacoraHasta').value;
             const b = document.getElementById('bitacoraBuscar').value;
+            const u = document.getElementById('bitacoraUsuario').value;
 
             const params = new URLSearchParams({
-                desde: d, hasta: h, buscar: b, modulo: 'INVENTARIOS'
+                desde: d, hasta: h, buscar: b, usuario: u
             });
 
             const response = await fetch(`${AppConfig.getEndpoint('bitacora')}?${params}`);
@@ -1192,13 +1217,25 @@ const InventariosService = {
         }
 
         logs.forEach(log => {
-            const fecha = new Date(log.fecha).toLocaleString();
+            const fecha = new Date(log.fecha).toLocaleString('es-MX', {
+                day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true
+            });
+
+            // Colores por impacto (v5.2)
+            let colorStr = '#4b5563'; // Por defecto
+            if (log.accion.startsWith('CORRECTO')) colorStr = '#16a34a';
+            if (log.accion.startsWith('AVISO')) colorStr = '#f59e0b';
+            if (log.accion.startsWith('ALERTA') || log.accion.startsWith('ERROR')) colorStr = '#dc2626';
+
+            // Formatear detalles con saltos de línea (Audit Forense v5.2)
+            const detalleLimpio = (log.detalles || 'Sin detalles').replace(/\n/g, '<br>');
+
             const row = `<tr>
-                <td>${fecha}</td>
-                <td><strong>${log.nombreUsuario || 'S/U'}</strong></td>
-                <td>${log.accion}</td>
-                <td style="font-size: 0.75rem;">${log.detalle}</td>
-                <td>${log.ip}</td>
+                <td style="font-size: 0.8rem; color: #64748b;">${fecha}</td>
+                <td><strong style="color: #1e293b;">${log.nombreUsuario || 'S/U'}</strong></td>
+                <td><span style="font-weight: 700; color: ${colorStr}">${log.accion}</span></td>
+                <td style="font-size: 0.8rem; line-height: 1.4; color: #475569;">${detalleLimpio}</td>
+                <td style="font-size: 0.75rem; color: #94a3b8;">${log.ipOrigen || '0.0.0.0'}</td>
             </tr>`;
             tbody.insertAdjacentHTML('beforeend', row);
         });

@@ -28,16 +28,14 @@ public class AuditPatternService {
 
         private static final String MASTER_KEY = "W4L00K_4UD1T_SYST3M_S3CUR1TY_2026"; // Diferente a la de logs por
                                                                                       // seguridad
-        private static final String FILE_PATH = "src/main/resources/security/audit_dictionary.dat";
+        private static final String FILE_PATH = "audit_dictionary.dat";
         private Map<String, LogPattern> patterns = new HashMap<>();
 
         @PostConstruct
         public void init() {
                 try {
-                        ensureDirectoryExists();
-                        if (!new File(FILE_PATH).exists()) {
-                                generateInitialDictionary();
-                        }
+                        // [SEGURO V5.2] Generar en raíz de ejecución para evitar bloqueos
+                        generateInitialDictionary();
                         loadDictionary();
                 } catch (Exception e) {
                         System.err.println(
@@ -64,72 +62,72 @@ public class AuditPatternService {
                 List<LogPattern> list = new ArrayList<>();
 
                 // --- SEGURIDAD (AUTH) ---
-                list.add(new LogPattern("AUTH-01", "SUCCESS", "AUTH", "Acceso concedido al sistema.",
-                                "Op: Login (Inicio de sesión) | Status: IdentityVerified | Session: NewJWT"));
-                list.add(new LogPattern("AUTH-02", "FAILURE", "AUTH", "Credenciales inválidas.",
-                                "Op: AuthCheck (Validación de identidad) | Error: PwdMismatch (Contraseña incorrecta)"));
-                list.add(new LogPattern("AUTH-03", "DENIED", "AUTH", "Cuenta desactivada por administración.",
-                                "Op: AccessRule (Regla de acceso) | State: UserInactive"));
-                list.add(new LogPattern("AUTH-05", "INFO", "AUTH", "La sesión ha finalizado por seguridad.",
-                                "Op: TokenExpiry (Vencimiento de Token) | Reason: IdleTimeout (Inactividad)"));
+                list.add(new LogPattern("AUTH-01", "CORRECTO", "AUTH", "Acceso concedido al sistema.",
+                                "SUCESO: Login (Inicio de sesión) | ESTADO: Identidad Verificada | SESIÓN: Nueva_JWT"));
+                list.add(new LogPattern("AUTH-02", "ERROR", "AUTH", "Credenciales inválidas.",
+                                "SUCESO: Validación de identidad | ERROR: Contraseña incorrecta o usuario inexistente"));
+                list.add(new LogPattern("AUTH-03", "ALERTA", "AUTH", "Cuenta desactivada por administración.",
+                                "SUCESO: Regla de acceso | ESTADO: Usuario Inactivo"));
+                list.add(new LogPattern("AUTH-05", "AVISO", "AUTH", "La sesión ha finalizado por seguridad.",
+                                "SUCESO: Vencimiento de Token | MOTIVO: Inactividad prolongada"));
 
                 // --- CRUD UNIVERSAL (DATA) ---
-                list.add(new LogPattern("CRUD-01", "SUCCESS", "DATA", "Alta de registro exitosa.",
+                list.add(new LogPattern("CRUD-01", "CORRECTO", "DATA", "Alta de registro exitosa.",
                                 "MÓDULO: {M} | REGISTRO: {E} | ACCIÓN: ALTA | REF: {S}"));
-                list.add(new LogPattern("CRUD-02", "WARNING", "DATA", "Información actualizada satisfactoriamente.",
+                list.add(new LogPattern("CRUD-02", "AVISO", "DATA", "Información actualizada satisfactoriamente.",
                                 "MÓDULO: {M} | REGISTRO: {E} | ACCIÓN: CAMBIO | DETALLE: {S}"));
-                list.add(new LogPattern("CRUD-03", "CANCEL", "DATA", "Cambio de estatus aplicado.",
+                list.add(new LogPattern("CRUD-03", "AVISO", "DATA", "Cambio de estatus aplicado.",
                                 "MÓDULO: {M} | REGISTRO: {E} | ACCIÓN: ESTADO | FLUJO: {S}"));
-                list.add(new LogPattern("CRUD-04", "FAILURE", "DATA", "Datos incorrectos en el formulario.",
-                                "MÓDULO: {M} | ACCIÓN: VALIDACIÓN | CAMPO: {X} | ERROR: BadFormat"));
-                list.add(new LogPattern("CRUD-05", "FAILURE", "DATA", "El registro ya existe en el sistema.",
-                                "MÓDULO: {M} | ACCIÓN: DUPLICADO | CLAVE: {X} | ERROR: DuplicateKey"));
+                list.add(new LogPattern("CRUD-04", "ERROR", "DATA", "Datos incorrectos en el formulario.",
+                                "MÓDULO: {M} | ACCIÓN: VALIDACIÓN | CAMPO: {X} | ERROR: Formato no válido"));
+                list.add(new LogPattern("CRUD-05", "ERROR", "DATA", "El registro ya existe en el sistema.",
+                                "MÓDULO: {M} | ACCIÓN: DUPLICADO | CLAVE: {X} | ERROR: Llave duplicada"));
 
                 // --- USUARIOS Y ADMIN (USR/ADM) ---
-                list.add(new LogPattern("USR-30", "SUCCESS", "USER", "Nueva clave enviada por correo.",
-                                "Op: PwdReset (Clave restablecida) | Target: {X} | Justificación: {S}"));
-                list.add(new LogPattern("ADM-01", "WARNING", "ADMIN", "Privilegios del rol actualizados.",
-                                "Op: ACL_Update (Matriz de permisos) | Impact: GlobalAccess"));
+                list.add(new LogPattern("USR-30", "CORRECTO", "USER", "Nueva clave enviada por correo.",
+                                "SUCESO: Restablecimiento de clave | DESTINO: {X} | JUSTIFICACIÓN: {S}"));
+                list.add(new LogPattern("ADM-01", "AVISO", "ADMIN", "Privilegios del rol actualizados.",
+                                "SUCESO: Actualización de permisos | IMPACTO: Acceso Global"));
 
                 // --- INVENTARIOS (INV) ---
-                list.add(new LogPattern("INV-01", "WARNING", "INV", "Ajuste manual de inventario realizado.",
-                                "Op: StockAdjust (Ajuste de existencias) | Delta: {X} | Motivo: {S}"));
+                list.add(new LogPattern("INV-01", "CORRECTO", "INV", "Movimiento de inventario registrado.",
+                                "{S}"));
 
                 // --- PRODUCTOS (PRO) ---
-                list.add(new LogPattern("PRO-01", "SUCCESS", "PRODUCT", "Nuevo producto registrado en catálogo.",
+                list.add(new LogPattern("PRO-01", "CORRECTO", "PRODUCT", "Nuevo producto registrado en catálogo.",
                                 "SKU: {X} | NOMBRE: {S} | ACCIÓN: ALTA"));
-                list.add(new LogPattern("PRO-02", "WARNING", "PRODUCT", "Ficha técnica de producto modificada.",
+                list.add(new LogPattern("PRO-02", "AVISO", "PRODUCT", "Ficha técnica de producto modificada.",
                                 "SKU: {X} | NOMBRE: {S} | ACCIÓN: EDICIÓN"));
 
                 // --- CLIENTES (CLI) ---
-                list.add(new LogPattern("CLI-01", "SUCCESS", "CLIENT", "Nuevo cliente registrado.",
+                list.add(new LogPattern("CLI-01", "CORRECTO", "CLIENT", "Nuevo cliente registrado.",
                                 "RFC: {X} | NOMBRE: {S} | ACCIÓN: ALTA"));
-                list.add(new LogPattern("CLI-02", "WARNING", "CLIENT", "Información de cliente actualizada.",
+                list.add(new LogPattern("CLI-02", "AVISO", "CLIENT", "Información de cliente actualizada.",
                                 "RFC: {X} | NOMBRE: {S} | ACCIÓN: EDICIÓN"));
 
                 // --- PROVEEDORES (PRV) ---
-                list.add(new LogPattern("PRV-01", "SUCCESS", "VENDOR", "Nuevo proveedor registrado.",
+                list.add(new LogPattern("PRV-01", "CORRECTO", "VENDOR", "Nuevo proveedor registrado.",
                                 "RFC: {X} | NOMBRE: {S} | ACCIÓN: ALTA"));
-                list.add(new LogPattern("PRV-02", "WARNING", "VENDOR", "Información de proveedor actualizada.",
+                list.add(new LogPattern("PRV-02", "AVISO", "VENDOR", "Información de proveedor actualizada.",
                                 "RFC: {X} | NOMBRE: {S} | ACCIÓN: EDICIÓN"));
 
                 // --- FINANZAS Y CFDI (FIN) ---
-                list.add(new LogPattern("FIN-01", "SUCCESS", "FIN", "Factura generada y timbrada correctamente.",
-                                "Op: CFDI_Sign (Timbrado XML) | Engine: {P} | SAT_Status: 200_OK | UUID: {U}"));
-                list.add(new LogPattern("FIN-02", "CANCEL", "FIN", "Factura cancelada ante el SAT.",
-                                "Op: CFDI_Cancel (Anulación fiscal) | Code: {C} | Status: CancelledInSAT"));
-                list.add(new LogPattern("FIN-03", "SUCCESS", "FIN", "Transacción financiera completada.",
-                                "Op: PaymentProcess (Registro de ingreso) | Method: {M} | Amount: {$$}"));
+                list.add(new LogPattern("FIN-01", "CORRECTO", "FIN", "Factura generada y timbrada correctamente.",
+                                "SUCESO: Timbrado XML | PROVEEDOR: {P} | SAT: 200_OK | UUID: {U}"));
+                list.add(new LogPattern("FIN-02", "AVISO", "FIN", "Factura cancelada ante el SAT.",
+                                "SUCESO: Anulación fiscal | CÓDIGO: {C} | ESTADO: Cancelado en SAT"));
+                list.add(new LogPattern("FIN-03", "CORRECTO", "FIN", "Transacción financiera completada.",
+                                "SUCESO: Registro de ingreso | MÉTODO: {M} | MONTO: {$$}"));
 
                 // --- SISTEMA Y SEGURIDAD (SYS/SEC) ---
-                list.add(new LogPattern("SYS-01", "CRITICAL", "SYSTEM", "Error de conexión con el servidor.",
-                                "Op: DBConn (Fallo de base de datos) | Fault: Timeout/Refused"));
-                list.add(new LogPattern("SYS-02", "CRITICAL", "SYSTEM", "El servicio externo no responde.",
-                                "Op: HttpCall (Petición externa) | Target: {SAT/PAC} | Fault: Timeout"));
-                list.add(new LogPattern("SYS-99", "CRITICAL", "SYSTEM", "Error interno del sistema.",
-                                "Op: GlobalException (Fallo no controlado) | Type: {E} | Class: {C}"));
-                list.add(new LogPattern("SEC-01", "CRITICAL", "SECURITY", "Intento de acción no autorizada.",
-                                "Op: SecurityInterception (Bloqueo de seguridad) | Threat: AccessViolation"));
+                list.add(new LogPattern("SYS-01", "ALERTA", "SYSTEM", "Error de conexión con el servidor.",
+                                "SUCESO: Fallo de BD | ERROR: Tiempo agotado o conexión rechazada"));
+                list.add(new LogPattern("SYS-02", "ALERTA", "SYSTEM", "El servicio externo no responde.",
+                                "SUCESO: Petición HTTP | DESTINO: {SAT/PAC} | ERROR: Tiempo agotado"));
+                list.add(new LogPattern("SYS-99", "ALERTA", "SYSTEM", "Error interno del sistema.",
+                                "SUCESO: Excepción Global | TIPO: {E} | CLASE: {C}"));
+                list.add(new LogPattern("SEC-01", "ALERTA", "SECURITY", "Intento de acción no autorizada.",
+                                "SUCESO: Bloqueo de seguridad | AMENAZA: Violación de acceso"));
 
                 // Serializar a Bytes
                 ByteArrayOutputStream bos = new ByteArrayOutputStream();

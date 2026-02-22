@@ -154,9 +154,26 @@ public class InventarioService {
         inventarioRepository.saveMovimiento(m);
         inventarioRepository.updateExistencia(m.getIdProducto(), m.getIdSucursal(), nuevoStock);
 
-        // Bitácora Maestro
-        bitacoraService.registrarEvento(m.getIdUsuario(), "INV-01", ip, stockAnterior + " -> " + nuevoStock,
-                m.getObservaciones());
+        // Trazabilidad Forense (v5.2)
+        Producto pInfo = inventarioRepository.findById(m.getIdProducto());
+        String prodDesc = pInfo != null ? "[" + pInfo.getSku() + "] " + pInfo.getNombre() : "ID: " + m.getIdProducto();
+        String flowSign = (m.getCantidad() >= 0 ? "+" : "");
+        String sucesoInv = String.format("[INVENTARIO] - %s", m.getTipoMovimiento().replace("_", " "));
+
+        String rastroDetalle = String.format(
+                "PROD: %s\nDOCTO: %s\nOPERACIÓN: Se sumaron %s%d unidades.\nEVOLUCIÓN: Stock %d -> %d\nOBS: %s",
+                prodDesc,
+                (m.getOrigenId() != null ? m.getOrigenId() : "S/DOC"),
+                flowSign,
+                m.getCantidad(),
+                stockAnterior,
+                nuevoStock,
+                (m.getObservaciones() != null && !m.getObservaciones().isEmpty() ? m.getObservaciones()
+                        : "Sin observaciones"));
+
+        // Bitácora Maestro (Uso de placeholder {S} para el suceso dinámico y análisis
+        // enriquecido)
+        bitacoraService.registrarEvento(m.getIdUsuario(), "INV-01", ip, sucesoInv, rastroDetalle);
 
         // REGLA 5: Actualización Automática de Costo en Entrada por Compra
         if ("ENTRADA_COMPRA".equals(m.getTipoMovimiento())) {
@@ -253,9 +270,10 @@ public class InventarioService {
         inventarioRepository.saveMovimiento(n);
         inventarioRepository.updateExistencia(n.getIdProducto(), n.getIdSucursal(), nuevoStock);
 
-        // Bitácora
+        // Bitácora de Edición (Auditoría Forense v5.2)
         bitacoraService.registrarEvento(n.getIdUsuario(), "INV-01", ip,
                 "MODIFICACIÓN: " + stockActual + " -> " + nuevoStock,
-                "Edición de póliza: " + n.getIdMovimiento());
+                "Edición de póliza Folio: " + n.getFolio() + " | Detalle: "
+                        + (n.getObservaciones() != null ? n.getObservaciones() : "Sin observaciones"));
     }
 }
