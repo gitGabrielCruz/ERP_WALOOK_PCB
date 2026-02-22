@@ -52,12 +52,23 @@ const MenuService = {
         this.validarExistenciaModulos(); // Semáforo dinámico (DevIAn)
     },
 
-    /**
-     * Valida dinámicamente si los archivos .html de los módulos existen
-     * y aplica el borde correspondiente (Verde = Existe, Rojo = Pendiente).
-     */
     async validarExistenciaModulos() {
         console.log('[MENU-UI] Iniciando validación dinámica de módulos...');
+
+        const esProtocoloLocal = window.location.protocol === 'file:';
+        if (esProtocoloLocal) {
+            console.warn('[MENU-UI] Modo Local Detectado: Se usará validación por inventario de ingeniería (Fallback).');
+        }
+
+        // Lista de archivos que DevIAn confirma que existen físicamente en el disco
+        const archivosExistentes = [
+            'login.html',
+            'inventarios.html',
+            'clientes.html',
+            'proveedores.html',
+            'usuarios.html',
+            'menu.html'
+        ];
 
         // Iterar sobre todos los botones del menú que tienen navegación interna
         const botones = document.querySelectorAll('.menu-grid button[onclick*="navigate"]');
@@ -69,11 +80,18 @@ const MenuService = {
                 if (!onclickMatch) continue;
 
                 const pageFile = onclickMatch[1];
+                let existe = false;
 
-                // Realizar una petición HEAD para verificar existencia sin descargar el contenido
-                const response = await fetch(pageFile, { method: 'HEAD' });
+                if (esProtocoloLocal) {
+                    // Si es local, confiamos en el inventario actual de ingeniería
+                    existe = archivosExistentes.includes(pageFile);
+                } else {
+                    // Si es servidor web, hacemos la comprobación real en vivo
+                    const response = await fetch(pageFile, { method: 'HEAD' });
+                    existe = response.ok;
+                }
 
-                if (response.ok) {
+                if (existe) {
                     btn.classList.add('border-active');
                     console.log(`[MENU-UI] Módulo Activo: ${pageFile}`);
                 } else {
@@ -91,7 +109,7 @@ const MenuService = {
     MODULE_MAP: {
         'login.html': 'LOGIN',
         'usuarios.html': 'USUARIOS, ROLES Y PERMISOS',
-        'inventario.html': 'INVENTARIO',
+        'inventarios.html': 'INVENTARIOS',
         'agenda.html': 'AGENDA CITAS',
         'proveedores.html': 'PROVEEDORES',
         'expediente.html': 'EXPEDIENTE PACIENTE',
