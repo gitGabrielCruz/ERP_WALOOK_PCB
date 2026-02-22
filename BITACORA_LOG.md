@@ -568,10 +568,10 @@
 **Solicitud del Ingeniero:** Error "Data too long for column 'id_sucursal'" al registrar movimiento.
 **Análisis:** Se identificó que las sucursales usan IDs con prefijo `SUC-` (40 chars), excediendo el límite `CHAR(36)` definido en los scripts DDL originales.
 **Acciones:** 
-1. Modificación directa de los archivos estructurales maestros: `creaciontablas.sql`, `creaciontablas_nube.sql` y `deploy_cpanel_clean.sql` (Longitud ampliada a `VARCHAR(50)`).
-2. Verificación de consistencia en registros semilla: `registrospruebas.sql` y `seed_cpanel_clean.sql`.
-3. Sincronización a GitHub de los archivos maestros actualizados.
-**Decision del Ingeniero:** Procedimiento de scripts maestros aprobado. El Ingeniero correrá los archivos de estructura manualmente para restaurar la base de datos de forma íntegra.
+1. Modificación directa de los archivos estructurales maestros: `creaciontablas.sql` y `creaciontablas_nube.sql` (Longitud ampliada a `VARCHAR(50)`).
+2. Verificación de consistencia en registros semilla: `registrospruebas.sql` y `registrospruebas_nube.sql`.
+3. Sincronización a GitHub de los archivos maestros actualizados e históricos depurados.
+**Decision del Ingeniero:** Procedimiento de scripts maestros aprobado. El Ingeniero correrá los archivos de estructura manualmente para restaurar la base de datos de forma íntegra. Se eliminaron los scripts `deploy_cpanel_clean.sql` y `seed_cpanel_clean.sql` por redundancia y falta de reconocimiento en el diseño oficial.
 
 ---
 
