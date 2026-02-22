@@ -49,6 +49,42 @@ const MenuService = {
         }
         this.renderUserInfo();
         this.checkPermissions();
+        this.validarExistenciaModulos(); // Semáforo dinámico (DevIAn)
+    },
+
+    /**
+     * Valida dinámicamente si los archivos .html de los módulos existen
+     * y aplica el borde correspondiente (Verde = Existe, Rojo = Pendiente).
+     */
+    async validarExistenciaModulos() {
+        console.log('[MENU-UI] Iniciando validación dinámica de módulos...');
+
+        // Iterar sobre todos los botones del menú que tienen navegación interna
+        const botones = document.querySelectorAll('.menu-grid button[onclick*="navigate"]');
+
+        for (const btn of botones) {
+            try {
+                // Extraer el nombre del archivo del atributo onclick (ej: 'inventarios.html')
+                const onclickMatch = btn.getAttribute('onclick').match(/'([^']+)'/);
+                if (!onclickMatch) continue;
+
+                const pageFile = onclickMatch[1];
+
+                // Realizar una petición HEAD para verificar existencia sin descargar el contenido
+                const response = await fetch(pageFile, { method: 'HEAD' });
+
+                if (response.ok) {
+                    btn.classList.add('border-active');
+                    console.log(`[MENU-UI] Módulo Activo: ${pageFile}`);
+                } else {
+                    btn.classList.add('border-pending');
+                    console.log(`[MENU-UI] Módulo Pendiente: ${pageFile}`);
+                }
+            } catch (error) {
+                console.warn(`[MENU-UI] Error al validar módulo:`, error);
+                btn.classList.add('border-pending'); // Fallback a rojo
+            }
+        }
     },
 
     // Mapeo entre archivo HTML y Nombre del Módulo en Base de Datos

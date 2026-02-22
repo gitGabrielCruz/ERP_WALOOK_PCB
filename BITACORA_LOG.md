@@ -12,11 +12,11 @@
 
 
 ## ESTADO ACTUAL (SNAPSHOT)
-**Ultima Sincronizacion:** 2026-02-22 | 04:27 AM
-**Modulo Activo:** Inventarios (Fix FK Constraint completado) + Configuracion Agente IDS5v
+**Ultima Sincronizacion:** 2026-02-22 | 08:52 AM
+**Modulo Activo:** Gobernanza de Código Dual (ERP + Agente)
 **Fase del Proyecto:** Etapa 2 - Desarrollo e Integracion
-**Backend:** Pendiente de verificacion (post-reinicio de equipo)
-**Agente IDS5v:** ACTIVO (Perfil DevAI con 9 Directivas Especiales)
+**Backend:** Activo (Puerto 9090)
+**Agente DevIAn:** ACTIVO (Perfil DevIAn v5.0 con 11 Directivas Especiales)
 
 ### REGLA DE ORO (Protocolo de Operacion)
 **PROHIBIDO REALIZAR CAMBIOS EN EL CODIGO** sin instruccion explicita y directa del usuario. Toda interaccion debe priorizar el analisis, diseno y propuesta. Ante cualquier interpretacion ambigua, se debe solicitar autorizacion antes de codificar.
@@ -490,6 +490,62 @@
 **Solicitud del Ingeniero:** "¿como pongo GitHub en español?"
 **Respuesta:** Se informó que GitHub no tiene opción nativa en web; se recomendó usar el traductor integrado del navegador.
 **Decision del Ingeniero:** Iniciado.
+
+#### Solicitud 39: Asesoría sobre selección de Modelos de IA
+**Tipo:** Consultoría Técnica / Optimización
+**Hora:** 08:53 AM
+**Solicitud del Ingeniero:** El Ingeniero consultó cuál modelo de la lista (Gemini, Claude, GPT) es el más adecuado para el trabajo actual.
+**Respuesta:** Se recomendó **Claude Sonnet 4.6 (Thinking)** como la opción más equilibrada para tareas complejas de desarrollo y razonamiento, o **Gemini 3.1 Pro (High)** para mayor velocidad con buena capacidad.
+**Decision del Ingeniero:** Aprobado (Seleccionado Claude inicialmente).
+
+#### Solicitud 40: Resolución de error de cuota (Model quota limit exceeded)
+**Tipo:** Soporte de Infraestructura / Continuidad
+**Hora:** 08:58 AM
+**Solicitud del Ingeniero:** "¿porque sale esto?" (adjuntando captura de límite excedido en Claude Sonnet 4.6).
+**Respuesta:** Se explicó que los planes tienen límites de uso por modelo específico. Al agotarse la cuota de Claude, la solución es cambiar a **Gemini 3.1 Pro (High)**, que tiene límites mucho más amplios y permitirá seguir con la validación de inventarios de inmediato.
+**Decision del Ingeniero:** Pendiente cambio de modelo por el usuario.
+
+#### Solicitud 41: Comparativa de potencia (Gemini vs Claude)
+**Tipo:** Consultoría Técnica / Estrategia de IA
+**Hora:** 09:00 AM
+**Solicitud del Ingeniero:** "si Gemini 3.1 Pro (High) es el 100%, cuanto es su equivalente de Claude Sonnet 4.6 (Thinking)"
+**Respuesta:** Se proporcionó una escala comparativa detallando que en **Razonamiento Lógico/Código** son casi equivalentes (~98%), pero en **Capacidad de Memoria y Velocidad**, Gemini es superior (~150%). Se ratificó a Gemini como la opción ideal para la fase actual.
+**Decision del Ingeniero:** Pendiente.
+
+#### Solicitud 42: Comparativa Integral del Ecosistema de Modelos
+**Tipo:** Consultoría Técnica / Estrategia de IA
+**Hora:** 09:01 AM
+**Solicitud del Ingeniero:** "ahora comparalos con los demas modelos que tenemos en la lista"
+**Respuesta:** Se entregó una tabla exhaustiva comparando Gemini (High, Low, Flash), Claude (Sonnet, Opus) y GPT-OSS en base a Razonamiento, Memoria, Velocidad y Cuota. Se definieron casos de uso específicos para cada uno.
+**Decision del Ingeniero:** Pendiente.
+
+#### Solicitud 43: Personalización visual del Menú Principal (Semáforo)
+**Tipo:** UI/UX / Diseño Visual
+**Hora:** 09:07 AM
+**Solicitud del Ingeniero:** "¿hay forma de ponerle un borde de color verde a los que llamanan a un modulo y rojo a los que aun no llaman a un modulo?"
+**Análisis:** Se identificó `menu.html`. Se propone agregar clases CSS dinámicas o estáticas para diferenciar los módulos implementados (Inventarios, Clientes, Proveedores, Usuarios) de los pendientes.
+**Decision del Ingeniero:** Pendiente.
+
+#### Solicitud 44: Menú Dinámico bajo Criterio y Cumplimiento Directiva 10
+**Tipo:** UI/UX / Gobernanza Técnica
+**Hora:** 09:10 AM - 09:13 AM
+**Solicitud del Ingeniero:** "chat, no estas usando los recursos de IDS5v, los nombres de los archivos temporales... prefiero que el cambio de color en el borde sea bajo un criterio..."
+**Análisis:** Se reconoce la falta de rigor en el cumplimiento de la **Directiva 10** (nomenclatura `temporal_`). Se procede a corregir de inmediato. Respecto al diseño, se descarta la asignación estática y se propone una lógica de detección en tiempo de ejecución (Runtime detection) basada en la existencia física de los archivos `.html`.
+**Acciones:**
+1. Apología al Ingeniero por la imprecisión operativa.
+2. Creación de `temporal_20260222_0913_MenuDinamicoSemaforo.md` para el plan de trabajo.
+3. Diseño de lógica para `menu-service.js`.
+**Decision del Ingeniero:** Aprobado. Procediendo con la codificación bajo Directiva 11.
+
+#### Solicitud 45: Ejecución del Semáforo Dinámico
+**Tipo:** Implementación de Código / UI
+**Hora:** 09:14 AM
+**Solicitud del Ingeniero:** "procede con el plan para el codigo"
+**Acciones:** 
+1. Adición de estilos `.border-active` y `.border-pending` en `menu.html`.
+2. Implementación de `validarExistenciaModulos()` en `menu-service.js`.
+3. Sincronización automática a GitHub tras validación.
+**Decision del Ingeniero:** En ejecución.
 
 ---
 
