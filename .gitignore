@@ -1,0 +1,45 @@
+# ============================================================
+# .gitignore - Proyecto ERP_WALOOK
+# ============================================================
+
+# --- Java / Maven ---
+target/
+*.class
+*.jar
+*.war
+*.ear
+*.log
+.mvn/
+mvnw
+mvnw.cmd
+
+# --- IDEs ---
+.idea/
+.vscode/
+*.swp
+*.swo
+*.DS_Store
+*.iml
+
+# --- Node / Frontend ---
+node_modules/
+dist/
+build/
+.env
+.env.local
+
+# --- Base de Datos / SQL ---
+# Se excluyen backups pesados si existen
+# *.sql (Descomentar si no se quieren subir scripts maestros)
+
+# --- Agente / Sistema ---
+.gemini/
+.agent/
+brain/
+temporal_*
+
+# --- Otros ---
+temp/
+tmp/
+bin/
+obj/
