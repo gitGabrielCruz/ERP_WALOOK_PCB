@@ -279,7 +279,34 @@ public class InventarioRepository {
     public Integer getCurrentStock(String idProducto, String idSucursal) {
         String vr_sql = "SELECT cantidad FROM existencia WHERE id_producto = ? AND id_sucursal = ?";
         try {
-            return jdbcTemplate.queryForObject(vr_sql, Integer.class, idProducto, idSucursal);
+            Integer stock = jdbcTemplate.queryForObject(vr_sql, Integer.class, idProducto, idSucursal);
+            // Si el registro existe pero es 0, verificamos el Kardex por si es una
+            // desincronización
+            if (stock != null && stock == 0) {
+                return getActualKardexSum(idProducto, idSucursal);
+            }
+            return (stock != null) ? stock : 0;
+        } catch (Exception e) {
+            // Si no existe el registro en la tabla balance, consultamos el Kardex real
+            return getActualKardexSum(idProducto, idSucursal);
+        }
+    }
+
+    /**
+     * Respaldo de Verdad: Suma física del Kardex
+     */
+    private Integer getActualKardexSum(String idProducto, String idSucursal) {
+        String sql = """
+                SELECT COALESCE(SUM(CASE
+                    WHEN tipo_movimiento IN ('ENTRADA_COMPRA', 'DEVOLUCION_CLIENTE') THEN cantidad
+                    WHEN tipo_movimiento IN ('SALIDA_VENTA', 'DEVOLUCION_PROVEEDOR', 'MERMA') THEN -cantidad
+                    WHEN tipo_movimiento = 'AJUSTE' THEN cantidad
+                    ELSE 0 END), 0)
+                FROM movimiento_inventario
+                WHERE id_producto = ? AND id_sucursal = ?
+                """;
+        try {
+            return jdbcTemplate.queryForObject(sql, Integer.class, idProducto, idSucursal);
         } catch (Exception e) {
             return 0;
         }
