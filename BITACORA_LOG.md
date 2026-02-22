@@ -562,6 +562,19 @@
 
 ---
 
+#### Solicitud 47: Error de Truncado en id_sucursal (Kardex)
+**Tipo:** Incidencia Crítica / Base de Datos
+**Hora:** 09:25 AM - 09:32 AM
+**Solicitud del Ingeniero:** Error "Data too long for column 'id_sucursal'" al registrar movimiento.
+**Análisis:** Se identificó que las sucursales usan IDs con prefijo `SUC-` (40 chars), excediendo el límite `CHAR(36)` definido en los scripts DDL originales.
+**Acciones:** 
+1. Actualización de `creaciontablas.sql`, `creaciontablas_nube.sql` y `deploy_cpanel_clean.sql` (Longitud ampliada a `VARCHAR(50)`).
+2. Generación de artefacto `temporal_20260222_0930_PatchSQLTruncado.sql` con comandos `ALTER TABLE`.
+3. Sincronización a GitHub.
+**Decision del Ingeniero:** Pendiente de ejecución del parche por parte del usuario.
+
+---
+
 #### Solicitud 13: Cerrar instancia vieja del backend
 **Tipo:** Operacion de sistema
 **Hora:** 04:04 AM
