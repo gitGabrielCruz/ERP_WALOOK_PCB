@@ -100,7 +100,9 @@ Trazabilidad y Mapeo Funcional (Historias de Usuario):
                 <div class="status-separator"></div>
 
                 <!-- Botón Salir Estándar -->
-                <button onclick="AuthService.logout()" class="btn-logout">
+                <button
+                    onclick="if(document.referrer.indexOf(window.location.host) !== -1) { history.back(); } else { window.location.href='menu.html'; }"
+                    class="btn-logout">
                     SALIR ✕
                 </button>
             </div>

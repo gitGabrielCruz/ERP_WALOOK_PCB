@@ -549,6 +549,17 @@
 **REPOSITORIO ERP_WALOOK ACTUALIZADO** ✅ (Push realizado a las 09:27 AM).
 **Decision del Ingeniero:** Completado satisfactoriamente.
 
+#### Solicitud 46: Corrección de Navegación en Inventarios
+**Tipo:** Bugfix / Navegación
+**Hora:** 09:18 AM - 09:22 AM
+**Solicitud del Ingeniero:** "en INVENTARIOS, el boton salir no hace nada... debe salir del modulo y regresar el menu principal"
+**Análisis:** Se detectó que el botón llamaba a un método inexistente (`AuthService.logout()`). Además, el comportamiento esperado era regresar al menú, no cerrar sesión.
+**Acciones:** 
+1. Implementación de `AuthService.logout()` en `auth-service.js` para integridad del sistema.
+2. Homologación del botón "SALIR" en `inventarios.html` con el patrón de `clientes.html` y `proveedores.html` (Salida al menú).
+3. Sincronización a GitHub.
+**Decision del Ingeniero:** Completado.
+
 ---
 
 #### Solicitud 13: Cerrar instancia vieja del backend

@@ -177,5 +177,17 @@ const AuthService = {
             console.log(`[AUTH] Módulo '${nombreModulo}' NO encontrado en permisos -> DENEGADO`);
             return this._permisosDenegados();
         }
+    },
+
+    /**
+     * Cierra la sesión activa y redirige al login.
+     */
+    logout: function () {
+        console.log('[AUTH] Cerrando sesión...');
+        sessionStorage.removeItem('user');
+        sessionStorage.removeItem('loginTimestamp');
+        sessionStorage.removeItem('token_erp');
+        sessionStorage.removeItem('erp_permisos_enc');
+        window.location.href = 'login.html';
     }
 };
