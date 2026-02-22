@@ -201,7 +201,57 @@
 2. **Resultado:** `Hi gitGabrielCruz! You've successfully authenticated`.
 3. Explicación técnica proporcionada sobre el funcionamiento de llaves SSH vs contraseñas, identidad de Git y automatización mediante el archivo `config`.
 **Resultado:** Vinculación técnica completada y operativa.
-**Decision del Ingeniero:** Pendiente.
+**Decision del Ingeniero:** Aprobado proceder con la gobernanza de código (inciso 1).
+
+#### Solicitud 20: Inicialización de Repositorio Local ERP_WALOOK
+**Tipo:** Control de Versiones / Gobernanza
+**Hora:** 05:33 AM - 05:38 AM
+**Solicitud del Ingeniero:** "1." (Referente a la opción de inicializar repositorio y subir a GitHub).
+**Acciones realizadas:**
+1. Creación de archivo `.gitignore` estandarizado para el proyecto.
+2. Inicialización de Git: `git init`.
+3. Registro de archivos en el área de preparación (stage).
+4. Ejecución de primer commit: `feat: Initial commit - Estructura base ERP_WALOOK (PT1-PT2)`.
+**Archivo Creado:** `temporal_20260222_0535_InicializacionRepo.md` (DESECHABLE).
+**Archivo Modificado:** `.gitignore` (Nuevo).
+**Resultado:** Repositorio local listo para vinculación remota.
+**Decision del Ingeniero:** Pendiente proporcionar URL del repositorio en GitHub.
+
+#### Solicitud 21: Consultoría sobre opciones de creación de repositorio en GitHub
+**Tipo:** Consultoría de Configuración
+**Hora:** 05:36 AM
+**Solicitud del Ingeniero:** "que otras confiruaciones necesto, veo 4 opciones" (adjunto captura de pantalla).
+**Respuesta:** Se recomendó mantener los valores por defecto (Visibility Public/Private según preferencia, README Off, .gitignore None, License None) para evitar conflictos con la configuración local ya realizada (especialmente el .gitignore personalizado).
+**Decision del Ingeniero:** Pendiente creación del repositorio y envío de URL SSH.
+
+#### Solicitud 22: Sincronización Final (Push) a GitHub
+**Tipo:** Control de Versiones / Despliegue de Código
+**Hora:** 05:38 AM - 05:40 AM
+**Solicitud del Ingeniero:** Proporcionó URL del repositorio remoto.
+**Acciones realizadas:**
+1. Vinculación de remoto: `git remote add origin git@github.com:gitGabrielCruz/ERP_WALOK.git` (Procesado vía SSH).
+2. Definición de rama principal: `git branch -M main`.
+3. Carga inicial de archivos: `git push -u origin main`.
+**Resultado:** Sincronización exitosa. Código disponible en GitHub.
+**Archivos Eliminados:** `temporal_20260222_0525_ConfiguracionGitHub.md` y `temporal_20260222_0535_InicializacionRepo.md` (Desechables según Directiva 10).
+**Decision del Ingeniero:** Gobernanza de código establecida. Regreso a validación de inventarios solicitado.
+
+#### Solicitud 23: Consulta sobre automatización de Git
+**Tipo:** Consulta Operativa / Estrategia de Trabajo
+**Hora:** 05:40 AM
+**Solicitud del Ingeniero:** "dime, cada vez que modifiquemos o agreguemos codigo al sistema se actualiza automaticante en el gitGabrieCruz?"
+**Respuesta:** Se explicó que Git no es automático por defecto. Se propuso integrar el ciclo de `commit` y `push` como estándar al finalizar cada tarea de implementación para mantener la sincronización constante.
+**Decision del Ingeniero:** Aprobado. Proceder a convertir en directiva especial.
+
+#### Solicitud 24: Integración de Directiva 11 (Sincronización Automática GitHub)
+**Tipo:** Configuración Técnica / Perfil IDS5v
+**Hora:** 05:42 AM
+**Solicitud del Ingeniero:** "1. si, autorizo, conviertelo en directiva especial."
+**Acciones realizadas:**
+1. Integración de la **Directiva 11** en `.agent/workflows/ids5v-profile.md`.
+2. Compromiso de ejecución automática del ciclo de Git (add, commit, push) tras finalizar satisfactoriamente cada tarea.
+**Archivo Modificado:** `.agent/workflows/ids5v-profile.md`.
+**Decision del Ingeniero:** Aprobado. Iniciando aplicación inmediata.
 
 ---
 
@@ -295,7 +345,74 @@
 **Respuesta proporcionada:** El dialogo es un mensaje del IDE Antigravity (basado en VS Code/Electron) que aparece cuando el proceso de renderizado se congela temporalmente por alta carga de recursos. Causa identificada: 2 instancias de `mvn spring-boot:run` corriendo simultaneamente (una de ~46 horas obsoleta, otra reciente de ~25 minutos). Recomendacion: hacer clic en "Continuar esperando" y cerrar la instancia vieja del backend.
 
 **Archivos consultados:** Ninguno (diagnostico visual).
+**Decision del Ingeniero:** Aprobado. Proceder a convertir en directiva especial de trabajo.
+
+#### Solicitud 24: Integración de Directiva 11 (Sincronización Automática GitHub)
+**Tipo:** Configuración Técnica / Perfil IDS5v
+**Hora:** 05:42 AM
+**Solicitud del Ingeniero:** "1. si, autorizo, conviertelo en directiva especial."
+**Análisis:** El Ingeniero eligió la opción 1 del planteamiento anterior.
+**Acciones realizadas:**
+1. Integración de la **Directiva 11** en `.agent/workflows/ids5v-profile.md`: "OBLIGATORIO: Al finalizar satisfactoriamente CADA tarea de implementación o configuración, realizar ciclo `git add`, `commit` y `push`."
+2. Compromiso de ejecución automática del ciclo de Git tras finalizar satisfactoriamente cada tarea.
+**Archivo Modificado:** `.agent/workflows/ids5v-profile.md`.
+**Decision del Ingeniero:** Aprobado. Directiva en vigor.
+
+#### Solicitud 25: Explicación del flujo Git (Local vs Nube)
+**Tipo:** Consulta Técnica / Educación
+**Hora:** 05:46 AM
+**Solicitud del Ingeniero:** "explicame, cada vez que cambiemos o agreguemos codigo en el sistema se va a actualizar el GIF (Git), si o no? y se actualiza, donde se actualiza, entiendo que hay un repositorio local y otro en la nube"
+**Respuesta:** Se confirmó que con la Directiva 11 la actualización será automática al finalizar tareas. Se explicó la arquitectura de Git: 1. Repositorio Local (en el SSD del Ingeniero) donde se hace el `commit` (punto de restauración) y 2. Repositorio en la Nube (GitHub servidores) donde se hace el `push` (respaldo externo).
 **Decision del Ingeniero:** Pendiente.
+
+#### Solicitud 26: Consulta sobre granularidad de reversión en Git
+**Tipo:** Consulta Técnica / Educación
+**Hora:** 05:49 AM
+**Solicitud del Ingeniero:** "mencionas que si algo sale mal podemos regtroceder la version de ayer, solo se pude por dia? o es por cada vez que haya una actualizacion?"
+**Respuesta:** Se explicó que Git permite retroceder a cualquier "punto de guardado" (commit) realizado. No está limitado por días, sino por cada vez que se finaliza una tarea y se registra el cambio. Se destacó la precisión quirúrgica y los mensajes descriptivos como herramientas de recuperación.
+**Decision del Ingeniero:** Pendiente.
+
+#### Solicitud 27: Corrección de precisión técnica (Terminología Git)
+**Tipo:** Corrección Operativa / Comunicación
+**Hora:** 05:52 AM
+**Solicitud del Ingeniero:** "no tenemos que hacer pruebas, me queda claro, solo que debes expresarte de manera correcta, es confuso si dices que puedo reotroceder la version de ayer, a la ultima modificacion anterior."
+**Respuesta:** Se reconoció la imprecisión. Se aclaró que el término correcto es **"retroceder a la última actualización o punto de guardado (commit) anterior"**, independientemente del tiempo transcurrido. Se asumió el compromiso de mantener rigor técnico en la comunicación.
+**Decision del Ingeniero:** Pendiente.
+
+#### Solicitud 28: Consulta sobre respaldo de configuraciones de inicio (Directivas)
+**Tipo:** Consulta Técnica / Arquitectura
+**Hora:** 05:53 AM
+**Solicitud del Ingeniero:** "dime, tambien respaldas la configuracion de inicio de este IDE con las directivas especiales?"
+**Respuesta:** Se informó que actualmente NO se respaldan porque residen fuera de la carpeta del proyecto `ERP_WALOOK`. Se propuso integrar la carpeta `.agent` y `GEMINI.md` dentro del repositorio Git para asegurar su persistencia en GitHub.
+**Decision del Ingeniero:** Pendiente.
+
+#### Solicitud 29: Estrategia de Privacidad y Compartición (Sub-repositorios)
+**Tipo:** Consultoría de Arquitectura de Git
+**Hora:** 05:58 AM
+**Solicitud del Ingeniero:** "este repositorio es privado, solo yo puedo entrar, pero que procede cuando quiera compartir alguno en particular? y no quiera compartir todo lo que ahi hay?"
+**Análisis:** Se identificó la necesidad de segregar la "Inteligencia del Agente" (privada/personal) del "Código del Proyecto" (potencialmente compartible).
+**Respuesta:** Se propuso la **Estrategia de Repositorios Segregados (Opción C)**: mantener el proyecto ERP_WALOOK en su propio repo y crear un repo independiente para el "Cerebro" del IDE (.agent/GEMINI.md), evitando la exposición de directivas personales al compartir proyectos.
+**Decision del Ingeniero:** Pendiente.
+
+#### Solicitud 30: Consulta sobre compartición selectiva (Granularidad de GitHub)
+**Tipo:** Consultoría de Arquitectura de Git
+**Hora:** 06:07 AM
+**Solicitud del Ingeniero:** "pregunta, es posible tener _CODE_ completo, y comprtir solo una carpeta especifica como el caso de ERP_WALOK?"
+**Análisis:** Se aclaró que GitHub otorga permisos a nivel de **Repositorio**, no de directorios internos. Compartir un repo raíz expone todo su contenido.
+**Respuesta:** Se explicó que para compartir solo un proyecto, este debe vivir en su propio repositorio independiente (como ya está `ERP_WALOOK`). Se ratificó que la Opción C (Repositorios Segregados) es la única forma de garantizar privacidad selectiva.
+**Decision del Ingeniero:** Aprobado. Directiva en vigor.
+
+#### Solicitud 31: Arquitectura de Triple Respaldo y Cambio de Identidad (DevIAn)
+**Tipo:** Configuración de Infraestructura / Gobernanza
+**Hora:** 06:17 AM
+**Solicitud del Ingeniero:** Definición de 3 repositorios: 1. `_CODE_` (Raíz sin ERP), 2. `ERP_WALOOK` (Corrección de nombre), 3. `AGENTE_DevIAn` (Cerebro/Config). El Agente se llamará **DevIAn**. Notificar cada push con: "REPOSITORIO [nombre] ACTUALIZADO". Actualizar Directiva 11.
+**Análisis:** Se acepta la arquitectura de segregación para balancear respaldo total y privacidad selectiva.
+**Acciones realizadas:**
+1. Cambio de identidad en `ids5v-profile.md` y `GEMINI.md` a **DevIAn**.
+2. Actualización de **Directiva 11** con formato de notificación obligatorio.
+3. Corrección de URL remota en `ERP_WALOOK` a `git@github.com:gitGabrielCruz/ERP_WALOOK.git`.
+4. Inicialización de repo raíz `_CODE_` con `.gitignore` excluyendo ERP, Agente y Bitácora para evitar conflictos.
+**Decision del Ingeniero:** Ejecución en curso.
 
 ---
 
