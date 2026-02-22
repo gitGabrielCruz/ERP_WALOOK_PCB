@@ -879,6 +879,20 @@
 
 ---
 
+**Solicitud 49 [22/02/2026 12:05]:** Humanización de Identificadores de Kardex.
+**Solicitud del Ingeniero:** El ID desplegado estaba "cifrado" (técnico). Se requiere visualización legible.
+**Análisis:** Se identificó que la interfaz mostraba el UUID (`id_movimiento`) en lugar del folio institucional (`INV-XXXX`). Asimismo, el documento capturado se encontraba en un campo secundario.
+**Acciones REALIZADAS:** 
+1. Re-mapeo visual en `inventarios-service.js`:
+   - Línea 1: Ahora muestra `folio` (Legible: `INV-177...`).
+   - Línea 2: Ahora muestra `origenId` (Legible: `FAC 100`).
+2. Ocultamiento de identificadores técnicos UUID de la vista del usuario.
+3. Validación de consistencia con la lógica del backend `InventarioService.java`.
+4. Sincronización a GitHub.
+**Estatus:** ✅ HUMANIZACIÓN COMPLETADA.
+
+---
+
 **Instruccion para el Agente:** Al reiniciar cualquier conversacion, leer siempre este archivo completo y actualizar la seccion "ESTADO ACTUAL (SNAPSHOT)" y el "REGISTRO CRONOLOGICO DE EVENTOS" con cada interaccion.
 
 ---

@@ -661,9 +661,9 @@ const InventariosService = {
             const isSuma = parseInt(m.cantidad) > 0;
             const tipoClass = isSuma ? 'txt-success' : 'txt-danger';
 
-            // [REESTRUCTURACIÓN SOLICITUD 48 - Style Institucional]
-            const idMov = m.idMovimiento || 'S/ID';
-            const folioDoc = m.folio || 'S/FOLIO';
+            // [REESTRUCTURACIÓN SOLICITUD 49 - Humanización de Datos]
+            const idMovInstitucional = m.folio || 'S/FOLIO';
+            const documentoUsuario = m.origenId || 'S/DOC';
             const conceptoDetalle = ((m.tipoMovimiento || '').replace(/_/g, ' ') + (m.observaciones ? ' - ' + m.observaciones : '')).toUpperCase();
 
             // Guardamos el saldo actual de la fila antes de retroceder
@@ -676,8 +676,8 @@ const InventariosService = {
                 <td style="font-size: 0.8rem; color: #4b5563; vertical-align: middle;">${fecha}</td>
                 <td style="vertical-align: middle;">
                     <div style="line-height: 1.4;">
-                        <span class="kardex-id">${idMov}</span>
-                        <span class="kardex-folio">${folioDoc}</span>
+                        <span class="kardex-id">${idMovInstitucional}</span>
+                        <span class="kardex-folio">${documentoUsuario}</span>
                         <span class="kardex-concepto">${conceptoDetalle}</span>
                     </div>
                 </td>
