@@ -12,7 +12,7 @@
 
 
 ## ESTADO ACTUAL (SNAPSHOT)
-**Ultima Sincronizacion:** 2026-02-22 | 09:35 AM
+**Ultima Sincronizacion:** 2026-02-22 | 10:05 AM
 **Modulo Activo:** Gobernanza de Código Dual (ERP + Agente)
 **Fase del Proyecto:** Etapa 2 - Desarrollo e Integracion
 **Backend:** Activo (Puerto 9090)
@@ -568,10 +568,10 @@
 **Solicitud del Ingeniero:** Error "Data too long for column 'id_sucursal'" al registrar movimiento.
 **Análisis:** Se identificó que las sucursales usan IDs con prefijo `SUC-` (40 chars), excediendo el límite `CHAR(36)` definido en los scripts DDL originales.
 **Acciones:** 
-1. Actualización de `creaciontablas.sql`, `creaciontablas_nube.sql` y `deploy_cpanel_clean.sql` (Longitud ampliada a `VARCHAR(50)`).
-2. Generación de artefacto `temporal_20260222_0930_PatchSQLTruncado.sql` con comandos `ALTER TABLE`.
-3. Sincronización a GitHub.
-**Decision del Ingeniero:** Pendiente de ejecución del parche por parte del usuario.
+1. Modificación directa de los archivos estructurales maestros: `creaciontablas.sql`, `creaciontablas_nube.sql` y `deploy_cpanel_clean.sql` (Longitud ampliada a `VARCHAR(50)`).
+2. Verificación de consistencia en registros semilla: `registrospruebas.sql` y `seed_cpanel_clean.sql`.
+3. Sincronización a GitHub de los archivos maestros actualizados.
+**Decision del Ingeniero:** Procedimiento de scripts maestros aprobado. El Ingeniero correrá los archivos de estructura manualmente para restaurar la base de datos de forma íntegra.
 
 ---
 
@@ -850,6 +850,20 @@
 ### [Nov 2025 - Ene 2026] - CRUD Usuarios y Bases (Etapa 1)
 *   **Connecting Frontend CRUD:** Conexion completa del modulo de Usuarios (Frontend <-> Backend).
 *   **Inicio Proyecto:** Definicion de arquitectura base y primeros modulos.
+
+---
+
+#### Solicitud 48: Optimización de Directivas Especiales (AGENTE IDS5v v5.1)
+**Tipo:** Configuración de Gobernanza
+**Hora:** 09:32 AM - 10:10 AM
+**Solicitud del Ingeniero:** Revisar duplicidad en directivas, simplificar trazabilidad y establecer ciclo de vida secuencial.
+**Análisis:** Identificada redundancia entre rastro técnico (D7 original) y copia de chat (D9 original). Se fusionaron en la regla "Gobernanza Log" vinculada al cierre de sesión técnica.
+**Acciones REALIZADAS:**
+1. Fusión de reglas de bitácora en el Punto 8 (v5.1).
+2. Definición y carga del Protocolo de Aplicación Secuencial.
+3. Actualización de `ids5v-profile.md` con el estándar definitivo bajo orden `/CODIFICAR`.
+4. Sincronización a GitHub vinculando el cambio a esta solicitud.
+**Decisión del Ingeniero:** Estándar v5.1 aprobado y fijado como oficial.
 
 ---
 
