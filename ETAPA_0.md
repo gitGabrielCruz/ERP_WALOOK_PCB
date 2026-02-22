@@ -1,12 +1,27 @@
+/*
+============================================================
+Nombre del archivo : ETAPA_0.md
+Ruta              : ETAPA_0.md
+Tipo              : Documentación Técnica (Etapa 0)
+
+Proyecto          : Sistema ERP en la nube para gestión de ópticas OMCGC
+Empresa           : WALOOK MÉXICO, S.A. de C.V.
+
+Autor             : Ing. Gabriel Amilcar Cruz Canto
+Versión           : 1.1 (Sincronizada)
+Fecha             : 22 de febrero de 2026
+Propósito         : Definir la base técnica, estructura y preparación del sistema.
+============================================================
+*/
+
+
 ---
 **PROYECTO:** Sistema Web ERP en la nube - OMCGC  
 **EMPRESA:** WALOOK MÉXICO, S.A. de C.V.  
 **DOCUMENTO:** ETAPA 0 - Preparación Técnica del Sistema  
-**VERSIÓN:** 1.0  
-**FECHA:** 15 de febrero de 2026  
+**VERSIÓN:** 1.1  
+**FECHA:** 22 de febrero de 2026  
 **AUTOR:** Ing. Gabriel Amilcar Cruz Canto  
-
----
 
 # ETAPA 0 — Preparación técnica del sistema OMCGC
 
@@ -696,14 +711,14 @@ Descripción
 La carpeta de scripts concentra los archivos ejecutables necesarios para la preparación y configuración del entorno del sistema, particularmente en lo referente a la base de datos. Estos scripts permiten crear, reiniciar y configurar la estructura de datos de forma controlada, asegurando reproducibilidad y coherencia durante las distintas etapas del desarrollo y las pruebas académicas.
 Estructura
 ---
-database/scripts/
+ERP_WALOOK/
 ---
 ```
-├── 00_drop_create_db.sql
-├── 01_schema_usuarios.sql
-├── 04_usuario_prueba.sql
-└── 05_update_pacientes.sql
-
+├── creaciontablas.sql
+├── creaciontablas_nube.sql
+├── registrospruebas.sql
+├── registrospruebas_nube.sql
+└── INSERT_USUARIO_ADMIN.sql
 ```
 2.6 Carpeta de documentación técnica
 ---
@@ -927,11 +942,10 @@ Descripción
 Este script crea la base de datos del sistema con la codificación y configuración requeridas. Su ejecución establece el contenedor lógico donde residirá la estructura de datos del sistema.
 Estructura / Artefacto
 ---
-database/scripts/
+ERP_WALOOK/
 ---
 ```
-└── 00_drop_create_db.sql
-
+└── creaciontablas.sql (Anteriormente: 00_drop_create_db.sql)
 ```
 4.5 Script de creación de tablas (estructura vacía)
 Descripción
@@ -939,11 +953,10 @@ Descripción
 Este script define la estructura relacional del sistema mediante la creación de tablas, claves primarias, claves foráneas y restricciones, sin incluir datos. Permite establecer el esquema base conforme al modelo de datos aprobado.
 Estructura / Artefacto
 ---
-database/scripts/
+ERP_WALOOK/
 ---
 ```
-└── 01_schema.sql
-
+└── creaciontablas.sql (Anteriormente: 01_schema.sql)
 ```
 4.6 Script de eliminación / reinicio de BD (uso académico)
 Descripción
@@ -951,11 +964,10 @@ Descripción
 Este script permite eliminar y recrear la base de datos del sistema con fines académicos y de prueba, asegurando un entorno limpio y reproducible para validaciones por etapas.
 Estructura / Artefacto
 ---
-database/scripts/
+ERP_WALOOK/
 ---
 ```
-└── 00_drop_create_db.sql
-
+└── creaciontablas.sql
 ```
 5. Librerías y dependencias
 ---

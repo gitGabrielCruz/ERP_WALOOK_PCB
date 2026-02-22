@@ -1,9 +1,25 @@
+/*
+============================================================
+Nombre del archivo : DOCUMENTACION_TECNICA.md
+Ruta              : DOCUMENTACION_TECNICA.md
+Tipo              : Documentación Técnica (Arquitectura Detallada)
+
+Proyecto          : Sistema ERP en la nube para gestión de ópticas OMCGC
+Empresa           : WALOOK MÉXICO, S.A. de C.V.
+
+Autor             : Ing. Gabriel Amilcar Cruz Canto / Antigravity AI
+Versión           : 1.7 (Sincronizada con Avance 50%)
+Fecha             : 22 de febrero de 2026
+Propósito         : Detallar la arquitectura, estándares y componentes técnicos del sistema.
+============================================================
+*/
+
 ---
 **PROYECTO:** Sistema Web ERP en la nube - OMCGC  
 **EMPRESA:** WALOOK MÉXICO, S.A. de C.V.  
 **DOCUMENTO:** Documentación Técnica de Arquitectura  
-**VERSIÓN:** 1.6  
-**FECHA:** 21 de febrero de 2026  
+**VERSIÓN:** 1.8  
+**FECHA:** 22 de febrero de 2026  
 **AUTOR:** Ing. Gabriel Amilcar Cruz Canto / Antigravity AI  
 
 ---
@@ -32,6 +48,10 @@ A continuación se describen los mecanismos implementados para garantizar la cal
     *   Servicio `DatabaseHealthService` diseñado para la validación proactiva de la conectividad con el repositorio de datos, previniendo la propagación de excepciones en tiempo de ejecución.
 4.  **Autenticación en Entorno de Desarrollo**:
     *   Implementación de credenciales de superusuario (`root`) codificadas estáticamente a nivel de servicio. Este mecanismo facilita la validación funcional en etapas tempranas de desarrollo, independientemente de la persistencia de datos.
+5.  **Arquitectura de Resiliencia de Inventario (SSoT)**:
+    *   Implementación del patrón *Single Source of Truth* (SSoT) en `InventarioRepository`. El sistema prioriza la tabla de balance (`existencia`), pero ante inconsistencias o valores nulos, realiza un fallback automático al "Cálculo Físico del Kardex", garantizando la integridad de las existencias operativas.
+6.  **Semáforo de Disponibilidad de Módulos (UX)**:
+    *   Mecanismo de renderizado dinámico en `menu.html` que aplica clases visuales (`border-active`, `border-pending`) a los botones de navegación, permitiendo al usuario distinguir rápidamente entre módulos operativos y aquellos en fase de construcción.
 
 ### 1.2 Estructura de Configuración
 La gestión de infraestructura se ha centralizado siguiendo el patrón de **Configuración Programática**:

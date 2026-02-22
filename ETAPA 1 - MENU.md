@@ -2,8 +2,8 @@
 **PROYECTO:** Sistema Web ERP en la nube - OMCGC  
 **EMPRESA:** WALOOK MÉXICO, S.A. de C.V.  
 **DOCUMENTO:** ETAPA 1 - Módulo Menú Principal  
-**VERSIÓN:** 1.0  
-**FECHA:** 04 de febrero de 2026  
+**VERSIÓN:** 1.2 (Sincronizada con Código v3.2)  
+**FECHA:** 22 de febrero de 2026  
 **AUTOR:** Ing. Gabriel Amilcar Cruz Canto  
 
 ---
@@ -82,6 +82,9 @@ El Menú y el Header establecen la base de navegación para todo el sistema.
 
 - Cada opción intenta cargar un módulo cuyo nombre corresponde al nombre del botón
 - **IF** módulo NO existe **THEN** mostrar mensaje "El módulo/archivo XXXX no existe" y retornar al Menú principal tras confirmación
+- **REGLA DINÁMICA (DevIAn):** El menú valida físicamente la existencia de los archivos `.html` y aplica bordes de color:
+    - **VERDE (`.border-active`)**: Módulo implementado y archivo detectado.
+    - **ROJO (`.border-pending`)**: Módulo pendiente u archivo ausente.
 
 ---
 
@@ -144,6 +147,7 @@ GET    /api/menu/permisos       # Obtener permisos del usuario actual
 #### Criterios de Aceptación
 
 - [x] El menú solo se muestra con sesión activa
+- [x] El menú muestra el semáforo dinámico (Verde/Rojo) según existencia física
 - [x] El menú muestra solo los módulos con permiso "puede_ver"
 - [x] El clic en un módulo carga la pantalla correspondiente
 - [x] El sistema maneja módulos no implementados con mensaje claro
@@ -152,6 +156,6 @@ GET    /api/menu/permisos       # Obtener permisos del usuario actual
 
 ---
 
-**Última actualización:** 04 de febrero de 2026, 03:27 AM  
-**Estado:** Documentación completa  
+**Última actualización:** 22 de febrero de 2026, 02:55 PM  
+**Estado:** Sincronizado con v3.2 ✅  
 **Código fuente:** Ver `ETAPA 1 - CODIGO_FUENTE.md`

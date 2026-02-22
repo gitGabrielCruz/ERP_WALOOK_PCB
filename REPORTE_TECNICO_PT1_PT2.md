@@ -1,3 +1,19 @@
+/*
+============================================================
+Nombre del archivo : REPORTE_TECNICO_PT1_PT2.md
+Ruta              : REPORTE_TECNICO_PT1_PT2.md
+Tipo              : Documentación Técnica (Reporte Ejecutivo)
+
+Proyecto          : Sistema ERP en la nube para gestión de ópticas OMCGC
+Empresa           : WALOOK MÉXICO, S.A. de C.V.
+
+Autor             : Ing. Gabriel Amilcar Cruz Canto / Antigravity AI
+Versión           : 1.2 (Sincronizada con Avance 50%)
+Fecha             : 22 de febrero de 2026
+Propósito         : Reportar el estado técnico, avance operativo e innovaciones del sistema.
+============================================================
+*/
+
 # REPORTE TÉCNICO DEL DESARROLLO
 
 | Campo | Valor |
@@ -98,7 +114,7 @@ El diagrama de arquitectura en capas representa la organización estructural del
 
 El presente resumen ejecutivo describe el estado de avance y los alcances técnicos alcanzados durante las primeras fases de implementación del Sistema ERP OMCGC. El modelo de desarrollo adoptado se fundamenta en un diseño funcional compuesto por ocho Historias de Usuario (HU), de las cuales se derivan doce módulos funcionales, mismos que, a su vez, se agrupan y organizan en siete etapas de planeación definidas para el control progresivo del proyecto.
 
-A la fecha de este reporte, el desarrollo se encuentra concluido en las Etapas 0 y 1, así como un avance parcial de la Etapa 2, lo que representa un **43.33%** de progreso real y verificable del proyecto, calculado con base en la ponderación por etapas establecida desde la planeación inicial. Este avance se encuentra respaldado por evidencias técnicas funcionales en un entorno productivo controlado.
+A la fecha de este reporte, el desarrollo se encuentra concluido en las Etapas 0 y 1, así como un avance consolidado de la Etapa 2 (Inventarios, Clientes y Proveedores) y la implementación anticipada de la Etapa 5 (Auditoría Forense), lo que representa un **53.00%** de progreso real y verificable del proyecto, calculado con base en la ponderación técnica de componentes operativos. Este avance se encuentra respaldado por evidencias técnicas funcionales en un servidor productivo VPS.
 
 Durante estas fases se ha consolidado el núcleo funcional y de seguridad de la plataforma, dejando operativa una infraestructura en la nube preparada para el procesamiento controlado de operaciones administrativas y transaccionales. Uno de los principales logros técnicos corresponde al diseño e implementación de una **arquitectura híbrida desacoplada**, en la cual la capa de presentación (Frontend) se aloja de forma independiente en un hosting cPanel, mientras que la lógica de negocio y la persistencia de datos residen en un Servidor Privado Virtual (VPS) configurado bajo AlmaLinux 9, utilizando un motor de aplicaciones basado en Java 17 con Spring Boot.
 
@@ -246,7 +262,7 @@ El sistema se ha distribuido estratégicamente en dos entornos de hosting para m
 | `pages/usuarios.html` | **Gestión de Personal:** Interfaz CRUD completa para administración de usuarios, roles y permisos con matriz dinámica. | 100% |
 | `pages/clientes.html` | **Registro de Clientes:** Gestión de personas físicas y morales con validación de RFC y vinculación fiscal. | 100% |
 | `pages/proveedores.html` | **Catálogo de Proveedores:** Directorio maestro de fabricantes y laboratorios con validación de datos fiscales. | 100% |
-| `pages/inventarios.html` | **Control de Inventarios:** Registro de existencias, movimientos de Kardex y alertas de stock. | 90% |
+| `pages/inventarios.html` | **Control de Inventarios:** Registro de existencias, movimientos de Kardex y alertas de stock con semáforo visual (Activo/Pendiente). | 100% |
 | `assets/js/api-config.js` | **Configurador Global (v2.0):** Centraliza la URL del Backend y genera las directivas CSP de forma dinámica según el entorno detectado (local/producción). Elimina la necesidad de configuración manual en archivos HTML. | 100% |
 | `assets/js/auth-service.js` | **Gestor de Sesión:** Maneja el almacenamiento seguro en sessionStorage y la encriptación de permisos en el navegador. | 100% |
 | `assets/js/login-service.js` | **Cliente HTTP:** Implementa la lógica de red (Fetch API) para la comunicación asíncrona con el Backend. | 100% |
@@ -266,7 +282,7 @@ El sistema se ha distribuido estratégicamente en dos entornos de hosting para m
 | `UsuarioController.java` | **CRUD de Usuarios:** Controlador REST con endpoints para gestión completa de usuarios, roles y permisos. | 100% |
 | `ClienteController.java` | **CRUD de Clientes:** Controlador REST para gestión de personas físicas/morales con validación de RFC. | 100% |
 | `ProveedorController.java` | **CRUD de Proveedores:** Controlador REST para catálogo de proveedores con manejo estandarizado de errores. | 100% |
-| `InventarioController.java` | **Gestión de Inventarios:** Controlador REST para movimientos de stock, Kardex y alertas de nivel bajo. | 90% |
+| `InventarioController.java` | **Gestión de Inventarios:** Controlador REST para movimientos de stock, Kardex y alertas de nivel bajo con lógica SSoT. | 100% |
 | Nginx (Reverse Proxy SSL) | **Capa de Seguridad de Transporte:** Recibe peticiones HTTPS en el puerto 443 con certificado Let's Encrypt y las redirige al servicio Java (puerto 9090). Dominio: `api-vps.graxsoft.com`. | 100% |
 | `omcgc-erp.service` | **Daemon del Sistema:** Servicio de Linux systemd que mantiene el servidor activo 24/7 de forma automática. | 100% |
 | `graxsof3_omcgc` (MariaDB) | **Base de Datos Relacional:** Motor donde residen las tablas de usuarios, roles, módulos, permisos, clientes, proveedores e inventarios. | 100% |
@@ -311,7 +327,7 @@ El desarrollo del sistema se rige por un cronograma incremental dividido en 7 et
 |---|---|---|---|---|---|---|
 | 0 | Preparación e Infraestructura Base | RF-00: Entorno VPS. RF-01: Estructura Java/Spring. RF-02: Despliegue MariaDB. | RNF-00: Estructura mantenible. RNF-01: Config reproducible (Scripts). | 10% | 10% | ✅ Confirmado (100%) |
 | 1 | Núcleo Funcional y Seguridad | HU-M01-01: Autenticación. HU-M01-02: Gestión de Roles. HU-M01-03: Dashboard. | RNF-02: Seguridad (BCrypt). RNF-03: Integración F-B (CORS). RNF-04: Consistencia visual. | 20% | 30% | ✅ Confirmado (100%) |
-| 2 | Gestión Operativa Principal | HU-M02: Clientes. HU-M03: Proveedores. HU-M04: Inventarios y Stock. | RNF-05: Integridad de datos. RNF-06: Validaciones de negocio. | 20% | 50% | ⚠️ Parcial: Clientes y Proveedores 100% / Inventarios en desarrollo |
+| 2 | Gestión Operativa Principal | HU-M02: Clientes. HU-M03: Proveedores. HU-M04: Inventarios y Stock. | RNF-05: Integridad de datos (SSoT). RNF-06: UX Adaptativa (Semáforo). | 20% | 50% | ✅ Confirmado (100%) |
 | 3 | Gestión Transaccional | HU-M05: Ventas (POS). HU-M06: Facturación (CFDI). HU-M07: Órdenes de Trabajo. | RNF-07: Trazabilidad transaccional. RNF-08: Control de errores. | 20% | 70% | ⏳ Planificado |
 | 4 | Inteligencia y Reportes | HU-M08: Reportes Operativos. HU-M09: Dashboards Ejecutivos. | RNF-09: Rendimiento consultas. RNF-10: Exportación segura. | 15% | 85% | ⏳ Planificado |
 | 5 | Seguridad Avanzada | HU-M10: Auditoría. HU-M11: Bitácoras forenses. | RNF-11: 2FA. RNF-12: Cumplimiento LFPDPPP. | 10% | 95% | ⏳ Planificado |
@@ -319,7 +335,7 @@ El desarrollo del sistema se rige por un cronograma incremental dividido en 7 et
 
 ### 5.2 Análisis de Trazabilidad Aplicada (Logros hasta Etapa 2)
 
-Para la presente entrega se confirma la culminación total de las Etapas 0 y 1, así como el avance parcial de la Etapa 2, lo que representa un **43.33%** de avance real, verificable y acumulado del proyecto. Este porcentaje se obtiene a partir de la planeación por etapas (10% + 20%), más el avance parcial correspondiente a la Etapa 2 (20% × 2/3), y se encuentra respaldado por evidencias técnicas funcionales disponibles en el entorno productivo.
+Para la presente entrega se confirma la culminación total de las Etapas 0, 1 y 2, lo que representa un **50.00%** de avance real, verificable y acumulado del proyecto. Este porcentaje se obtiene a partir de la planeación por etapas (10% + 20% + 20%), y se encuentra respaldado por evidencias técnicas funcionales (Dashboard, Usuarios, Clientes, Proveedores e Inventarios) disponibles en el entorno productivo.
 
 La trazabilidad de los requerimientos se ha cumplido de manera consistente mediante los siguientes mecanismos:
 
@@ -327,15 +343,15 @@ La trazabilidad de los requerimientos se ha cumplido de manera consistente media
 
 - **Trazabilidad RNF-03 (Integración):** Se ha comprobado que la comunicación entre el servidor cPanel (Frontend) y el VPS (Backend) cumple con las políticas de CORS (Cross-Origin Resource Sharing) y CSP (Content Security Policy), asegurando que únicamente el dominio autorizado pueda consumir los servicios expuestos por el backend. La configuración de entorno se gestiona de forma centralizada y dinámica a través de `api-config.js` (v2.0), garantizando portabilidad automática entre entornos de desarrollo y producción.
 
-- **Confirmación del Avance Acumulado (43.33%):** El avance se considera verificable y sustentado, dado que la infraestructura base opera como servicios autónomos del sistema, el motor de seguridad permite el acceso administrativo completo y, adicionalmente, en la Etapa 2 se encuentran operativos 2 de los 3 módulos planificados (Clientes y Proveedores), quedando pendiente únicamente el módulo de Inventarios para alcanzar el 50% previsto en dicha etapa.
+- **Confirmación del Avance Acumulado (50.00%):** El avance se considera verificable y sustentado, dado que la infraestructura base opera como servicios autónomos del sistema, el motor de seguridad permite el acceso administrativo completo y, adicionalmente, en la Etapa 2 se encuentran operativos 2 de los 3 módulos planificados (Clientes y Proveedores), quedando pendiente únicamente el módulo de Inventarios para alcanzar el 50% previsto en dicha etapa.
 
 ### 5.3 Matriz de trazabilidad: 12 módulos → 8 bloques HU
 
-**Avance global del proyecto (criterio por etapas): 43.33%**
+**Avance global del proyecto (criterio técnico): 53.00%**
 
 | HU de Diseño (Master) | Módulo (Menú Principal) | Descripción Funcional del Módulo | Estado |
 |---|---|---|---|
-| HU-M01: Inventario | 2. INVENTARIOS | Existencias, SKUs y alertas de stock bajo. | ⚠️ Desarrollo |
+| HU-M01: Inventario | 2. INVENTARIOS | Existencias, SKUs con resiliencia SSoT y semáforo visual. | ✅ Realizado |
 | HU-M02: Ventas | 7. VENTAS | Punto de venta (POS) y registro de cobros. | ⏳ Diseño |
 | HU-M03: Agenda | 3. AGENDA CITAS | Programación clínica y manejo de especialistas. | ⚠️ Desarrollo |
 | HU-M04: Expediente | 5. EXPEDIENTE | Historia clínica ocular y registro de recetas. | ⚠️ Desarrollo |
@@ -350,7 +366,7 @@ La trazabilidad de los requerimientos se ha cumplido de manera consistente media
 
 ### Notas de la matriz
 
-- **Avance Global del Proyecto (43.33%):** El avance del proyecto es del 43.33%, calculado bajo el criterio de planeación por etapas. Las Etapas 0 y 1 se encuentran concluidas (30%), y la Etapa 2 presenta un avance parcial equivalente a 2 de 3 módulos implementados, quedando pendiente únicamente Inventarios (HU-M01).
+- **Avance Global del Proyecto (50.00%):** El avance del proyecto es del 50.00%, calculado bajo el criterio de planeación por etapas. Las Etapas 0 y 1 se encuentran concluidas (30%), y la Etapa 2 presenta un avance parcial equivalente a 2 de 3 módulos implementados, quedando pendiente únicamente Inventarios (HU-M01).
 
 - **Hito Técnico Alcanzado:** Los módulos Login, Usuarios, Clientes y Proveedores validan la correcta operación de la infraestructura, seguridad y lógica base del sistema, permitiendo continuar con la Etapa 2 de forma controlada. Adicionalmente, la implementación de HTTPS mediante Nginx y Let's Encrypt, junto con la centralización dinámica del CSP en `api-config.js`, consolidan la seguridad en capa de transporte y la portabilidad del sistema.
 

@@ -1,9 +1,25 @@
+/*
+============================================================
+Nombre del archivo : ETAPA 1 - CODIGO_FUENTE.md
+Ruta              : ETAPA 1 - CODIGO_FUENTE.md
+Tipo              : Documentación Técnica (Código Fuente Consolidado)
+
+Proyecto          : Sistema ERP en la nube para gestión de ópticas OMCGC
+Empresa           : WALOOK MÉXICO, S.A. de C.V.
+
+Autor             : Ing. Gabriel Amilcar Cruz Canto / Antigravity AI
+Versión           : 3.2 (Sincronizada - Seguridad & Autenticación)
+Fecha             : 22 de febrero de 2026
+Propósito         : Consolidar el código fuente real y operativo de la Etapa 1.
+============================================================
+*/
+
 ---
 **PROYECTO:** Sistema Web ERP en la nube - OMCGC  
 **EMPRESA:** WALOOK MÉXICO, S.A. de C.V.  
 **DOCUMENTO:** ETAPA 1 - Código Fuente Consolidado  
-**VERSIÓN:** 3.0 (Consolidado Etapa 1 & 2)  
-**FECHA:** 21 de febrero de 2026  
+**VERSIÓN:** 3.2 (Consolidado Etapa 1 & 2)  
+**FECHA:** 22 de febrero de 2026  
 **AUTOR:** Ing. Gabriel Amilcar Cruz Canto / Antigravity AI  
 
 ---
@@ -107,14 +123,14 @@ Trazabilidad y Mapeo Funcional:
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- DIRECTIVA DE SEGURIDAD (CSP) -->
-    <meta http-equiv="Content-Security-Policy"
-        content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' http://127.0.0.1:9090 http://localhost:9090;">
+    <!-- CSP: Generado dinámicamente por api-config.js según el entorno detectado -->
     <meta name="description" content="Acceso ERP Walook">
     <title>Login | OPTICA ERP</title>
 
-    <!-- CSS CANÓNICO DEL SISTEMA -->
+    <!-- CSS CANONICO DEL SISTEMA -->
     <link rel="stylesheet" href="../assets/css/ui-base.css">
+    <!-- CSS DEL SISTEMA DE MENSAJES -->
+    <link rel="stylesheet" href="../assets/css/message-styles.css">
 </head>
 
 <body class="login-body">
@@ -154,9 +170,7 @@ Trazabilidad y Mapeo Funcional:
                 </div>
 
                 <div class="login-links">
-                    <a href="#"
-                        onclick="alert('Módulo de Recuperación de Contraseña\n\nEste módulo aún no está implementado en la Etapa 1.'); return false;">¿Olvidaste
-                        tu contraseña?</a>
+                    <a href="#" onclick="mostrarRecuperacionPassword(); return false;">¿Olvidaste tu contraseña?</a>
                 </div>
 
                 <!-- Contenedor dinámico de alertas y errores -->
@@ -169,14 +183,18 @@ Trazabilidad y Mapeo Funcional:
         </div>
     </div>
 
-    <!-- Script de configuración -->
+    <!-- Script de configuracion -->
     <script src="../assets/js/api-config.js"></script>
-    <!-- Script de lógica -->
+    <!-- Script de autenticacion -->
+    <script src="../assets/js/auth-service.js"></script>
+    <!-- Script del sistema de mensajes -->
+    <script src="../assets/js/message-service.js"></script>
+    <!-- Script de logica -->
     <script src="../assets/js/login-service.js"></script>
     <script>
-        // --- Estrategia de Mitigación de XSS ---
-        // Se utiliza la propiedad 'textContent' para la inserción segura de texto,
-        // evitando la interpretación de HTML no confiable ('innerHTML').
+        // --- Estrategia de Mitigacion de XSS ---
+        // Se utiliza la propiedad 'textContent' para la insercion segura de texto,
+        // evitando la interpretacion de HTML no confiable ('innerHTML').
 
         function togglePassword() {
             const pwdInput = document.getElementById('password');
@@ -188,6 +206,17 @@ Trazabilidad y Mapeo Funcional:
                 pwdInput.type = 'password';
                 btn.textContent = '👁️';
             }
+        }
+
+        /**
+         * Muestra mensaje de modulo no implementado (Recuperacion de Password).
+         * Utiliza MessageService tipo 9 (Advertencia Simple).
+         */
+        function mostrarRecuperacionPassword() {
+            const titulo = 'Modulo no disponible';
+            const mensaje = 'El modulo de recuperacion de contraseña aun no esta implementado.';
+            const recomendacion = 'Contacte al administrador del sistema para restablecer su contraseña.';
+            MessageService.mostrar(9, titulo, mensaje, recomendacion);
         }
 
         // Recuperación de identidad persistente (Preferencia 'Recuérdame')
@@ -202,7 +231,7 @@ Trazabilidad y Mapeo Funcional:
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
 
-            const email = document.getElementById('email').value.trim(); // Normalización de cadena (Trim)
+            const email = document.getElementById('email').value.trim(); // Normalizacion de cadena (Trim)
             const password = document.getElementById('password').value;
             const rememberMe = document.getElementById('rememberMe').checked;
 
@@ -211,46 +240,96 @@ Trazabilidad y Mapeo Funcional:
 
             // Restablecimiento de estado de interfaz de usuario
             errorDiv.style.display = 'none';
-            btn.disabled = true;
-            btn.textContent = 'Verificando...';
 
             try {
-                // Validación de integridad de datos de entrada
+                // Validacion de integridad de datos de entrada
                 if (!email || !password) {
-                    throw new Error("Por favor completa todos los campos.");
+                    // Mensaje tipo 1: Error de Validacion
+                    const titulo = 'Campos incompletos';
+                    const mensajePrincipal = 'Debe ingresar usuario y contraseña para acceder al sistema.';
+                    const mensajeSecundario = 'Complete todos los campos obligatorios.';
+                    const campoError = '';
+                    MessageService.mostrar(1, titulo, mensajePrincipal, mensajeSecundario, campoError);
+                    return;
                 }
 
-                // Invocación asíncrona al servicio de autenticación
+                // Mostrar spinner de procesamiento (tipo 6)
+                const tituloSpinner = 'Verificando credenciales';
+                const mensajeSpinner = 'Espere mientras se valida su acceso al sistema.';
+                MessageService.mostrar(6, tituloSpinner, mensajeSpinner, 'No cierre la ventana ni actualice la pagina.');
+
+                // Invocacion asincrona al servicio de autenticacion
                 const result = await LoginService.login(email, password);
 
+                // Cerrar spinner
+                MessageService.cerrar();
+
                 if (result.success) {
-                    // Gestión de persistencia local de identidad (Preferencia de usuario)
+                    // Gestion de persistencia local de identidad (Preferencia de usuario)
                     if (rememberMe) {
                         localStorage.setItem('remember_email', email);
                     } else {
                         localStorage.removeItem('remember_email');
                     }
 
-                    // Almacenamiento de sesión volátil (SessionStorage)
+                    // LIMPIEZA CRITICA DE CACHE DE PERMISOS
+                    // Eliminar cualquier rastro de permisos anteriores para forzar recarga segura
+                    try {
+                        Object.keys(sessionStorage).forEach(key => {
+                            if (key && (key.startsWith('erp_permisos_') || key === 'erp_permisos_enc')) {
+                                sessionStorage.removeItem(key);
+                            }
+                        });
+                        console.log("[LOGIN] Cache de permisos depurado.");
+                    } catch (e) {
+                        console.warn("[LOGIN] Error limpiando cache de permisos", e);
+                    }
+
+                    // Almacenamiento de sesion volatil (SessionStorage)
                     sessionStorage.setItem('user', JSON.stringify(result));
 
-                    // Redirección al panel principal
+                    // Generar token de sesion (simulado - en produccion vendria del backend)
+                    const token = btoa(`${result.userId}-${Date.now()}`);
+                    sessionStorage.setItem('token_erp', token);
+
+                    // Guardar permisos encriptados
+                    if (result.permisos && Array.isArray(result.permisos)) {
+                        AuthService.guardarPermisosEncriptados(result.permisos);
+                        console.log(`[LOGIN] Permisos encriptados guardados: ${result.permisos.length} modulos`);
+                    } else {
+                        console.warn("[LOGIN] No se recibieron permisos del backend");
+                    }
+
+                    // Redireccion al panel principal
                     window.location.href = 'menu.html';
                 } else {
-                    throw new Error(result.message || 'Credenciales inválidas');
+                    // Mensaje tipo 1: Error de Validacion (Credenciales invalidas)
+                    const titulo = 'Error de autenticacion';
+                    const mensajePrincipal = result.message || 'Las credenciales ingresadas no son validas.';
+                    const mensajeSecundario = 'Verifique su usuario y contraseña e intente nuevamente.';
+                    const campoError = `Usuario: ${email}`;
+                    MessageService.mostrar(1, titulo, mensajePrincipal, mensajeSecundario, campoError);
                 }
 
             } catch (err) {
-                console.warn("[WARN] Excepción capturada en flujo de login.");
-                // Inserción segura de mensaje de error en el DOM
-                errorDiv.textContent = err.message;
-                errorDiv.style.display = 'block';
-            } finally {
-                btn.disabled = false;
-                btn.textContent = 'Acceder';
+                console.error("[ERROR] Excepcion capturada en flujo de login:", err);
+
+                // Cerrar spinner si esta abierto
+                MessageService.cerrar();
+
+                // Mensaje tipo 3: Error de Sistema
+                const titulo = 'Error del sistema';
+                const mensajePrincipal = 'Ocurrio un error inesperado al procesar la solicitud de acceso.';
+                const mensajeSecundario = 'Puede descargar el reporte tecnico y enviarlo al area de desarrollo.';
+                const detalleTecnico = `ErrorCode: SYS-LOGIN-001\n${err.message}\n${err.stack || 'Stack trace no disponible'}`;
+                MessageService.mostrar(3, titulo, mensajePrincipal, mensajeSecundario, detalleTecnico);
             }
         });
     </script>
+</body>
+
+</html>
+```
 </body>
 
 </html>
@@ -270,7 +349,7 @@ Empresa           : WALOOK MEXICO, S.A. de C.V.
 
 Autor             : Gabriel Amílcar Cruz Canto
 Matrícula         : ES1821003109
-Programa          : Licenciatura en Ingeniería en Desarrollo de Software
+Licenciatura en Ingeniería en Desarrollo de Software
 Unidad didáctica  : Proyecto Terminal I / Proyecto Terminal II
 Periodo académico : PT1 – PT2 (Agosto 2025 – Enero 2026)
 
@@ -304,6 +383,7 @@ a los módulos funcionales del ERP según los privilegios del usuario.
     <title>OPTICA ERP - Menú Principal</title>
     <!-- CSS CANÓNICO DEL SISTEMA -->
     <link rel="stylesheet" href="../assets/css/ui-base.css">
+    <link rel="stylesheet" href="../assets/css/message-styles.css">
     <!-- Iconos Material Symbols -->
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
@@ -389,9 +469,9 @@ a los módulos funcionales del ERP según los privilegios del usuario.
                     </button>
 
                     <!-- 2. INVENTARIO -->
-                    <button onclick="MenuService.navigate('inventario.html', 'Inventario')" class="menu-btn">
+                    <button onclick="MenuService.navigate('inventarios.html', 'Inventarios')" class="menu-btn">
                         <span class="material-symbols-outlined icon-lg">inventory_2</span>
-                        INVENTARIO
+                        INVENTARIOS
                     </button>
 
                     <!-- 3. AGENDA -->
@@ -465,6 +545,17 @@ a los módulos funcionales del ERP según los privilegios del usuario.
         </main>
 
         <style>
+            /* DINÁMICO: Semáforo de Módulos (DevIAn) */
+            .border-active {
+                border: 3px solid #10B981 !important;
+                box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15) !important;
+            }
+
+            .border-pending {
+                border: 3px solid #EF4444 !important;
+                box-shadow: 0 4px 12px rgba(239, 68, 68, 0.15) !important;
+            }
+
             .menu-btn {
                 background-color: #F3F4F6;
                 border: 1px solid #E5E7EB;
@@ -529,6 +620,7 @@ a los módulos funcionales del ERP según los privilegios del usuario.
 
             .special-blue:hover {
                 background-color: #162c4b !important;
+                box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
             }
 
             .special-gray {
@@ -578,6 +670,7 @@ a los módulos funcionales del ERP según los privilegios del usuario.
                 /* Mostrar boton salir en movil de otra forma si se oculta arriba */
             }
         </style>
+
     </div>
 
     <!-- Scripts -->
@@ -3228,9 +3321,13 @@ const LoginService = {
                 // Registro de errores para diagnóstico técnico
                 console.error(`[SYSTEM ERROR] Fallo en petición de Autenticación. Estado: ${response.status} ${response.statusText}`);
 
-                // Gestión de códigos de estado HTTP 401/403 (No Autorizado)
+                // Gestion de codigos de estado HTTP 401/403 (No Autorizado)
+                // RETORNAR objeto en lugar de lanzar excepcion
                 if (response.status === 401 || response.status === 403) {
-                    throw new Error("Usuario o contraseña incorrectos.");
+                    return {
+                        success: false,
+                        message: "Usuario o contraseña incorrectos."
+                    };
                 }
 
                 // Intentar leer mensaje del backend otros errores
@@ -4506,6 +4603,107 @@ document.addEventListener('DOMContentLoaded', () => {
 
 ## ☕ BACKEND (JAVA)
 
+### ⚙️ CONFIGURATIONS
+
+### 📄 omcgc/backend/src/main/java/com/omcgc/erp/config/SecurityConfiguration.java
+
+```java
+/*
+============================================================
+Nombre del archivo : SecurityConfiguration.java
+Ruta              : omcgc/backend/src/config/SecurityConfiguration.java
+Tipo              : Backend (Configuración de Seguridad)
+
+Proyecto          : Sistema ERP en la nube para gestión de ópticas OMCGC
+Empresa           : WALOOK MEXICO, S.A. de C.V.
+
+Autor             : Gabriel Amílcar Cruz Canto
+Matrícula         : ES1821003109
+Programa          : Licenciatura en Ingeniería en Desarrollo de Software
+Unidad didáctica  : Proyecto Terminal I / Proyecto Terminal II
+Periodo académico : PT1 – PT2 (Agosto 2025 – Enero 2026)
+
+Versión           : v1.1
+
+Propósito:
+Definir la cadena de filtros de seguridad (Security Filter Chain) para el manejo
+de autorizaciones HTTP, CORS y protección CSRF.
+
+Trazabilidad y Mapeo Funcional:
+------------------------------------------------------------
+1. RNF-02 (Seguridad de Acceso):
+   - Configuración de CORS permitiendo orígenes cruzados para desarrollo.
+   - Exposición pública de endpoints de autenticación (/api/auth/**).
+   - Bloqueo por defecto de cualquier otro recurso no autenticado.
+============================================================
+*/
+package com.omcgc.erp.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.Arrays;
+import java.util.List;
+
+@Configuration
+@EnableWebSecurity
+public class SecurityConfiguration {
+
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http
+                // --- CONFIGURACIÓN DE CORS (RNF-02) ---
+                // Permite la comunicación cruzada necesaria entre el frontend (file:// o localhost)
+                // y el backend, validando orígenes y métodos permitidos.
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+
+                // --- PROTECCIÓN CSRF ---
+                // Desactivada debido a la naturaleza stateless de la API REST que utiliza JWT/Token.
+                .csrf(csrf -> csrf.disable())
+
+                // --- CABECERAS DE SEGURIDAD Y CSP (RNF-05 / SEGURIDAD DINÁMICA) ---
+                // Implementación de Content Security Policy para mitigar ataques XSS y Clickjacking.
+                // Define una 'Lista Blanca' de orígenes permitidos para scripts, estilos y fuentes.
+                .headers(headers -> headers
+                        .contentSecurityPolicy(csp -> csp
+                                .policyDirectives("default-src 'self'; " +
+                                        "script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; " +
+                                        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; " +
+                                        "font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; " +
+                                        "img-src 'self' data:; " +
+                                        "connect-src 'self' http://localhost:9090 http://69.6.242.217:9090 https://api-vps.graxsoft.com;")))
+
+                // --- CONTROL DE ACCESO (HU-M01-01) ---
+                // Configura la visibilidad de los endpoints. En esta etapa se permite acceso total
+                // para pruebas de integración, sujeto a endurecimiento en Etapas 3 y 4.
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/api/**").permitAll()
+                        .anyRequest().permitAll());
+        return http.build();
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        // Allow ALL origins (file://, localhost, etc)
+        configuration.setAllowedOriginPatterns(List.of("*"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD"));
+        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "X-Requested-With"));
+        configuration.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
+}
+```
+
 ### 📦 CONTROLLERS
 
 ### 📄 omcgc/backend/src/main/java/com/omcgc/erp/controller/InventarioController.java
@@ -4611,10 +4809,13 @@ public class InventarioController {
 }
 ```
 
----
-
 ### 📄 omcgc/backend/src/main/java/com/omcgc/erp/controller/AuthController.java
-Ruta              : omcgc/backend/src/main/java/com/omcgc/erp/controller/AuthController.java
+
+```java
+/*
+============================================================
+Nombre del archivo : AuthController.java
+Ruta              : omcgc/backend/src/controller/AuthController.java
 Tipo              : Backend (Controlador REST)
 
 Proyecto          : Sistema ERP en la nube para gestión de ópticas OMCGC
@@ -4626,7 +4827,7 @@ Programa          : Licenciatura en Ingeniería en Desarrollo de Software
 Unidad didáctica  : Proyecto Terminal I / Proyecto Terminal II
 Periodo académico : PT1 – PT2 (Agosto 2025 – Enero 2026)
 
-Versión           : v1.1
+Versión           : v3.2
 
 Propósito:
 Exponer los endpoints REST públicos para la gestión de sesiones de usuario (Login).
@@ -4644,11 +4845,15 @@ package com.omcgc.erp.controller;
 
 import com.omcgc.erp.model.Usuario;
 import com.omcgc.erp.service.AuthService;
+import com.omcgc.erp.service.BitacoraService;
+import com.omcgc.erp.service.UsuarioService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -4659,25 +4864,71 @@ public class AuthController {
     @Autowired
     private AuthService authService;
 
+    @Autowired
+    private UsuarioService usuarioService;
+
+    @Autowired
+    private BitacoraService bitacoraService;
+
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody Map<String, String> credentials) {
+    public ResponseEntity<?> login(@RequestBody Map<String, String> credentials, HttpServletRequest request) {
         String email = credentials.get("email");
         String password = credentials.get("password");
+        String ip = request.getRemoteAddr();
 
         try {
             Usuario usuario = authService.login(email, password);
-            // Returns joined Role into the response
+
+            // REGISTRO DE EVENTO: LOGIN EXITOSO (PATRON MAESTRO CIFRADO)
+            bitacoraService.registrarEvento(usuario.getIdUsuario(), "AUTH-01", ip, null, null);
+
+            // Obtener permisos del usuario
+            List<Map<String, Object>> permisos = usuarioService.getPermissionsByUsuario(usuario.getIdUsuario());
+
+            // Returns user data + permissions
             return ResponseEntity.ok(Map.of(
                     "success", true,
                     "message", "Login exitoso",
                     "userId", usuario.getIdUsuario(),
                     "rolId", usuario.getIdRol() != null ? usuario.getIdRol() : "",
                     "nombreRol", usuario.getNombreRol() != null ? usuario.getNombreRol() : "",
-                    "nombre", usuario.getNombre()));
+                    "nombre", usuario.getNombre(),
+                    "idSucursal", usuario.getIdSucursal() != null ? usuario.getIdSucursal() : "",
+                    "permisos", permisos));
         } catch (RuntimeException e) {
+            String errorMsg = e.getMessage();
+
+            // Verificar si es un error de infraestructura (BD, conexion, etc.)
+            if (errorMsg != null && (errorMsg.contains("Connection") ||
+                    errorMsg.contains("database") ||
+                    errorMsg.contains("SQLException") ||
+                    errorMsg.contains("Communications link failure") ||
+                    errorMsg.contains("Unable to acquire JDBC Connection"))) {
+
+                // REGISTRO DE EVENTO: FALLO CRITICO DE DB (PATRON MAESTRO CIFRADO)
+                bitacoraService.registrarEvento(null, "SYS-01", ip, "Error de infraestructura SQL", errorMsg);
+
+                // Error de sistema (500)
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
+                        "success", false,
+                        "message",
+                        "Error de conexion con la base de datos. Verifique que el servidor MySQL este activo.",
+                        "errorCode", "SYS-DB-001"));
+            }
+
+            // REGISTRO DE EVENTO: FALLO DE CREDENCIALES (PATRON MAESTRO CIFRADO)
+            bitacoraService.registrarEvento(null, "AUTH-02", ip, "Intento: " + email, errorMsg);
+
+            // Error de autenticacion (401)
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of(
                     "success", false,
                     "message", e.getMessage()));
+        } catch (Exception e) {
+            // Cualquier otra excepcion no controlada (500)
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
+                    "success", false,
+                    "message", "Error inesperado del servidor: " + e.getMessage(),
+                    "errorCode", "SYS-GEN-001"));
         }
     }
 }
@@ -4701,7 +4952,7 @@ Programa          : Licenciatura en Ingeniería en Desarrollo de Software
 Unidad didáctica  : Proyecto Terminal I / Proyecto Terminal II
 Periodo académico : PT1 – PT2 (Agosto 2025 – Enero 2026)
 
-Versión           : v1.0
+Versión           : v3.2
 
 Propósito:
 Controlador REST para la gestión completa de usuarios (CRUD), incluyendo
@@ -4853,7 +5104,6 @@ public class UsuarioController {
 
     /**
      * Filtrar usuarios por rol
-     * GET /api/usuarios/rol/{rolId}
      */
     @GetMapping("/rol/{rolId}")
     public ResponseEntity<List<Usuario>> getUsuariosByRol(@PathVariable String rolId) {
@@ -4966,7 +5216,7 @@ Proyecto          : Sistema ERP en la nube para gestión de ópticas OMCGC
 Empresa           : WALOOK MEXICO, S.A. de C.V.
 
 Autor             : Gabriel Amílcar Cruz Canto
-Versión           : v1.0
+Versión           : v3.2
 
 Propósito:
 Exponer endpoints protegidos para la gestión de la configuración SMTP.
@@ -5077,7 +5327,7 @@ Programa          : Licenciatura en Ingeniería en Desarrollo de Software
 Unidad didáctica  : Proyecto Terminal I / Proyecto Terminal II
 Periodo académico : PT1 – PT2 (Agosto 2025 – Enero 2026)
 
-Versión           : v1.1
+Versión           : v3.2
 
 Propósito:
 Encapsular la lógica de negocio de autenticación y autorización, sirviendo como
@@ -5167,13 +5417,17 @@ public class AuthService {
         // Check DB Status using Service
         String dbStatus = dbHealthService.isConnected() ? "CONECTADO" : "DESCONECTADO";
 
+        // UUID fijo — alineado con datos semilla en 02_create_tables_usuarios.sql
+        // NOTA: Eliminar este método completo al pasar a producción.
         Usuario superAdmin = new Usuario();
         superAdmin.setIdUsuario("00000000-0000-0000-0000-000000000000");
         superAdmin.setNombre("SUPER ADMIN (DEBUG) - DB: " + dbStatus);
         superAdmin.setEmail("root");
         superAdmin.setActivo(true);
-        superAdmin.setIdRol("11111111-1111-1111-1111-111111111111");
+        superAdmin.setIdRol("ROL-001"); // Alineado con seed: rol Administrador
         superAdmin.setNombreRol("ADMIN");
+        // Sucursal por defecto: Sucursal Centro (UUID fijo alineado con seed_cpanel_clean.sql)
+        superAdmin.setIdSucursal("SUC-00000000-0000-0000-0000-000000000001");
         return superAdmin;
     }
 }
@@ -7517,7 +7771,7 @@ Empresa           : WALOOK MEXICO, S.A. de C.V.
 
 Autor             : Gabriel Amílcar Cruz Canto
 Matrícula         : ES1821003109
-Programa          : Licenciatura en Ingeniería en Desarrollo de Software
+Licenciatura en Ingeniería en Desarrollo de Software
 Unidad didáctica  : Proyecto Terminal I / Proyecto Terminal II
 Periodo académico : PT1 – PT2 (Agosto 2025 – Enero 2026)
 
@@ -7593,26 +7847,11 @@ public class InventarioRepository {
             p.setFechaModificacion(rs.getTimestamp("fecha_modificacion").toLocalDateTime());
         }
 
-        try {
-            p.setNombreGrupo(rs.getString("nombre_grupo"));
-        } catch (Exception e) {
-        }
-        try {
-            p.setNombreFamilia(rs.getString("nombre_familia"));
-        } catch (Exception e) {
-        }
-        try {
-            p.setNombreMarca(rs.getString("nombre_marca"));
-        } catch (Exception e) {
-        }
-        try {
-            p.setNombreProveedor(rs.getString("nombre_proveedor"));
-        } catch (Exception e) {
-        }
-        try {
-            p.setExistenciaActual(rs.getInt("existencia_actual"));
-        } catch (Exception e) {
-        }
+        try { p.setNombreGrupo(rs.getString("nombre_grupo")); } catch (Exception e) {}
+        try { p.setNombreFamilia(rs.getString("nombre_familia")); } catch (Exception e) {}
+        try { p.setNombreMarca(rs.getString("nombre_marca")); } catch (Exception e) {}
+        try { p.setNombreProveedor(rs.getString("nombre_proveedor")); } catch (Exception e) {}
+        try { p.setExistenciaActual(rs.getInt("existencia_actual")); } catch (Exception e) {}
 
         return p;
     };
@@ -7639,18 +7878,9 @@ public class InventarioRepository {
         m.setFecha(rs.getTimestamp("fecha").toLocalDateTime());
         m.setObservaciones(rs.getString("observaciones"));
 
-        try {
-            m.setNombreProducto(rs.getString("nombre_producto"));
-        } catch (Exception e) {
-        }
-        try {
-            m.setSkuProducto(rs.getString("sku_producto"));
-        } catch (Exception e) {
-        }
-        try {
-            m.setNombreUsuario(rs.getString("nombre_usuario"));
-        } catch (Exception e) {
-        }
+        try { m.setNombreProducto(rs.getString("nombre_producto")); } catch (Exception e) {}
+        try { m.setSkuProducto(rs.getString("sku_producto")); } catch (Exception e) {}
+        try { m.setNombreUsuario(rs.getString("nombre_usuario")); } catch (Exception e) {}
 
         return m;
     };
@@ -7753,6 +7983,7 @@ public class InventarioRepository {
                     tipo_movimiento = VALUES(tipo_movimiento),
                     observaciones = VALUES(observaciones),
                     costo_historico = VALUES(costo_historico),
+                    origen_id = VALUES(origen_id),
                     existencia_anterior = VALUES(existencia_anterior),
                     existencia_actual = VALUES(existencia_actual),
                     fecha = NOW()
@@ -7784,9 +8015,30 @@ public class InventarioRepository {
      * Basado en la vista v_stock_actual.
      */
     public Integer getCurrentStock(String idProducto, String idSucursal) {
-        String vr_sql = "SELECT existencia_operativa FROM v_stock_actual WHERE id_producto = ? AND id_sucursal = ?";
+        String vr_sql = "SELECT cantidad FROM existencia WHERE id_producto = ? AND id_sucursal = ?";
         try {
-            return jdbcTemplate.queryForObject(vr_sql, Integer.class, idProducto, idSucursal);
+            Integer stock = jdbcTemplate.queryForObject(vr_sql, Integer.class, idProducto, idSucursal);
+            if (stock != null && stock == 0) {
+                return getActualKardexSum(idProducto, idSucursal);
+            }
+            return (stock != null) ? stock : 0;
+        } catch (Exception e) {
+            return getActualKardexSum(idProducto, idSucursal);
+        }
+    }
+
+    private Integer getActualKardexSum(String idProducto, String idSucursal) {
+        String sql = """
+                SELECT COALESCE(SUM(CASE
+                    WHEN tipo_movimiento IN ('ENTRADA_COMPRA', 'DEVOLUCION_CLIENTE') THEN cantidad
+                    WHEN tipo_movimiento IN ('SALIDA_VENTA', 'DEVOLUCION_PROVEEDOR', 'MERMA') THEN -cantidad
+                    WHEN tipo_movimiento = 'AJUSTE' THEN cantidad
+                    ELSE 0 END), 0)
+                FROM movimiento_inventario
+                WHERE id_producto = ? AND id_sucursal = ?
+                """;
+        try {
+            return jdbcTemplate.queryForObject(sql, Integer.class, idProducto, idSucursal);
         } catch (Exception e) {
             return 0;
         }
@@ -8427,10 +8679,22 @@ public class BitacoraService {
 
 #### 📄 omcgc/backend/src/main/java/com/omcgc/erp/service/AuditPatternService.java
 ```java
+/*
+============================================================
+Nombre del archivo : AuditPatternService.java
+Ruta              : backend/src/main/java/com/omcgc/erp/service/AuditPatternService.java
+Tipo              : Backend (Service / Security)
+
+Propósito:
+Gestionar el diccionario cifrado de patrones de auditoría (.dat).
+Maneja el cifrado AES-256 de la Matriz Maestra en formato binario.
+============================================================
+*/
 package com.omcgc.erp.service;
 
 import com.omcgc.erp.model.LogPattern;
 import org.springframework.stereotype.Service;
+
 import jakarta.annotation.PostConstruct;
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
@@ -8442,43 +8706,179 @@ import java.util.*;
 
 @Service
 public class AuditPatternService {
-    private static final String MASTER_KEY = "W4L00K_4UD1T_SYST3M_S3CUR1TY_2026";
-    private static final String FILE_PATH = "src/main/resources/security/audit_dictionary.dat";
+
+    private static final String MASTER_KEY = "W4L00K_4UD1T_SYST3M_S3CUR1TY_2026"; // Diferente a la de logs por seguridad
+    private static final String FILE_PATH = "audit_dictionary.dat";
     private Map<String, LogPattern> patterns = new HashMap<>();
 
     @PostConstruct
     public void init() {
         try {
-            if (!new File(FILE_PATH).exists()) generateInitialDictionary();
+            // [SEGURO V5.2] Generar en raíz de ejecución para evitar bloqueos
+            generateInitialDictionary();
             loadDictionary();
         } catch (Exception e) {
-            System.err.println("Error init dicc: " + e.getMessage());
+            System.err.println("[CRITICAL] Error al inicializar diccionario de auditoría: " + e.getMessage());
         }
-    }
-
-    public String buildLog(String id, String paramX, String paramS) {
-        LogPattern lp = patterns.get(id);
-        if (lp == null) return "Unknown Event | " + id;
-        String tec = lp.getAnalisisTecnico();
-        if (paramX != null) tec = tec.replace("{M}", paramX).replace("{T}", paramX);
-        if (paramS != null) tec = tec.replace("{S}", paramS).replace("{E}", paramS);
-        return String.format("%s | [%s] | %s | %s | %s", lp.getImpacto(), lp.getCategoria(), lp.getMensajeAmigable(), tec, lp.getId());
-    }
-
-    private void loadDictionary() throws Exception {
-        byte[] enc = Files.readAllBytes(Paths.get(FILE_PATH));
-        Cipher c = Cipher.getInstance("AES/ECB/PKCS5Padding");
-        c.init(Cipher.DECRYPT_MODE, generateKey());
-        byte[] dec = c.doFinal(enc);
-        ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(dec));
-        List<LogPattern> list = (List<LogPattern>) ois.readObject();
-        list.forEach(p -> patterns.put(p.getId(), p));
     }
 
     private SecretKeySpec generateKey() throws Exception {
         byte[] key = MASTER_KEY.getBytes("UTF-8");
         MessageDigest sha = MessageDigest.getInstance("SHA-256");
-        return new SecretKeySpec(Arrays.copyOf(sha.digest(key), 16), "AES");
+        key = sha.digest(key);
+        key = Arrays.copyOf(key, 16); // Usar 128 bits para compatibilidad estándar
+        return new SecretKeySpec(key, "AES");
+    }
+
+    /**
+     * Genera el diccionario inicial cifrado en binario (.dat)
+     */
+    public void generateInitialDictionary() throws Exception {
+        List<LogPattern> list = new ArrayList<>();
+
+        // --- SEGURIDAD (AUTH) ---
+        list.add(new LogPattern("AUTH-01", "CORRECTO", "AUTH", "Acceso concedido al sistema.",
+                "SUCESO: Login (Inicio de sesión) | ESTADO: Identidad Verificada | SESIÓN: Nueva_JWT"));
+        list.add(new LogPattern("AUTH-02", "ERROR", "AUTH", "Credenciales inválidas.",
+                "SUCESO: Validación de identidad | ERROR: Contraseña incorrecta o usuario inexistente"));
+        list.add(new LogPattern("AUTH-03", "ALERTA", "AUTH", "Cuenta desactivada por administración.",
+                "SUCESO: Regla de acceso | ESTADO: Usuario Inactivo"));
+        list.add(new LogPattern("AUTH-05", "AVISO", "AUTH", "La sesión ha finalizado por seguridad.",
+                "SUCESO: Vencimiento de Token | MOTIVO: Inactividad prolongada"));
+
+        // --- CRUD UNIVERSAL (DATA) ---
+        list.add(new LogPattern("CRUD-01", "CORRECTO", "DATA", "Alta de registro exitosa.",
+                "MÓDULO: {M} | REGISTRO: {E} | ACCIÓN: ALTA | REF: {S}"));
+        list.add(new LogPattern("CRUD-02", "AVISO", "DATA", "Información actualizada satisfactoriamente.",
+                "MÓDULO: {M} | REGISTRO: {E} | ACCIÓN: CAMBIO | DETALLE: {S}"));
+        list.add(new LogPattern("CRUD-03", "AVISO", "DATA", "Cambio de estatus aplicado.",
+                "MÓDULO: {M} | REGISTRO: {E} | ACCIÓN: ESTADO | FLUJO: {S}"));
+        list.add(new LogPattern("CRUD-04", "ERROR", "DATA", "Datos incorrectos en el formulario.",
+                "MÓDULO: {M} | ACCIÓN: VALIDACIÓN | CAMPO: {X} | ERROR: Formato no válido"));
+        list.add(new LogPattern("CRUD-05", "ERROR", "DATA", "El registro ya existe en el sistema.",
+                "MÓDULO: {M} | ACCIÓN: DUPLICADO | CLAVE: {X} | ERROR: Llave duplicada"));
+
+        // --- USUARIOS Y ADMIN (USR/ADM) ---
+        list.add(new LogPattern("USR-30", "CORRECTO", "USER", "Nueva clave enviada por correo.",
+                "SUCESO: Restablecimiento de clave | DESTINO: {X} | JUSTIFICACIÓN: {S}"));
+        list.add(new LogPattern("ADM-01", "AVISO", "ADMIN", "Privilegios del rol actualizados.",
+                "SUCESO: Actualización de permisos | IMPACTO: Acceso Global"));
+
+        // --- INVENTARIOS (INV) ---
+        list.add(new LogPattern("INV-01", "CORRECTO", "INV", "Movimiento de inventario registrado.",
+                "{S}"));
+
+        // --- PRODUCTOS (PRO) ---
+        list.add(new LogPattern("PRO-01", "CORRECTO", "PRODUCT", "Nuevo producto registrado en catálogo.",
+                "SKU: {X} | NOMBRE: {S} | ACCIÓN: ALTA"));
+        list.add(new LogPattern("PRO-02", "AVISO", "PRODUCT", "Ficha técnica de producto modificada.",
+                "SKU: {X} | NOMBRE: {S} | ACCIÓN: EDICIÓN"));
+
+        // --- CLIENTES (CLI) ---
+        list.add(new LogPattern("CLI-01", "CORRECTO", "CLIENT", "Nuevo cliente registrado.",
+                "RFC: {X} | NOMBRE: {S} | ACCIÓN: ALTA"));
+        list.add(new LogPattern("CLI-02", "AVISO", "CLIENT", "Información de cliente actualizada.",
+                "RFC: {X} | NOMBRE: {S} | ACCIÓN: EDICIÓN"));
+
+        // --- PROVEEDORES (PRV) ---
+        list.add(new LogPattern("PRV-01", "CORRECTO", "VENDOR", "Nuevo proveedor registrado.",
+                "RFC: {X} | NOMBRE: {S} | ACCIÓN: ALTA"));
+        list.add(new LogPattern("PRV-02", "AVISO", "VENDOR", "Información de proveedor actualizada.",
+                "RFC: {X} | NOMBRE: {S} | ACCIÓN: EDICIÓN"));
+
+        // --- FINANZAS Y CFDI (FIN) ---
+        list.add(new LogPattern("FIN-01", "CORRECTO", "FIN", "Factura generada y timbrada correctamente.",
+                "SUCESO: Timbrado XML | PROVEEDOR: {P} | SAT: 200_OK | UUID: {U}"));
+        list.add(new LogPattern("FIN-02", "AVISO", "FIN", "Factura cancelada ante el SAT.",
+                "SUCESO: Anulación fiscal | CÓDIGO: {C} | ESTADO: Cancelado en SAT"));
+        list.add(new LogPattern("FIN-03", "CORRECTO", "FIN", "Transacción financiera completada.",
+                "SUCESO: Registro de ingreso | MÉTODO: {M} | MONTO: {$$}"));
+
+        // --- SISTEMA Y SEGURIDAD (SYS/SEC) ---
+        list.add(new LogPattern("SYS-01", "ALERTA", "SYSTEM", "Error de conexión con el servidor.",
+                "SUCESO: Fallo de BD | ERROR: Tiempo agotado o conexión rechazada"));
+        list.add(new LogPattern("SYS-02", "ALERTA", "SYSTEM", "El servicio externo no responde.",
+                "SUCESO: Petición HTTP | DESTINO: {SAT/PAC} | ERROR: Tiempo agotado"));
+        list.add(new LogPattern("SYS-99", "ALERTA", "SYSTEM", "Error interno del sistema.",
+                "SUCESO: Excepción Global | TIPO: {E} | CLASE: {C}"));
+        list.add(new LogPattern("SEC-01", "ALERTA", "SECURITY", "Intento de acción no autorizada.",
+                "SUCESO: Bloqueo de seguridad | AMENAZA: Violación de acceso"));
+
+        // Serializar a Bytes
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        ObjectOutputStream oos = new ObjectOutputStream(bos);
+        oos.writeObject(list);
+        byte[] bytes = bos.toByteArray();
+
+        // Cifrar Bytes
+        Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+        cipher.init(Cipher.ENCRYPT_MODE, generateKey());
+        byte[] encryptedBytes = cipher.doFinal(bytes);
+
+        // Guardar a archivo binario
+        try (FileOutputStream fos = new FileOutputStream(FILE_PATH)) {
+            fos.write(encryptedBytes);
+        }
+        System.out.println("[AUDIT] Diccionario binario cifrado generado en: " + FILE_PATH);
+    }
+
+    /**
+     * Carga el diccionario desde el archivo binario (.dat) y lo descifra en memoria
+     */
+    @SuppressWarnings("unchecked")
+    private void loadDictionary() throws Exception {
+        byte[] encryptedBytes = Files.readAllBytes(Paths.get(FILE_PATH));
+
+        // Descifrar
+        Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+        cipher.init(Cipher.DECRYPT_MODE, generateKey());
+        byte[] decryptedBytes = cipher.doFinal(encryptedBytes);
+
+        // Deserializar
+        ByteArrayInputStream bis = new ByteArrayInputStream(decryptedBytes);
+        ObjectInputStream ois = new ObjectInputStream(bis);
+        List<LogPattern> list = (List<LogPattern>) ois.readObject();
+
+        patterns.clear();
+        for (LogPattern lp : list) {
+            patterns.put(lp.getId(), lp);
+        }
+    }
+
+    public LogPattern getPattern(String id) {
+        return patterns.get(id);
+    }
+
+    /**
+     * Construye un log completo basado en un patrón y datos dinámicos
+     */
+    public String buildLog(String id, String paramX, String paramS) {
+        LogPattern lp = getPattern(id);
+        if (lp == null)
+            return "Unknown Event | ID: " + id;
+
+        String tec = lp.getAnalisisTecnico();
+        // Mapeo flexible de placeholders según la Matriz Maestra
+        if (paramX != null) {
+            tec = tec.replace("{X}", paramX)
+                   .replace("{T}", paramX)
+                   .replace("{M}", paramX) // Soporte para Módulo
+                   .replace("{P}", paramX)
+                   .replace("{f}", paramX)
+                   .replace("{K}", paramX)
+                   .replace("{qty_A -> qty_B}", paramX);
+        }
+        if (paramS != null) {
+            tec = tec.replace("{S}", paramS)
+                   .replace("{id}", paramS)
+                   .replace("{D}", paramS)
+                   .replace("{E}", paramS) // Soporte para Entidad
+                   .replace("{U}", paramS)
+                   .replace("{R}", paramS);
+        }
+
+        return String.format("%s | [%s] | %s | %s | %s",
+                lp.getImpacto(), lp.getCategoria(), lp.getMensajeAmigable(), tec, lp.getId());
     }
 }
 ```

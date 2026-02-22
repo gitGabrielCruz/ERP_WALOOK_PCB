@@ -2,8 +2,8 @@
 **PROYECTO:** Sistema Web ERP en la nube - OMCGC  
 **EMPRESA:** WALOOK MÉXICO, S.A. de C.V.  
 **DOCUMENTO:** ETAPA 1 - Módulo Login  
-**VERSIÓN:** 1.0  
-**FECHA:** 04 de febrero de 2026  
+**VERSIÓN:** 1.1 (Sincronizada con Código v3.2)  
+**FECHA:** 22 de febrero de 2026  
 **AUTOR:** Ing. Gabriel Amilcar Cruz Canto  
 
 ---
@@ -64,6 +64,7 @@
 - `id_usuario`
 - `email`
 - `password_hash`
+- `id_sucursal` (UUID - RFC-01: Gestión de origen)
 - `activo`
 
 #### 1.6 Estándares Visuales (Login - Patrón WALOOK)
@@ -176,16 +177,18 @@ GET    /api/auth/session        # Validar sesión activa
 #### Criterios de Aceptación
 
 - [x] El usuario puede iniciar sesión con email y contraseña
+- [x] El sistema valida la sucursal del usuario (idSucursal)
+- [x] El sistema utiliza `MessageService` para feedback dinámico (9 tipos)
 - [x] El sistema valida que el usuario esté activo
 - [x] El sistema crea una sesión persistente
 - [x] El sistema redirige al menú principal según el rol
 - [x] El usuario puede cerrar sesión
 - [x] El usuario puede recuperar su contraseña
-- [x] Las credenciales inválidas muestran mensaje de error
+- [x] Las credenciales inválidas muestran mensaje de error modal
 - [x] La contraseña se almacena como hash (nunca en texto plano)
 
 ---
 
-**Última actualización:** 04 de febrero de 2026, 03:26 AM  
-**Estado:** Documentación completa  
+**Última actualización:** 22 de febrero de 2026, 02:55 PM  
+**Estado:** Sincronizado con v3.2 ✅  
 **Código fuente:** Ver `ETAPA 1 - CODIGO_FUENTE.md`
