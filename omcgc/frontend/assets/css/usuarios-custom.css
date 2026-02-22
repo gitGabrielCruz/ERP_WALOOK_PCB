@@ -1,0 +1,51 @@
+/* Estilos específicos para Módulo Usuarios y correcciones Visuales */
+
+/* ESTRATEGIA CEBRA (Striped Rows) - Homologación con Clientes */
+#usuariosTableBody tr:nth-child(even) {
+    background-color: #f8fafc;
+    /* Slate 50 */
+}
+
+/* Hover interactivo */
+#usuariosTableBody tr:hover {
+    background-color: #f1f5f9;
+    /* Slate 100 */
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+/* Indicadores de Estatus (Asegurar mismo estilo que Clientes) */
+.status-indicator {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 6px;
+    vertical-align: middle;
+}
+
+.status-indicator.activo {
+    background-color: #10B981;
+    /* Verde Emerald 500 */
+    box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
+}
+
+.status-indicator.inactivo {
+    background-color: #EF4444;
+    /* Rojo Red 500 */
+    box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2);
+}
+
+/* Estilos para campos deshabilitados (Feedback Visual) */
+.input-base:disabled,
+select.input-base:disabled,
+input:disabled {
+    background-color: #F3F4F6 !important;
+    /* Slate 100 */
+    color: #6B7280 !important;
+    /* Slate 500 */
+    cursor: not-allowed;
+    border-color: #E5E7EB !important;
+    opacity: 1;
+    /* Fix para iOS */
+}

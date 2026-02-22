@@ -1,0 +1,22 @@
+# ============================================================
+# .htaccess - Redirección HTTPS + Ruta de Entrada
+# Ruta destino: cPanel → public_html/.htaccess (RAÍZ)
+# Proyecto: Sistema ERP en la nube - OMCGC
+# Propósito:
+#   1. Forzar HTTPS en todas las peticiones.
+#   2. Redirigir la raíz del dominio al módulo de Login.
+# Autor: Ing. Gabriel Amílcar Cruz Canto
+# Versión: 1.0
+# Fecha: 19 de Febrero de 2026
+# ============================================================
+
+RewriteEngine On
+
+# --- REGLA 1: Forzar HTTPS (301 Permanente) ---
+# Si la petición NO viene por HTTPS, redirige al mismo recurso con HTTPS.
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# --- REGLA 2: Redirigir raíz al Login (302 Temporal) ---
+# Si se accede a la raíz del dominio (sin ruta), enviar al login.
+RewriteRule ^$ /frontend/pages/login.html [L,R=302]

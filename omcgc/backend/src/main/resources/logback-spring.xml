@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+============================================================
+Nombre del archivo : logback-spring.xml
+Ruta              : omcgc/backend/src/main/resources/logback-spring.xml
+Tipo              : Configuración de Logging (XML)
+
+Proyecto          : Sistema ERP en la nube para gestión de ópticas OMCGC
+Empresa           : WALOOK MEXICO, S.A. de C.V.
+
+Autor             : Gabriel Amílcar Cruz Canto
+Matrícula         : ES1821003109
+Programa          : Licenciatura en Ingeniería en Desarrollo de Software
+Unidad didáctica  : Proyecto Terminal I / Proyecto Terminal II
+Periodo académico : PT1 – PT2 (Agosto 2025 – Enero 2026)
+
+Versión           : v1.1
+
+Propósito:
+Definir la política de logs jerárquica, separando flujos de auditoría de seguridad,
+operaciones de base de datos y traza del sistema en archivos rotativos distintos.
+
+Trazabilidad y Mapeo Funcional:
+............................................................
+1. RNF-05 (Auditoría y Diagnóstico):
+   - Appender 'AuthFile': Auditoría de seguridad (/auth/security.log).
+   - Appender 'DbFile': Monitorización de infraestructura (/db/database.log).
+   - Appender 'SystemFile': Logs generales del aplicativo (/system/system.log).
+============================================================
+-->
+<configuration>
+
+    <!-- Propiedades -->
+    <property name="LOGS" value="./logs" />
+
+    <!-- 1. Appender para Consola (Colorido para desarrollo) -->
+    <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <Pattern>
+                %d{ISO8601} %highlight(%-5level) [%blue(%t)] %yellow(%logger{36}): %msg%n%throwable
+            </Pattern>
+        </layout>
+    </appender>
+
+    <!-- 2. Appender: SYSTEM (General) -->
+    <appender name="SystemFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOGS}/system/system.log</file>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <Pattern>%d %p %logger{36} [%t] %m%n</Pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOGS}/system/archived/system-%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+    </appender>
+
+    <!-- 3. Appender: AUTH (Seguridad) -->
+    <appender name="AuthFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOGS}/auth/security.log</file>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <Pattern>%d{yyyy-MM-dd HH:mm:ss} [%-5level] %msg%n</Pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOGS}/auth/archived/security-%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+    </appender>
+
+    <!-- 4. Appender: DATABASE (Conexión) -->
+    <appender name="DbFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOGS}/db/database.log</file>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <Pattern>%d{yyyy-MM-dd HH:mm:ss} [%-5level] %msg%n</Pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOGS}/db/archived/database-%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+    </appender>
+
+    <!-- LOGGERS ESPECÍFICOS (Ruteo de mensajes) -->
+
+    <!-- Ruteo para Auth Service y Security -->
+    <logger name="com.omcgc.erp.service.AuthService" level="DEBUG" additivity="false">
+        <appender-ref ref="AuthFile" />
+        <appender-ref ref="Console" />
+    </logger>
+    
+    <!-- Asegurar que el paquete 'service' (donde quedó HealthService) también loguee -->
+    <logger name="service" level="DEBUG" additivity="false">
+        <appender-ref ref="DbFile" />
+        <appender-ref ref="Console" />
+    </logger>
+
+    <!-- Ruteo para Database Health Check -->
+    <logger name="com.omcgc.erp.service.DatabaseHealthService" level="DEBUG" additivity="false">
+        <appender-ref ref="DbFile" />
+        <appender-ref ref="Console" />
+    </logger>
+    
+    <!-- Mensajes marcados explícitamente con prefijos -->
+    <!-- (Logback no filtra por contenido fácilmente, así que usamos paquetes/clases) -->
+
+    <!-- RAÍZ (Todo lo demás va a System) -->
+    <root level="INFO">
+        <appender-ref ref="SystemFile" />
+        <appender-ref ref="Console" />
+    </root>
+
+</configuration>

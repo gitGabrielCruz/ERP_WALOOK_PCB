@@ -1,0 +1,412 @@
+<!--
+============================================================
+Nombre del archivo : clientes.html
+Ruta              : omcgc/frontend/pages/clientes.html
+Tipo              : Frontend (HTML5)
+
+Proyecto          : Sistema ERP en la nube para gestión de ópticas OMCGC
+Empresa           : WALOOK MEXICO, S.A. de C.V.
+
+Propósito:
+Interfaz gráfica para la Gestión Integral de Clientes (Pacientes).
+Incluye CRUD completo, datos fiscales y validaciones.
+
+Trazabilidad:
+- HU-M06-01: Registrar cliente
+- HU-M06-02: Consultar cliente
+- HU-M06-03: Editar cliente
+- HU-M06-06: Datos fiscales
+============================================================
+-->
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OPTICA ERP - Catálogo de Clientes</title>
+    <!-- CSS CANÓNICO DEL SISTEMA -->
+    <link rel="stylesheet" href="../assets/css/ui-base.css">
+    <link rel="stylesheet" href="../assets/css/clientes-responsive.css">
+    <link rel="stylesheet" href="../assets/css/message-styles.css">
+    <!-- Iconos Material Symbols -->
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
+    <style>
+        /* 1. Zebra Striping (Base) */
+        #clientesTableBody tr:nth-child(even) td {
+            background-color: #f9fafb;
+            /* Gris suave */
+        }
+
+        #clientesTableBody tr:nth-child(odd) td {
+            background-color: #ffffff;
+            /* Blanco */
+        }
+
+        /* 2. Hover Sutil (Sobrepone Zebra) */
+        #clientesTableBody tr:hover td {
+            background-color: #e0f2fe !important;
+            cursor: pointer;
+            transition: background-color 0.1s ease;
+        }
+
+        /* 3. Fila Seleccionada (Activa Permanentemente - Gana a todo) */
+        #clientesTableBody tr.selected-row td {
+            background-color: #bae6fd !important;
+            /* Azul distinto */
+            font-weight: 500;
+
+            /* TRUCO VISUAL: Expande el color a los lados para tapar los huecos verticales */
+            box-shadow: 5px 0 0 #bae6fd, -5px 0 0 #bae6fd;
+            position: relative;
+            /* Necesario para que la sombra tape el hueco */
+            z-index: 1;
+        }
+
+        /* Borde indicador solo en la primera celda para no deformar */
+        #clientesTableBody tr.selected-row td:first-child {
+            border-left: 4px solid #0284c7;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app-wrapper">
+
+        <!-- HEADER BAR ESTÁNDAR (Reutilizado de Etapa 1) -->
+        <header class="app-header-bar">
+            <div class="header-left" style="cursor: pointer;" onclick="window.location.href='menu.html'">
+                <img src="../assets/img/logo.png" alt="OPTICA ERP Logo" class="header-logo">
+                <div class="header-brand-box">
+                    <div class="header-brand-title">
+                        OPTICA ERP
+                        <span class="material-symbols-outlined header-module-icon">person</span>
+                    </div>
+                    <span id="currentDate" class="header-date">--/--/----</span>
+                </div>
+            </div>
+
+            <div class="app-status-bar">
+                <div class="status-item">
+                    <span style="font-weight: 600;" id="userName">Cargando...</span>
+                    <span
+                        style="font-size: 0.75rem; color: #6B7280; background: #F3F4F6; padding: 2px 6px; border-radius: 4px;"
+                        id="userRole">...</span>
+                </div>
+                <div class="status-separator"></div>
+                <div class="time-stats">
+                    <div class="time-stat-box">
+                        <div class="time-label">INGRESO</div>
+                        <div class="time-value" id="loginTime">--:--</div>
+                    </div>
+                    <div class="time-stat-box">
+                        <div class="time-label">ACTUAL</div>
+                        <div class="time-value" id="currentClock">--:--</div>
+                    </div>
+                    <div class="time-stat-box">
+                        <div class="time-label">CONEXIÓN</div>
+                        <div class="time-value" style="color: var(--color-success);" id="sessionTimer">00:00:00</div>
+                    </div>
+                </div>
+                <div class="status-separator"></div>
+                <button
+                    onclick="if(document.referrer.indexOf(window.location.host) !== -1) { history.back(); } else { window.location.href='menu.html'; }"
+                    class="btn-logout">SALIR ✕</button>
+            </div>
+        </header>
+
+        <!-- MAIN CONTENT -->
+        <main class="app-main-container">
+            <div style="width: 100%; max-width: 1400px;">
+
+                <div class="usuarios-header">
+                    <h1>Gestión de Clientes</h1>
+                    <p>Administración de pacientes, datos de contacto y facturación</p>
+                </div>
+
+                <!-- BARRA DE HERRAMIENTAS Y FILTRADO -->
+                <div class="filter-bar">
+                    <div class="filter-group" style="flex: 2; min-width: 250px;">
+                        <label>Buscar</label>
+                        <input type="text" id="btnBuscar" placeholder="Nombre, Razón Social, Tel..." class="input-base">
+                    </div>
+                    <div class="filter-group" style="flex: 1; min-width: 150px;">
+                        <label>RFC</label>
+                        <input type="text" id="filterRfc" placeholder="Filtrar por RFC" class="input-base"
+                            maxlength="13">
+                    </div>
+                    <div class="filter-group">
+                        <label>Estatus</label>
+                        <div class="status-toggle">
+                            <button class="status-btn active" data-status="activo">Activos</button>
+                            <button class="status-btn" data-status="inactivo">Inactivos</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- LAYOUT MASTER-DETAIL -->
+                <div class="usuarios-layout">
+
+                    <!-- LISTADO DE CLIENTES -->
+                    <div class="usuarios-list">
+                        <h3 style="margin-top: 0; margin-bottom: 15px; font-size: 1rem;">Directorio de Clientes</h3>
+                        <div style="overflow-x: auto;">
+                            <table class="table-base">
+                                <thead>
+                                    <tr>
+                                        <th>Nombre / Razón Social</th>
+                                        <th>RFC</th>
+                                        <th>Teléfono</th>
+                                        <th>Estatus</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="clientesTableBody">
+                                    <tr>
+                                        <td colspan="5" style="text-align: center; padding: 30px; color: #9CA3AF;">
+                                            Cargando clientes...
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- FORMULARIO DE DETALLE -->
+                    <div class="usuario-detail">
+                        <h3 style="margin-top: 0; margin-bottom: 15px; font-size: 1rem;">Ficha del Cliente</h3>
+                        <input type="hidden" id="detailIdCliente">
+
+                        <!-- SECCIÓN: IDENTIFICACIÓN -->
+                        <div class="detail-field">
+                            <label>Tipo Persona <span style="color:red">*</span></label>
+                            <select id="detailTipoPersona" class="input-base" required
+                                onchange="ClientesService.toggleTipoPersona()">
+                                <option value="FISICA">Física</option>
+                                <option value="MORAL">Moral</option>
+                            </select>
+                        </div>
+
+                        <!-- CAMPOS DINÁMICOS SEGÚN TIPO PERSONA -->
+
+                        <!-- CASO FÍSICA: NOMBRE + APELLIDOS -->
+                        <div id="blockFisica">
+                            <div class="form-row" style="display: flex; gap: 10px;">
+                                <div class="detail-field" style="flex: 1;">
+                                    <label>Nombre(s) <span style="color:red">*</span></label>
+                                    <input type="text" id="detailNombreFisica" class="input-base"
+                                        placeholder="Ej. Juan Carlos">
+                                </div>
+                                <div class="detail-field" style="flex: 1;">
+                                    <label>Apellidos <span style="color:red">*</span></label>
+                                    <input type="text" id="detailApellidosFisica" class="input-base"
+                                        placeholder="Ej. Pérez López">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- CASO MORAL: RAZÓN SOCIAL -->
+                        <div id="blockMoral" style="display: none;">
+                            <div class="detail-field">
+                                <label>Razón Social <span style="color:red">*</span></label>
+                                <input type="text" id="detailRazonSocial" class="input-base"
+                                    placeholder="Ej. Empresa SA de CV">
+                            </div>
+                        </div>
+
+                        <div class="detail-field">
+                            <label>RFC</label>
+                            <input type="text" id="detailRfc" class="input-base" placeholder="XAXX010101000"
+                                maxlength="13">
+                        </div>
+
+                        <!-- SECCIÓN: DATOS FISCALES -->
+                        <div class="section-separator">Datos Fiscales</div>
+
+                        <div class="form-row" style="display: flex; gap: 10px;">
+                            <div class="detail-field" style="flex: 1;">
+                                <label>Régimen Fiscal</label>
+                                <select id="detailRegimen" class="input-base">
+                                    <option value="">Seleccionar...</option>
+                                    <option value="601">601 - General de Ley Personas Morales</option>
+                                    <option value="603">603 - Personas Morales con Fines no Lucrativos</option>
+                                    <option value="605">605 - Sueldos y Salarios e Ingresos Asimilados a Salarios
+                                    </option>
+                                    <option value="606">606 - Arrendamiento</option>
+                                    <option value="608">608 - Demás ingresos</option>
+                                    <option value="612">612 - Personas Físicas con Actividades Empresariales y
+                                        Profesionales</option>
+                                    <option value="614">614 - Ingresos por intereses</option>
+                                    <option value="616">616 - Sin obligaciones fiscales</option>
+                                    <option value="621">621 - Incorporación Fiscal</option>
+                                    <option value="626">626 - Régimen Simplificado de Confianza</option>
+                                </select>
+                            </div>
+                            <div class="detail-field" style="flex: 1;">
+                                <label>Uso CFDI</label>
+                                <select id="detailUsoCfdi" class="input-base">
+                                    <option value="">Seleccionar...</option>
+                                    <option value="G01">G01 - Adquisición de mercancías</option>
+                                    <option value="G03">G03 - Gastos en general</option>
+                                    <option value="D01">D01 - Honorarios médicos, dentales y gastos hospitalarios
+                                    </option>
+                                    <option value="P01">P01 - Por definir</option>
+                                    <option value="S01">S01 - Sin efectos fiscales</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="detail-field">
+                            <label>Domicilio Fiscal</label>
+                            <textarea id="detailDomicilio" class="input-base" rows="2"
+                                placeholder="Calle, Número, Colonia, CP, Ciudad, Estado"></textarea>
+                        </div>
+
+                        <!-- SECCIÓN: CONTACTO -->
+                        <div class="section-separator">Datos de Contacto</div>
+
+                        <div class="form-row" style="display: flex; gap: 10px;">
+                            <div class="detail-field" style="flex: 1;">
+                                <label>Teléfono</label>
+                                <input type="tel" id="detailTelefono" class="input-base" placeholder="10 dígitos">
+                            </div>
+                            <div class="detail-field" style="flex: 1.5;">
+                                <label>Correo Electrónico</label>
+                                <input type="email" id="detailCorreo" class="input-base"
+                                    placeholder="cliente@ejemplo.com">
+                            </div>
+                        </div>
+
+                        <!-- SECCIÓN: CONTROL -->
+                        <div class="section-separator">Control</div>
+
+                        <div class="detail-field">
+                            <label>Estatus</label>
+                            <select id="detailEstatus" class="input-base">
+                                <option value="ACTIVO">Activo</option>
+                                <option value="INACTIVO">Inactivo</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- BOTONES DE ACCIÓN -->
+                <div class="action-buttons-container">
+                    <div class="action-buttons-left">
+                        <!-- Botón Bitácora (Solo Admin) -->
+                        <button id="btnVerBitacora" class="btn-secondary"
+                            style="display: none; height: 38px; padding: 0 15px; font-size: 0.85rem; display: flex; align-items: center; gap: 8px;"
+                            onclick="ClientesService.verBitacora()">
+                            <span class="material-symbols-outlined" style="font-size: 1.2rem;">history</span>
+                            Ver Bitácora <span style="font-size: 0.7em; opacity: 0.7;">(Admin)</span>
+                        </button>
+                    </div>
+                    <div class="action-buttons-right">
+                        <button id="btnGuardar" class="btn-primary" onclick="ClientesService.guardar()">
+                            <span class="material-symbols-outlined"
+                                style="font-size: 1.2rem; margin-right: 5px;">save</span>
+                            Guardar
+                        </button>
+                        <button class="btn-secondary" onclick="ClientesService.limpiarFormulario()">Cancelar</button>
+                        <button id="btnNuevo" class="btn-primary" onclick="ClientesService.nuevo()">
+                            <span class="material-symbols-outlined"
+                                style="font-size: 1.2rem; margin-right: 5px;">add_circle</span>
+                            Nuevo
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Alerta Flotante (Toast) -->
+    <div id="toastContainer" style="position: fixed; top: 20px; right: 20px; z-index: 2000;"></div>
+
+    <!-- MODAL DE BITÁCORA DE AUDITORÍA (SOLO ADMIN) -->
+    <div id="bitacoraModal" class="modal-overlay">
+        <div class="modal-content" style="max-width: 1100px; width: 95%;">
+            <div class="modal-header">
+                <div style="display: flex; align-items: center;">
+                    <span class="material-symbols-outlined"
+                        style="margin-right: 12px; color: #1F3A5F; font-size: 2rem;">shield_person</span>
+                    <div>
+                        <h2 style="margin: 0;">Bitácora de Auditoría (Clientes)</h2>
+                        <p style="margin: 0; font-size: 0.8rem; color: #6B7280; font-weight: normal;">Registro histórico
+                            de operaciones críticas del módulo.</p>
+                    </div>
+                </div>
+                <button class="close-modal" onclick="ClientesService.cerrarBitacoraModal()">×</button>
+            </div>
+
+            <!-- Filtros de Bitácora -->
+            <div class="filter-bar"
+                style="margin-bottom: 20px; box-shadow: none; border: 1px solid #e5e7eb; padding: 15px; background: #F9FAFB; display: flex; gap: 15px;">
+                <div class="filter-group">
+                    <label>Desde</label>
+                    <input type="date" id="bitacoraDesde" class="input-base">
+                </div>
+                <div class="filter-group">
+                    <label>Hasta</label>
+                    <input type="date" id="bitacoraHasta" class="input-base">
+                </div>
+                <div class="filter-group">
+                    <label>Usuario</label>
+                    <select id="bitacoraUsuario" class="input-base">
+                        <option value="">Todos los usuarios</option>
+                    </select>
+                </div>
+                <div class="filter-group" style="flex: 1;">
+                    <label>Buscar Evento / Detalle</label>
+                    <input type="text" id="bitacoraBuscar" class="input-base" placeholder="Filtrar eventos...">
+                </div>
+                <div class="filter-group" style="display: flex; align-items: flex-end;">
+                    <button class="btn-primary" onclick="ClientesService.cargarBitacora()"
+                        style="height: 38px; display: flex; align-items: center; justify-content: center; width: 45px;">
+                        <span class="material-symbols-outlined">search</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Tabla de Resultados -->
+            <div
+                style="max-height: 500px; overflow-y: auto; border: 1px solid #e5e7eb; border-radius: 8px; background: white;">
+                <table class="table-base">
+                    <thead style="position: sticky; top: 0; background: #F3F4F6; z-index: 10;">
+                        <tr>
+                            <th style="width: 180px;">Fecha / Hora</th>
+                            <th>Usuario</th>
+                            <th>Evento</th>
+                            <th>IP Origen</th>
+                            <th>Detalle</th>
+                        </tr>
+                    </thead>
+                    <tbody id="bitacoraTableBody">
+                        <tr>
+                            <td colspan="5" style="text-align: center; padding: 40px; color: #9CA3AF;">
+                                Use los filtros para consultar auditoría.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="modal-footer"
+                style="margin-top: 20px; display: flex; justify-content: flex-end; gap: 10px; padding-top: 15px; border-top: 1px solid #E5E7EB;">
+                <button class="btn-primary" onclick="ClientesService.generarReporteBitacora()"
+                    style="background-color: #059669;">Reporte .txt</button>
+                <button class="btn-secondary" onclick="ClientesService.cerrarBitacoraModal()">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../assets/js/api-config.js"></script>
+    <script src="../assets/js/message-service.js"></script>
+    <script src="../assets/js/menu-service.js"></script>
+    <script src="../assets/js/auth-service.js"></script>
+    <script src="../assets/js/clientes-service.js"></script>
+</body>
+
+</html>

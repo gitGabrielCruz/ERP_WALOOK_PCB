@@ -1,0 +1,40 @@
+<!--
+============================================================
+Nombre del archivo : index.html
+Ruta              : omcgc/frontend/index.html
+Tipo              : Frontend (Landing Page / Enrutador)
+
+Proyecto          : Sistema ERP en la nube para gestión de ópticas OMCGC
+Empresa           : WALOOK MEXICO, S.A. de C.V.
+
+Autor             : Gabriel Amílcar Cruz Canto
+Unidad didáctica  : Proyecto Terminal I / Proyecto Terminal II
+Periodo académico : PT1 – PT2 (Agosto 2025 – Enero 2026)
+
+Versión           : v1.1
+
+Propósito:
+Punto de entrada raíz del servidor web estático.
+Implementa una redirección automática inmediata hacia el módulo de autenticación.
+
+Trazabilidad y Mapeo Funcional:
+------------------------------------------------------------
+1. UX/Navegación:
+   - Redirección automática a 'pages/login.html' para forzar flujo de entrada.
+============================================================
+-->
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="refresh" content="0; url=pages/login.html">
+    <title>Redireccionando... | WALOOK ERP</title>
+</head>
+
+<body>
+    <p>Redireccionando al Sistema ERP... si no sucede automáticamente, <a href="pages/login.html">haz clic aquí</a>.</p>
+    <script>window.location.href = "pages/login.html";</script>
+</body>
+
+</html>

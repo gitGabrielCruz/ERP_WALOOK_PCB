@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test - Sistema de Mensajes</title>
+    <link rel="stylesheet" href="../assets/css/message-styles.css">
+    <style>
+        body {
+            font-family: Inter, sans-serif;
+            padding: 40px;
+            background: #f3f4f6;
+        }
+
+        .test-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+        }
+
+        h1 {
+            color: #1f2937;
+            margin-bottom: 30px;
+        }
+
+        .test-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .test-button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            background: #2563eb;
+            color: white;
+            transition: all 0.2s;
+        }
+
+        .test-button:hover {
+            background: #1d4ed8;
+        }
+
+        .info-box {
+            background: #eff6ff;
+            border: 1px solid #2563eb;
+            padding: 16px;
+            border-radius: 4px;
+            margin-top: 20px;
+        }
+
+        .info-box h3 {
+            margin: 0 0 8px 0;
+            color: #1e40af;
+        }
+
+        .info-box p {
+            margin: 4px 0;
+            font-size: 13px;
+            color: #1e40af;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="test-container">
+        <h1>🧪 Prueba de Sistema de Mensajes - 9 Tipos</h1>
+
+        <div class="info-box">
+            <h3>Instrucciones de Prueba:</h3>
+            <p>1. Haz clic en cada botón para probar los 9 tipos de mensajes</p>
+            <p>2. Redimensiona la ventana del navegador (o usa F12 → modo responsive)</p>
+            <p>3. Verifica que los botones se ajusten correctamente en desktop y mobile</p>
+            <p>4. Desktop: Botones horizontales con ancho ajustado al texto</p>
+            <p>5. Mobile (≤768px): Botones verticales con ancho 100%</p>
+        </div>
+
+        <h2 style="margin-top: 30px; color: #374151;">Tipos de Mensajes:</h2>
+
+        <div class="test-grid">
+            <button class="test-button" onclick="testTipo1()">Tipo 1: Error Validación</button>
+            <button class="test-button" onclick="testTipo2()">Tipo 2: Confirmación</button>
+            <button class="test-button" onclick="testTipo3()">Tipo 3: Error Sistema</button>
+            <button class="test-button" onclick="testTipo4()">Tipo 4: Éxito</button>
+            <button class="test-button" onclick="testTipo5()">Tipo 5: Advertencia Crítica</button>
+            <button class="test-button" onclick="testTipo6()">Tipo 6: Procesando</button>
+            <button class="test-button" onclick="testTipo7()">Tipo 7: Sesión Expirada</button>
+            <button class="test-button" onclick="testTipo8()">Tipo 8: Acceso Restringido</button>
+            <button class="test-button" onclick="testTipo9()">Tipo 9: Advertencia Simple</button>
+        </div>
+    </div>
+
+    <script src="../assets/js/message-service.js"></script>
+    <script>
+        function testTipo1() {
+            const titulo = 'Error de validación';
+            const mensaje = 'El valor ingresado no cumple con el formato requerido.';
+            const ayuda = 'Por favor, verifica el campo e intenta nuevamente.';
+            const campo = 'RFC ingresado: XAXX01010';
+            MessageService.mostrar(1, titulo, mensaje, ayuda, campo);
+        }
+
+        function testTipo2() {
+            const titulo = 'Confirmar eliminación';
+            const mensaje = '¿Está seguro de eliminar este registro?';
+            const advertencia = 'Esta acción no se puede deshacer.';
+            const callback = () => alert('Confirmado');
+            MessageService.mostrar(2, titulo, mensaje, advertencia, '', callback);
+        }
+
+        function testTipo3() {
+            const titulo = 'Error del sistema';
+            const mensaje = 'Ha ocurrido un error inesperado en el servidor.';
+            const ayuda = 'Por favor, contacte al administrador del sistema.';
+            const detalle = 'ErrorCode: SYS-DB-001\nCannot connect to database\nStack trace: at line 42';
+            MessageService.mostrar(3, titulo, mensaje, ayuda, detalle);
+        }
+
+        function testTipo4() {
+            const titulo = 'Operación exitosa';
+            const mensaje = 'El registro se ha guardado correctamente.';
+            const proximo = 'Puede continuar trabajando normalmente.';
+            MessageService.mostrar(4, titulo, mensaje, proximo);
+        }
+
+        function testTipo5() {
+            const titulo = 'Operación crítica';
+            const mensaje = 'Está a punto de eliminar 50 registros permanentemente.';
+            const advertencia = 'Debe proporcionar una justificación para esta acción.';
+            const callback = (motivo) => alert('Motivo: ' + motivo);
+            MessageService.mostrar(5, titulo, mensaje, advertencia, '', callback);
+        }
+
+        function testTipo6() {
+            const titulo = 'Procesando solicitud';
+            const mensaje = 'Por favor, espere mientras se procesa la información...';
+            MessageService.mostrar(6, titulo, mensaje, '');
+            // Cerrar automáticamente después de 3 segundos
+            setTimeout(() => MessageService.cerrar(), 3000);
+        }
+
+        function testTipo7() {
+            const titulo = 'Sesión expirada';
+            const mensaje = 'Su sesión ha caducado por inactividad.';
+            const ayuda = 'Por favor, inicie sesión nuevamente para continuar.';
+            MessageService.mostrar(7, titulo, mensaje, ayuda);
+        }
+
+        function testTipo8() {
+            const titulo = 'Acceso denegado';
+            const mensaje = 'No tiene permisos para realizar esta operación.';
+            const ayuda = 'Contacte al administrador si necesita acceso a esta función.';
+            MessageService.mostrar(8, titulo, mensaje, ayuda);
+        }
+
+        function testTipo9() {
+            const titulo = 'Módulo no disponible';
+            const mensaje = 'El módulo de recuperación de contraseña aún no está implementado.';
+            const ayuda = 'Contacte al administrador del sistema para restablecer su contraseña.';
+            MessageService.mostrar(9, titulo, mensaje, ayuda);
+        }
+    </script>
+</body>
+
+</html>

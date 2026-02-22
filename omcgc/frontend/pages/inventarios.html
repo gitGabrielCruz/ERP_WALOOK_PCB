@@ -1,0 +1,648 @@
+<!--
+============================================================
+Nombre del archivo : inventarios.html
+Ruta              : omcgc/frontend/pages/inventarios.html
+Tipo              : Frontend (HTML5 / Semantic UI)
+
+Proyecto          : Sistema ERP en la nube para gestión de ópticas OMCGC
+Empresa           : WALOOK MEXICO, S.A. de C.V.
+
+Autor             : Gabriel Amílcar Cruz Canto
+Matrícula         : ES1821003109
+Programa          : Licenciatura en Ingeniería en Desarrollo de Software
+Unidad didáctica  : Proyecto Terminal I / Proyecto Terminal II
+Periodo académico : PT1 – PT2 (Agosto 2025 – Enero 2026)
+
+Versión           : v1.0 (Arquitectura de Control de Stock)
+
+Propósito:
+Proveer el ecosistema de control de activos e inventarios, permitiendo la 
+administración del catálogo de productos, gestión de datos fiscales (SAT) 
+y la trazabilidad de movimientos mediante sistema Kardex.
+
+Trazabilidad y Mapeo Funcional (Historias de Usuario):
+------------------------------------------------------------
+1. HU-M01-01 (Registro de Productos): 
+   Encapsulamiento de atributos maestros, costos y utilidades.
+2. HU-M01-02 (Consulta de Catálogo): 
+   Implementación de filtros multicriterio para optimización de búsquedas.
+3. HU-M01-05 (Gestión de Movimientos): 
+   Orquestación de entradas y salidas para actualización de existencias.
+4. HU-M01-07 (Alertas de Stock): 
+   Indicadores visuales basados en umbrales de seguridad (Existencia < Mínimo).
+5. HU-M01-09 (Integridad Fiscal): 
+   Mapeo de ClavesProdServ y ClavesUnidad conforme a normatividad CFDI 4.0.
+============================================================
+-->
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OPTICA ERP - Gestión de Inventarios</title>
+
+    <!-- [ESTILOS] Capa de Abstracción Visual y Tematizado Específico -->
+    <link rel="stylesheet" href="../assets/css/ui-base.css">
+    <link rel="stylesheet" href="../assets/css/message-styles.css">
+    <link rel="stylesheet" href="../assets/css/inventarios.css">
+    <link rel="stylesheet" href="../assets/css/inventarios-responsive.css">
+
+    <!-- [RECURSOS] Iconografía Vectorial y Tipografía de Sistema -->
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="app-wrapper">
+
+        <!-- [COMPONENT] Barra de Navegación Superior Estándar (La Biblia 2.1) -->
+        <header class="app-header-bar">
+            <!-- Izquierda: Logo y Branding -->
+            <div class="header-left" style="cursor: pointer;" onclick="window.location.href='menu.html'">
+                <img src="../assets/img/logo.png" alt="OPTICA ERP Logo" class="header-logo">
+                <div class="header-brand-box">
+                    <div class="header-brand-title">
+                        OPTICA ERP
+                        <span class="material-symbols-outlined header-module-icon">inventory_2</span>
+                    </div>
+                    <span id="currentDate" class="header-date">--/--/----</span>
+                </div>
+            </div>
+
+            <!-- Centro/Derecha: Status Bar Dinámica -->
+            <div class="app-status-bar">
+                <div class="status-item">
+                    <span style="font-weight: 600;" id="userName">Cargando...</span>
+                    <span id="userRole"
+                        style="font-size: 0.75rem; color: #6B7280; background: #F3F4F6; padding: 2px 6px; border-radius: 4px;">...</span>
+                </div>
+
+                <div class="status-separator"></div>
+
+                <div class="time-stats">
+                    <div class="time-stat-box">
+                        <div class="time-label">INGRESO</div>
+                        <div class="time-value" id="loginTime">--:--</div>
+                    </div>
+                    <div class="time-stat-box">
+                        <div class="time-label">ACTUAL</div>
+                        <div class="time-value" id="currentClock">--:--</div>
+                    </div>
+                    <div class="time-stat-box">
+                        <div class="time-label">CONEXIÓN</div>
+                        <div class="time-value" style="color: #10B981;" id="sessionTimer">00:00:00</div>
+                    </div>
+                </div>
+
+                <div class="status-separator"></div>
+
+                <!-- Botón Salir Estándar -->
+                <button onclick="AuthService.logout()" class="btn-logout">
+                    SALIR ✕
+                </button>
+            </div>
+        </header>
+
+        <!-- MAIN CONTENT (Homologado con Proveedores) -->
+        <main class="app-main-container">
+            <div style="width: 100%; max-width: 1400px; margin: 0 auto;">
+
+                <!-- TÍTULO DEL MÓDULO (Homologado) -->
+                <div class="usuarios-header">
+                    <h1>Gestión de Inventarios</h1>
+                    <p>Administración del catálogo de productos, trazabilidad Kardex y control de stock</p>
+                </div>
+
+                <!-- [LOGIC FILTERS] BARRA DE HERRAMIENTAS Y FILTRADO (Homologado) -->
+                <div class="filter-bar">
+                    <div class="filter-group col-search" style="flex: 2; min-width: 250px;">
+                        <label>BÚSQUEDA GLOBAL / SKU</label>
+                        <input type="text" id="searchInput" placeholder="Nombre, Marca, SKU o Cód. Barras..."
+                            class="input-base">
+                    </div>
+
+                    <div class="filter-group col-category" style="flex: 1; min-width: 180px;">
+                        <label>FILTRAR POR GRUPO</label>
+                        <select id="filterGrupo" class="input-base">
+                            <option value="">Todos los grupos</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-group col-threshold" style="flex: 1.2; min-width: 180px;">
+                        <label>UMBRALES DE STOCK</label>
+                        <div class="status-toggle" id="toggleUmbral">
+                            <button class="status-btn active" data-filter="">TODOS</button>
+                            <button class="status-btn" data-filter="OK">OK</button>
+                            <button class="status-btn" data-filter="BAJO">BAJO</button>
+                        </div>
+                    </div>
+
+                    <div class="filter-group col-operativo" style="flex: 1.5; min-width: 220px;">
+                        <label>ESTATUS OPERATIVO</label>
+                        <div class="status-toggle" id="toggleEstatus">
+                            <button class="status-btn active" data-filter="">TODOS</button>
+                            <button class="status-btn" data-filter="ACTIVO">ACTIVOS</button>
+                            <button class="status-btn" data-filter="INACTIVO">INACTIVOS</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- LAYOUT DIVIDIDO (Pattern Master-Detail) -->
+                <div class="split-layout">
+
+                    <!-- SECCIÓN IZQUIERDA: TABLA (Master) -->
+                    <div class="left-panel">
+                        <div class="panel-header-actions"
+                            style="display:flex; justify-content:space-between; align-items:center;">
+                            <h3 class="panel-title">CATÁLOGO MAESTRO DE PRODUCTOS</h3>
+                        </div>
+
+                        <div class="table-area">
+                            <table class="table-base">
+                                <thead>
+                                    <tr>
+                                        <th class="col-sku">SKU</th>
+                                        <th class="col-name">Descripción / Atributos</th>
+                                        <th class="col-exist">Existencia</th>
+                                        <th class="col-status">Estado</th>
+                                        <th class="col-estatus">Estatus</th> <!-- Movido según instrucción -->
+                                        <th class="col-actions">Acción</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="inventarioTableBody">
+                                    <!-- Inyectado por JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- SECCIÓN DERECHA: FORMULARIO (Detail) -->
+                    <div class="right-panel">
+                        <div class="panel-header-complex"
+                            style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px;">
+                            <h3 class="panel-title" style="margin: 0;">FICHA TÉCNICA / KARDEX</h3>
+                            <div class="barcode-container" id="barcodeBox">
+                                <svg id="barcodeReal"></svg>
+                                <span id="barcodeFallback" class="barcode-fallback">
+                                    <span class="material-symbols-outlined"
+                                        style="font-size: 1.4rem; color: #94a3b8;">barcode</span>
+                                    <span style="font-size: 0.65rem; color: #94a3b8; font-weight: 600;">SIN
+                                        CÓDIGO</span>
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Info Box Premium (Biblia v2) -->
+                        <div id="info-box-premium"
+                            style="display: none; background: #ffffff; border: 1px solid #bfdbfe; border-left: 4px solid #2563eb; border-radius: 8px; padding: 15px 20px; margin-bottom: 25px; box-shadow: 0 2px 5px rgba(0,0,0,0.03);">
+
+                            <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 12px;">
+                                <div id="header_sku"
+                                    style="background: #f1f5f9; padding: 4px 12px; border-radius: 4px; border: 1px solid #e2e8f0; font-family: 'Courier New', Courier, monospace; font-weight: 700; color: #475569; font-size: 1rem;">
+                                    -
+                                </div>
+                                <div id="header_nombre"
+                                    style="font-size: 1.15rem; font-weight: 800; color: #1e293b; letter-spacing: -0.3px;">
+                                    -
+                                </div>
+                            </div>
+
+                            <div style="display: flex; gap: 25px; border-top: 1px solid #f1f5f9; padding-top: 12px;">
+                                <div
+                                    style="display: flex; align-items: center; gap: 6px; font-size: 0.75rem; color: #64748b; font-weight: 500;">
+                                    <span class="material-symbols-outlined"
+                                        style="font-size: 1.1rem; color: #94a3b8;">article</span>
+                                    <span>Creado: <span id="header_f_creacion"
+                                            style="color: #475569; font-weight: 600;">-</span></span>
+                                </div>
+                                <div
+                                    style="display: flex; align-items: center; gap: 6px; font-size: 0.75rem; color: #64748b; font-weight: 500;">
+                                    <span class="material-symbols-outlined"
+                                        style="font-size: 1.1rem; color: #94a3b8;">edit_note</span>
+                                    <span>Modificación: <span id="header_f_mod"
+                                            style="color: #475569; font-weight: 600;">-</span></span>
+                                </div>
+                            </div>
+                        </div>
+                        <form id="formProducto" class="detail-form">
+
+                            <!-- Navegación de Contextos del Panel de Detalle de Entidad -->
+                            <div class="detail-tabs">
+                                <button type="button" class="tab-btn active" data-tab="datos">DATOS MAESTROS</button>
+                                <button type="button" class="tab-btn" data-tab="fiscal">FISCAL (CFDI 4.0)</button>
+                                <button type="button" class="tab-btn" data-tab="kardex" id="btnTabKardex">MOVIMIENTOS
+                                    KARDEX</button>
+                            </div>
+
+                            <!-- FICHA TÉCNICA (Homologada con Proveedores) -->
+                            <div id="tab-datos" class="tab-content active">
+
+                                <div class="row-2-col">
+                                    <div class="form-group">
+                                        <label>SKU (SISTEMA)</label>
+                                        <input type="text" id="idProducto" class="input-control readonly"
+                                            placeholder="Autogenerado" tabindex="-1" style="pointer-events: none;"
+                                            readonly>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>MARCA / LÍNEA *</label>
+                                        <select id="idMarca" class="input-control" required>
+                                            <option value="">Seleccionar...</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>NOMBRE DEL PRODUCTO *</label>
+                                    <input type="text" id="nombreProducto" class="input-control"
+                                        placeholder="Descripción técnica del artículo" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>CÓDIGO DE BARRAS</label>
+                                    <input type="text" id="codigoBarras" class="input-control"
+                                        placeholder="Ej: 01-RAY-RB2132-P-7501001" maxlength="50">
+                                </div>
+
+                                <div class="row-2-col">
+                                    <div class="form-group">
+                                        <label>GRUPO *</label>
+                                        <select id="idGrupo" class="input-control" required
+                                            onchange="InventariosService.cargarFamiliasDependientes(this.value)">
+                                            <option value="">Seleccione Grupo...</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>FAMILIA *</label>
+                                        <select id="idFamilia" class="input-control" required>
+                                            <option value="">Seleccione Familia...</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="section-divider">VALORES Y STOCK</div>
+
+                                <div class="row-2-col">
+                                    <div class="form-group">
+                                        <label>COSTO UNITARIO ($)</label>
+                                        <input type="number" id="costoUnitario" class="input-control" value="0.00"
+                                            step="0.01" oninput="InventariosService.calcularPrecioVenta()">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>% UTILIDAD</label>
+                                        <input type="number" id="porcentajeUtilidad" class="input-control" value="0"
+                                            oninput="InventariosService.calcularPrecioVenta()">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>PRECIO DE VENTA SUGERIDO (IVA INC.)</label>
+                                    <input type="text" id="precioVenta" class="input-control highlight-price" readonly
+                                        tabindex="-1" style="pointer-events: none;" value="$0.00">
+                                </div>
+
+                                <div class="row-2-col">
+                                    <div class="form-group">
+                                        <label>STOCK MÍNIMO</label>
+                                        <input type="number" id="stockMinimo" class="input-control" value="5">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>EXISTENCIA ACTUAL</label>
+                                        <input type="number" id="existenciaActual" class="input-control readonly"
+                                            value="0" readonly tabindex="-1" style="pointer-events: none;"
+                                            title="Se actualiza vía Movimientos">
+                                    </div>
+                                </div>
+
+                                <div class="section-divider">CONTROL DE ESTADO</div>
+                                <div class="form-group">
+                                    <label>ESTATUS OPERATIVO</label>
+                                    <select id="estatus" class="input-control">
+                                        <option value="ACTIVO">ACTIVO</option>
+                                        <option value="INACTIVO">INACTIVO</option>
+                                    </select>
+                                </div>
+
+                            </div> <!-- Panel de Datos Fiscales (SAT) -->
+                            <div class="tab-content" id="tab-fiscal">
+                                <div class="alert-info-box">
+                                    <span class="material-symbols-outlined">info</span>
+                                    <p>Información requerida para la emisión de CFDI conforme al anexo 20 de la RMF
+                                        (SAT).</p>
+                                </div>
+
+                                <div class="section-divider">CLASIFICACIÓN FISCAL (SAT)</div>
+
+                                <div class="row-2-col">
+                                    <div class="form-group">
+                                        <div
+                                            style="display: flex; justify-content: space-between; align-items: center;">
+                                            <label style="font-size: 0.72rem; opacity: 0.85;">CLAVE PROD / SERV (SAT)
+                                                *</label>
+                                            <span class="material-symbols-outlined"
+                                                style="font-size: 1.1rem; color: #2563eb; cursor: pointer;"
+                                                title="Asistente de Datos Fiscales"
+                                                onclick="InventariosService.toggleSatHelper(event)">database_search</span>
+                                        </div>
+                                        <input type="text" id="claveProdServ" class="input-control" maxlength="8"
+                                            placeholder="Ej: 85121603" required>
+                                        <div id="descClaveProdServ"
+                                            style="font-size: 0.65rem; color: #64748b; margin-top: 2px; min-height: 1em; font-style: italic;">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label style="font-size: 0.72rem; opacity: 0.85;">CLAVE UNIDAD (SAT) *</label>
+                                        <input type="text" id="claveUnidad" class="input-control" maxlength="3"
+                                            placeholder="Ej: H87" required>
+                                        <div id="descClaveUnidad"
+                                            style="font-size: 0.65rem; color: #64748b; margin-top: 2px; min-height: 1em; font-style: italic;">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label style="font-size: 0.72rem; opacity: 0.85;">OBJETO DE IMPUESTO *</label>
+                                    <select id="objetoImpuesto" class="input-control" required>
+                                        <option value="01">01 - No objeto de impuesto</option>
+                                        <option value="02" selected>02 - Sí objeto de impuesto</option>
+                                        <option value="03">03 - Sí objeto de impuesto y no obligado al desglose</option>
+                                    </select>
+                                </div>
+
+                                <div class="row-2-col">
+                                    <div class="form-group">
+                                        <label style="font-size: 0.72rem; opacity: 0.85;">TASA IVA (%)</label>
+                                        <input type="number" id="ivaAplicable" class="input-control" step="0.01"
+                                            value="16.00">
+                                    </div>
+                                    <div class="form-group">
+                                        <!-- Espacio reservado para futuros atributos fiscales (IEPS, etc) -->
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Panel de Kardex -->
+                            <div class="tab-content" id="tab-kardex">
+                                <div class="alert-info-box">
+                                    <span class="material-symbols-outlined">history</span>
+                                    <p>Historial completo de afectaciones al inventario. Cada registro es una póliza
+                                        inalterable con fines de auditoría.</p>
+                                </div>
+
+                                <div class="section-divider"
+                                    style="display: flex; justify-content: space-between; align-items: center;">
+                                    <span>MOVIMIENTOS AL INVENTARIO (KARDEX)</span>
+                                    <button type="button" class="btn-primary btn-sm"
+                                        onclick="InventariosService.abrirModalMovimiento()" id="btnRegistrarMov">
+                                        <span class="material-symbols-outlined">add_box</span> Registrar Movimiento
+                                    </button>
+                                </div>
+
+                                <div class="kardex-table-area">
+                                    <table class="table-professional">
+                                        <thead>
+                                            <tr>
+                                                <th>FECHA/HORA</th>
+                                                <th>FOLIO / CONCEPTO</th>
+                                                <th>AFECTACION</th>
+                                                <th class="txt-center">CANT.</th>
+                                                <th class="txt-center">NUEVO SALDO</th>
+                                                <th>OPERADOR</th>
+                                                <th>ACCIONES</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="kardexTableBody">
+                                            <tr>
+                                                <td colspan="6" class="txt-center"
+                                                    style="padding: 40px; color: #94a3b8;">
+                                                    Seleccione un producto para ver su historial de movimientos
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <!-- Actions bar (Homologado con Clientes - 3 Botones) -->
+                            <div class="action-buttons-container">
+                                <div class="action-buttons-left">
+                                    <button type="button" id="btnBitacora" class="btn-warning"
+                                        style="display: none; background-color: #f59e0b; color: white;"
+                                        onclick="InventariosService.verBitacora()">
+                                        <span class="material-symbols-outlined"
+                                            style="font-size: 1.2rem; margin-right: 5px;">admin_panel_settings</span>
+                                        Ver bitácora <span style="font-size: 0.7em; opacity: 0.8;">(Admin)</span>
+                                    </button>
+                                </div>
+                                <div class="action-buttons-right">
+                                    <button type="button" id="btnNuevo" class="btn-primary"
+                                        onclick="InventariosService.limpiarFormulario()">
+                                        <span class="material-symbols-outlined"
+                                            style="font-size: 1.2rem; margin-right: 5px;">add_circle</span> Nuevo
+                                    </button>
+                                    <button type="button" id="btnGuardar" class="btn-primary"
+                                        onclick="InventariosService.guardarProducto()">
+                                        <span class="material-symbols-outlined"
+                                            style="font-size: 1.2rem; margin-right: 5px;">save</span> Guardar
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+        </main>
+    </div>
+
+    <!-- MODAL DE REGISTRO/EDICIÓN DE MOVIMIENTO -->
+    <div id="movimientoModal" class="modal-overlay">
+        <div class="modal-content" style="max-width: 550px;">
+            <div class="modal-header">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <span class="material-symbols-outlined" style="color: #2563eb;">fact_check</span>
+                    <h3 id="modalMovTitulo">Ajuste de Inventario (Kardex)</h3>
+                </div>
+                <button class="close-modal" onclick="InventariosService.cerrarMovimientoModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <form id="formMovimiento">
+                    <input type="hidden" id="mov_idMovimiento">
+
+                    <!-- Box de Producto Seleccionado -->
+                    <div
+                        style="background: #f8fafc; border-left: 4px solid #2563eb; padding: 10px 15px; border-radius: 4px; margin-bottom: 20px;">
+                        <label
+                            style="font-size: 0.65rem; color: #64748b; font-weight: 700; text-transform: uppercase;">Producto
+                            Seleccionado</label>
+                        <div style="display: flex; gap: 10px; align-items: baseline;">
+                            <span id="mov_sku_label"
+                                style="font-weight: 700; color: #1e293b; font-size: 0.9rem;">SKU</span>
+                            <span id="mov_producto_label" style="color: #475569; font-size: 0.85rem;">Nombre</span>
+                        </div>
+                    </div>
+
+                    <!-- Indicadores de Balance Stock -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
+                        <div style="border: 1px solid #e2e8f0; border-radius: 6px; padding: 10px; text-align: center;">
+                            <label
+                                style="font-size: 0.65rem; color: #16a34a; font-weight: 700; display: block; margin-bottom: 5px;">EXISTENCIA
+                                ACTUAL</label>
+                            <span id="mov_exist_actual"
+                                style="font-size: 1.5rem; font-weight: 800; color: #16a34a;">0</span>
+                        </div>
+                        <div
+                            style="border: 1px solid #e2e8f0; border-radius: 6px; padding: 10px; text-align: center; background: #f0f9ff;">
+                            <label
+                                style="font-size: 0.65rem; color: #2563eb; font-weight: 700; display: block; margin-bottom: 5px;">NUEVO
+                                SALDO</label>
+                            <span id="mov_nuevo_saldo"
+                                style="font-size: 1.5rem; font-weight: 800; color: #2563eb;">0</span>
+                        </div>
+                    </div>
+
+                    <div class="row-2-col">
+                        <div class="form-group">
+                            <label>TIPO DE MOVIMIENTO</label>
+                            <select id="mov_tipo" class="input-control" required
+                                onchange="InventariosService.recalcularIndicadores()">
+                                <option value="ENTRADA_COMPRA">Entrada (Compra +)</option>
+                                <option value="SALIDA_VENTA">Salida (Venta -)</option>
+                                <option value="AJUSTE" selected>Ajuste Manual (+/-)</option>
+                                <option value="MERMA">Merma (Baja -)</option>
+                                <option value="TRASPASO">Traspaso Envio (-)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>FOLIO / DOCUMENTO</label>
+                            <input type="text" id="mov_folio" class="input-control" placeholder="Ej: FAC-001">
+                        </div>
+                    </div>
+
+                    <div class="row-2-col">
+                        <div class="form-group">
+                            <label>CANTIDAD</label>
+                            <input type="number" id="mov_cantidad" class="input-control" required value="1"
+                                oninput="InventariosService.recalcularIndicadores()">
+                        </div>
+                        <div class="form-group">
+                            <label>COSTO HISTÓRICO ($)</label>
+                            <input type="number" id="mov_costo" class="input-control" step="0.01">
+                        </div>
+                    </div>
+
+                    <div id="row_fechas_kardex" class="row-2-col">
+                        <div class="form-group">
+                            <label id="lbl_fecha_ref">FECHA ORIGINAL DE REGISTRO</label>
+                            <div id="mov_fecha_ref"
+                                style="padding: 8px 12px; border: 1px solid #e2e8f0; border-radius: 6px; background: #f8fafc; font-size: 0.85rem; color: #64748b; height: 38px; display: flex; align-items: center;">
+                                -</div>
+                        </div>
+                        <div class="form-group">
+                            <label>FECHA / HORA ACTUALIZADA</label>
+                            <div id="mov_fecha_live"
+                                style="padding: 8px 12px; border: 1px solid #2563eb; border-radius: 6px; background: #eff6ff; font-size: 0.85rem; color: #2563eb; font-weight: 700; height: 38px; display: flex; align-items: center;">
+                                -</div>
+                        </div>
+                    </div>
+
+
+                    <div class="form-group">
+                        <label>OBSERVACIONES</label>
+                        <textarea id="mov_obs" class="input-control" style="height: 60px;"
+                            placeholder="Motivo del ajuste de inventario..."></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="InventariosService.cerrarMovimientoModal()">Cancelar</button>
+                <button class="btn-primary" onclick="InventariosService.ejecutarGuardarMovimiento()">
+                    <span class="material-symbols-outlined"
+                        style="font-size: 1.1rem; vertical-align: middle; margin-right: 5px;">save_as</span>
+                    Registrar Movimiento
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DE BITÁCORA DE AUDITORÍA (SOLO ADMIN) -->
+    <div id="bitacoraModal" class="modal-overlay">
+        <div class="modal-content" style="max-width: 1100px; width: 95%;">
+            <div class="modal-header">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <span class="material-symbols-outlined" style="color: #f59e0b;">admin_panel_settings</span>
+                    <h3>Bitácora de Auditoría - Inventarios</h3>
+                </div>
+                <button class="close-modal" onclick="InventariosService.cerrarBitacoraModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="filter-bar"
+                    style="background: #f8fafc; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+                    <div class="row-4-col"
+                        style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; width: 100%;">
+                        <div class="form-group">
+                            <label>DESDE</label>
+                            <input type="date" id="bitacoraDesde" class="input-base">
+                        </div>
+                        <div class="form-group">
+                            <label>HASTA</label>
+                            <input type="date" id="bitacoraHasta" class="input-base">
+                        </div>
+                        <div class="form-group">
+                            <label>USUARIO</label>
+                            <select id="bitacoraUsuario" class="input-base">
+                                <option value="">Todos</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>BUSCAR</label>
+                            <div style="display: flex; gap: 5px;">
+                                <input type="text" id="bitacoraBuscar" class="input-base" placeholder="Evento...">
+                                <button class="btn-primary" onclick="InventariosService.cargarBitacora()"
+                                    style="padding: 0 15px;">
+                                    <span class="material-symbols-outlined">search</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-area" style="max-height: 450px; overflow-y: auto;">
+                    <table class="table-base">
+                        <thead>
+                            <tr>
+                                <th>FECHA</th>
+                                <th>USUARIO</th>
+                                <th>ACCIÓN</th>
+                                <th>DETALLE / IMPACTO</th>
+                                <th>IP</th>
+                            </tr>
+                        </thead>
+                        <tbody id="bitacoraTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer" style="display: flex; justify-content: space-between; align-items: center;">
+                <div style="font-size: 0.8rem; color: #64748b;">
+                    <span class="material-symbols-outlined" style="font-size: 1rem; vertical-align: middle;">info</span>
+                    Los registros de bitácora son inalterables y permanentes.
+                </div>
+                <button class="btn-secondary" onclick="InventariosService.cerrarBitacoraModal()">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- [SCRIPTS] Capas de Servicio y Lógica de Negocio -->
+    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
+    <script src="../assets/js/api-config.js"></script>
+    <script src="../assets/js/message-service.js"></script>
+    <script src="../assets/js/auth-service.js"></script>
+    <script src="../assets/js/inventarios-service.js"></script>
+    <script>
+        // Inicialización tras concurrencia del DOM
+        document.addEventListener('DOMContentLoaded', () => InventariosService.init());
+    </script>
+</body>
+
+</html>

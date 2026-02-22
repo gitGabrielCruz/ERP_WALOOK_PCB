@@ -1,0 +1,1486 @@
+/*
+============================================================
+Nombre del archivo : ui-base.css
+Ruta              : omcgc/frontend/assets/css/ui-base.css
+Tipo              : Frontend (Hoja de Estilos Global)
+
+Proyecto          : Sistema ERP en la nube para gestión de ópticas OMCGC
+Empresa           : WALOOK MEXICO, S.A. de C.V.
+
+Autor             : Gabriel Amílcar Cruz Canto
+Matrícula         : ES1821003109
+Programa          : Licenciatura en Ingeniería en Desarrollo de Software
+Unidad didáctica  : Proyecto Terminal I / Proyecto Terminal II
+Periodo académico : PT1 – PT2 (Agosto 2025 – Enero 2026)
+
+Versión           : v1.3
+
+Propósito:
+Establecer el marco de referencia visual canónico para el sistema, centralizando
+la definición de variables de diseño, tipografía y componentes atómicos reutilizables.
+
+Trazabilidad y Mapeo Funcional:
+------------------------------------------------------------
+1. RNF-04 (Consistencia Visual):
+   - Centralización de paleta de colores corporativa (Variables CSS).
+   - Normalización de tipografía 'Inter' y escalas visuales.
+2. RNF-01 (Diseño Responsivo):
+   - Implementación de 'CSS Grid Layout' con directivas 'minmax' para adaptabilidad.
+   - Definición de 'breakpoints' implícitos en contenedores flexibles.
+3. HU-M01-XX (Transversal):
+   - Provisión de componentes de interfaz (Input, Button, Card) utilizados en
+     las historias HU-M01-01 (Login) y HU-M01-04 (Dashboard).
+============================================================
+*/
+
+/* =========================================================
+   1. Variables globales del sistema
+   ========================================================= */
+:root {
+    /* ---- 1.1 Colores ---- */
+    --color-primary: #1F3A5F;
+    /* Azul Corporativo */
+    --color-secondary: #2E5E8C;
+    /* Azul Medio */
+
+    --color-bg-main: #F4F6F8;
+    /* Gris Claro - Fondo */
+    --color-bg-container: #FFFFFF;
+    /* Blanco - Cards */
+
+    --color-text-main: #2E2E2E;
+    /* Gris Oscuro */
+    --color-text-secondary: #6B6B6B;
+    /* Gris Medio */
+    --color-text-disabled: #9E9E9E;
+
+    --color-border: #DADADA;
+
+    --color-success: #2E7D32;
+    --color-error: #C62828;
+    --color-warning: #ED6C02;
+    --color-info: #0288D1;
+
+    /* ---- 1.2 Tipografía ---- */
+    --font-family-base: Inter, "Segoe UI", Roboto, Arial, sans-serif;
+
+    /* Escala Aumentada (Restaurando impacto visual previo) */
+    --font-size-title: 1.75rem;
+    /* ~28px */
+    --font-size-subtitle: 1.25rem;
+    /* ~20px */
+    --font-size-text: 1rem;
+    /* 16px */
+    --font-size-label: 0.9rem;
+    /* ~14px */
+    --font-size-small: 0.8rem;
+    /* ~12.8px */
+
+    --font-weight-regular: 400;
+    --font-weight-medium: 500;
+    --font-weight-semibold: 600;
+    --font-weight-bold: 700;
+
+    /* ---- 1.3 Espaciados ---- */
+    --space-xs: 8px;
+    --space-sm: 16px;
+    /* Más aire */
+    --space-md: 24px;
+    --space-lg: 32px;
+    /* Espaciado generoso */
+
+    /* ---- 1.4 Dimensiones ---- */
+    --header-height: 64px;
+    --footer-height: 50px;
+    --input-height: 45px;
+    /* Altura cómoda y táctil */
+    --border-radius: 6px;
+}
+
+/* =========================================================
+   2. Reset y configuración base
+   ========================================================= */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-text);
+    color: var(--color-text-main);
+    background-color: var(--color-bg-main);
+    display: block;
+}
+
+a {
+    color: var(--color-primary);
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* =========================================================
+   3. Estructura visual base de pantallas
+   ========================================================= */
+.app-wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.app-header {
+    height: var(--header-height);
+    background: var(--color-bg-container);
+    border-bottom: 1px solid var(--color-border);
+    display: flex;
+    align-items: center;
+    padding: 0 var(--space-lg);
+}
+
+.app-content {
+    flex: 1;
+    padding: var(--space-lg);
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.app-footer {
+    height: var(--footer-height);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--font-size-small);
+    color: var(--color-text-disabled);
+}
+
+/* =========================================================
+   4. Tipografía del sistema
+   ========================================================= */
+.text-title {
+    font-size: var(--font-size-title);
+    font-weight: var(--font-weight-semibold);
+    margin: 0 0 var(--space-sm) 0;
+}
+
+.text-subtitle {
+    font-size: var(--font-size-subtitle);
+    font-weight: var(--font-weight-semibold);
+    margin: 0 0 var(--space-sm) 0;
+}
+
+.text-normal {
+    font-size: var(--font-size-text);
+}
+
+.text-label {
+    font-size: var(--font-size-label);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-text-secondary);
+    display: block;
+    margin-bottom: 4px;
+}
+
+.text-small {
+    font-size: var(--font-size-small);
+}
+
+/* =========================================================
+   5. Componentes visuales reutilizables
+   ========================================================= */
+/* ---- Contenedores / Cards ---- */
+.card {
+    background: var(--color-bg-container);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius);
+    padding: var(--space-lg);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+/* ---- Botones ---- */
+.btn-primary {
+    height: var(--input-height);
+    background-color: var(--color-primary);
+    color: #fff;
+    border: none;
+    border-radius: var(--border-radius);
+    padding: 0 var(--space-lg);
+    font-weight: var(--font-weight-medium);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.15s ease;
+}
+
+.btn-primary:hover {
+    background-color: #152945;
+}
+
+.btn-primary:active {
+    background-color: #0F1E33;
+}
+
+.btn-primary:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* ---- Campos ---- */
+.input-base {
+    height: var(--input-height);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius);
+    padding: 0 var(--space-xs);
+    width: 100%;
+    color: var(--color-text-main);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-text);
+    transition: border-color 0.15s ease;
+}
+
+.input-base:focus {
+    outline: none;
+    border-color: var(--color-secondary);
+    box-shadow: 0 0 0 2px rgba(46, 94, 140, 0.1);
+}
+
+/* Contenedor relativo para iconos */
+.input-group {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-group .icon-action {
+    position: absolute;
+    right: 8px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--color-text-secondary);
+    font-size: 1.1em;
+    padding: 0;
+}
+
+/* ---- Formularios ---- */
+.form-group {
+    margin-bottom: var(--space-md);
+}
+
+/* ---- Tablas ---- */
+.table-base {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+/* =========================================================
+   6. Estados visuales de interacción
+   ========================================================= */
+.is-disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.is-error {
+    border-color: var(--color-error);
+}
+
+.is-valid {
+    border-color: var(--color-success);
+}
+
+/* ALERTAS */
+.alert {
+    padding: var(--space-sm);
+    border-radius: var(--border-radius);
+    border-left: 4px solid transparent;
+    margin-bottom: var(--space-md);
+    font-size: var(--font-size-text);
+}
+
+.alert-error {
+    background-color: #FDECEA;
+    color: var(--color-error);
+    border-left-color: var(--color-error);
+}
+
+/* =========================================================
+   7. Accesibilidad básica
+   ========================================================= */
+:focus {
+    outline: 2px solid var(--color-secondary);
+}
+
+.input-base:focus {
+    outline: none;
+}
+
+/* =========================================================
+   8. Estilos Específicos: LOGIN SCREEN
+   ========================================================= */
+.login-body {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--color-bg-main);
+}
+
+.login-container {
+    width: 100%;
+    max-width: 380px;
+    /* Aumentado slightly por escala inputs */
+}
+
+.login-logo {
+    display: block;
+    margin: 0 auto var(--space-lg) auto;
+    max-width: 280px;
+    /* Revertido a tamaño estable (280px) */
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+    width: 100%;
+    height: auto;
+}
+
+.login-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-lg);
+}
+
+.login-links {
+    text-align: center;
+    margin-top: var(--space-lg);
+    font-size: var(--font-size-text);
+}
+
+.checkbox-inline {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    font-size: var(--font-size-text);
+    color: var(--color-text-secondary);
+}
+
+.checkbox-inline input {
+    margin-right: 8px;
+}
+
+/* =========================================================
+   9. Estilos Específicos: DASHBOARD (Menu)
+   ========================================================= */
+.dashboard-header {
+    margin-bottom: var(--space-lg);
+}
+
+.module-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    /* Aumentado min-width por escala */
+    gap: var(--space-lg);
+}
+
+.module-card {
+    background: var(--color-bg-container);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius);
+    padding: var(--space-lg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 180px;
+    /* Aumentado alto */
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: center;
+}
+
+.module-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-color: var(--color-secondary);
+}
+
+.module-icon {
+    font-size: 2.8rem;
+    /* Iconos más grandes */
+    margin-bottom: var(--space-md);
+    color: var(--color-text-secondary);
+}
+
+.module-card:hover .module-icon {
+    color: var(--color-primary);
+}
+
+.module-card.available {
+    border-left: 4px solid var(--color-primary);
+}
+
+.module-card.locked {
+    opacity: 0.6;
+    background-color: var(--color-bg-main);
+    cursor: note-allowed;
+}
+
+/* Navbar specifics */
+.header-brand {
+    font-size: 1.5rem;
+    /* Brand más grande */
+    font-weight: 700;
+    color: var(--color-primary);
+    margin-right: auto;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+}
+
+/* =========================================================
+   10. Validación visual
+   ========================================================= */
+/*
+CHECKLIST POR PANTALLA:
+- Usa variables globales
+- Usa clases base
+- Coincide con SVG
+- No tiene estilos inline
+*/
+
+/* =========================================================
+   11. Layout Estándar (Header & Estructura)
+   ========================================================= */
+.app-header-bar {
+    background: var(--color-bg-container);
+    border-bottom: 1px solid var(--color-border);
+    padding: 10px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.02);
+    height: var(--header-height);
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.header-logo {
+    height: 50px;
+    width: auto;
+}
+
+.header-brand-box {
+    border-left: 1px solid var(--color-border);
+    padding-left: 15px;
+    display: flex;
+    flex-direction: column;
+}
+
+.header-brand-title {
+    font-weight: 700;
+    color: var(--color-primary);
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.header-module-icon {
+    font-size: 1.5rem !important;
+    color: var(--color-text-main);
+    vertical-align: middle;
+}
+
+.header-date {
+    font-size: 0.8rem;
+    color: var(--color-text-secondary);
+}
+
+.app-status-bar {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    font-size: 0.9rem;
+    color: #374151;
+}
+
+.status-item {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.status-separator {
+    height: 30px;
+    width: 1px;
+    background: var(--color-border);
+}
+
+.time-stats {
+    display: flex;
+    gap: 15px;
+}
+
+.time-stat-box {
+    text-align: right;
+}
+
+.time-label {
+    font-size: 0.7rem;
+    color: var(--color-text-disabled);
+    text-transform: uppercase;
+}
+
+.time-value {
+    font-weight: 500;
+}
+
+.btn-logout {
+    background: var(--color-error);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.85rem;
+    transition: background 0.2s;
+}
+
+.btn-logout:hover {
+    background-color: #C62828;
+}
+
+.app-main-container {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 60px 20px 20px 20px;
+    /* Distancia estándar (1.5cm aprox arriba) */
+    width: 100%;
+}
+
+/* =========================================================
+   13. Módulo de Usuarios - Layout específico
+   ========================================================= */
+
+/* Título y subtítulo del módulo */
+.usuarios-header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.usuarios-header h1 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-text-main);
+    margin: 0 0 6px 0;
+}
+
+.usuarios-header p {
+    font-size: 0.875rem;
+    color: #6B7280;
+    margin: 0;
+}
+
+/* Barra de filtros */
+.filter-bar {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 18px;
+    align-items: flex-end;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.filter-group label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #6B7280;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.filter-group input,
+.filter-group select {
+    padding: 8px 12px;
+    border: 1px solid #D1D5DB;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    min-width: 180px;
+}
+
+.status-toggle {
+    display: flex;
+    gap: 8px;
+}
+
+.status-btn {
+    padding: 8px 20px;
+    border: 1px solid #D1D5DB;
+    background: white;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: all 0.2s;
+    color: #6B7280;
+}
+
+.status-btn.active {
+    background: #3B82F6;
+    color: white;
+    border-color: #3B82F6;
+}
+
+.status-btn:hover:not(.active) {
+    background: #F3F4F6;
+}
+
+/* Layout de 2 columnas */
+.usuarios-layout {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 18px;
+    margin-bottom: 18px;
+}
+
+.usuarios-list {
+    background: white;
+    border: 1px solid #E5E7EB;
+    border-radius: 8px;
+    padding: 18px;
+}
+
+.usuarios-list h3 {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #374151;
+    margin: 0 0 12px 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.usuario-detail {
+    background: white;
+    border: 1px solid #E5E7EB;
+    border-radius: 8px;
+    padding: 18px;
+}
+
+.usuario-detail h3 {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #374151;
+    margin: 0 0 12px 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Tabla de usuarios */
+.table-base tbody tr {
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.table-base tbody tr:hover {
+    background: #F9FAFB;
+}
+
+.status-indicator {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 8px;
+    vertical-align: middle;
+}
+
+.status-indicator.activo {
+    background: #10B981;
+}
+
+.status-indicator.inactivo {
+    background: #EF4444;
+}
+
+.badge-rol {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    background: #DBEAFE;
+    color: #1E40AF;
+}
+
+/* Panel de detalle */
+.detail-field {
+    margin-bottom: 14px;
+}
+
+.detail-field label {
+    display: block;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #6B7280;
+    margin-bottom: 5px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.detail-field input,
+.detail-field select {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #D1D5DB;
+    border-radius: 6px;
+    font-size: 0.875rem;
+}
+
+.detail-field input:focus,
+.detail-field select:focus {
+    outline: none;
+    border-color: #3B82F6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.detail-field input[readonly] {
+    background: #F9FAFB;
+    color: #6B7280;
+}
+
+.badge-estatus {
+    display: inline-block;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+.badge-estatus.activo {
+    background: #D1FAE5;
+    color: #065F46;
+}
+
+.badge-estatus.inactivo {
+    background: #FEE2E2;
+    color: #991B1B;
+}
+
+/* Matriz de permisos - FUERA del grid de 2 columnas */
+.permisos-matrix {
+    background: white;
+    border: 1px solid #E5E7EB;
+    border-radius: 8px;
+    padding: 18px;
+    margin-bottom: 18px;
+}
+
+.permisos-matrix h3 {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #374151;
+    margin: 0 0 12px 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.permisos-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.permisos-table th {
+    background: #F9FAFB;
+    padding: 10px 12px;
+    text-align: center;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: #6B7280;
+    border: 1px solid #E5E7EB;
+    letter-spacing: 0.5px;
+}
+
+.permisos-table th:first-child {
+    text-align: left;
+}
+
+.permisos-table td {
+    padding: 12px;
+    text-align: center;
+    border: 1px solid #E5E7EB;
+}
+
+.permisos-table td:first-child {
+    text-align: left;
+    font-weight: 500;
+    font-size: 0.875rem;
+    color: #374151;
+}
+
+.permisos-table input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    accent-color: #3B82F6;
+}
+
+.permisos-table input[type="checkbox"]:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+/* Botones de acción - DOS GRUPOS */
+.action-buttons-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 18px;
+}
+
+.action-buttons-left {
+    display: flex;
+    gap: 10px;
+}
+
+.action-buttons-right {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-secondary {
+    background: #E5E7EB;
+    color: #374151;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.875rem;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.btn-secondary:hover {
+    background: #D1D5DB;
+}
+
+.btn-warning {
+    background: #EF4444;
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.875rem;
+    transition: all 0.2s;
+}
+
+.btn-warning:hover {
+    background: #DC2626;
+}
+
+.btn-export {
+    background: #6B7280;
+    color: white;
+}
+
+.btn-export:hover {
+    background: #4B5563;
+}
+
+.btn-bitacora {
+    background: #F59E0B;
+    color: white;
+}
+
+.btn-bitacora:hover {
+    background: #D97706;
+}
+
+/* Ajustes Responsive */
+@media (max-width: 1200px) {
+    .usuarios-layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+
+    .app-status-bar .time-stats,
+    .status-separator:nth-child(2),
+    .status-separator:nth-child(4) {
+        display: none;
+    }
+
+    .app-main-container {
+        padding-top: 20px;
+    }
+
+    .filter-bar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .filter-group input,
+    .filter-group select {
+        min-width: 100%;
+    }
+
+    .action-buttons-container {
+        flex-direction: column;
+        gap: 10px;
+    }
+}
+
+.usuarios-header h1 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-text-main);
+    margin: 0 0 8px 0;
+}
+
+.usuarios-header p {
+    font-size: 0.875rem;
+    color: #6B7280;
+    margin: 0;
+}
+
+/* Barra de filtros */
+.filter-bar {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+    align-items: flex-end;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.filter-group label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #6B7280;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.filter-group input,
+.filter-group select {
+    padding: 8px 12px;
+    border: 1px solid #D1D5DB;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    min-width: 180px;
+}
+
+.status-toggle {
+    display: flex;
+    gap: 8px;
+}
+
+.status-btn {
+    padding: 8px 20px;
+    border: 1px solid #D1D5DB;
+    background: white;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: all 0.2s;
+    color: #6B7280;
+}
+
+.status-btn.active {
+    background: #3B82F6;
+    color: white;
+    border-color: #3B82F6;
+}
+
+.status-btn:hover:not(.active) {
+    background: #F3F4F6;
+}
+
+/* Layout de 2 columnas */
+.usuarios-layout {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.usuarios-list {
+    background: white;
+    border: 1px solid #E5E7EB;
+    border-radius: 8px;
+    padding: 20px;
+}
+
+.usuarios-list h3 {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #374151;
+    margin: 0 0 15px 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.usuario-detail {
+    background: white;
+    border: 1px solid #E5E7EB;
+    border-radius: 8px;
+    padding: 20px;
+}
+
+.usuario-detail h3 {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #374151;
+    margin: 0 0 15px 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Tabla de usuarios */
+.table-base tbody tr {
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.table-base tbody tr:hover {
+    background: #F9FAFB;
+}
+
+.status-indicator {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 8px;
+    vertical-align: middle;
+}
+
+.status-indicator.activo {
+    background: #10B981;
+}
+
+.status-indicator.inactivo {
+    background: #EF4444;
+}
+
+.badge-rol {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    background: #DBEAFE;
+    color: #1E40AF;
+}
+
+/* Panel de detalle */
+.detail-field {
+    margin-bottom: 16px;
+}
+
+.detail-field label {
+    display: block;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #6B7280;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.detail-field input,
+.detail-field select {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #D1D5DB;
+    border-radius: 6px;
+    font-size: 0.875rem;
+}
+
+.detail-field input:focus,
+.detail-field select:focus {
+    outline: none;
+    border-color: #3B82F6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.detail-field input[readonly] {
+    background: #F9FAFB;
+    color: #6B7280;
+}
+
+.badge-estatus {
+    display: inline-block;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+.badge-estatus.activo {
+    background: #D1FAE5;
+    color: #065F46;
+}
+
+.badge-estatus.inactivo {
+    background: #FEE2E2;
+    color: #991B1B;
+}
+
+/* Matriz de permisos */
+.permisos-matrix {
+    background: white;
+    border: 1px solid #E5E7EB;
+    border-radius: 8px;
+    padding: 20px;
+    margin-top: 20px;
+}
+
+.permisos-matrix h3 {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #374151;
+    margin: 0 0 15px 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.permisos-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.permisos-table th {
+    background: #F9FAFB;
+    padding: 10px 12px;
+    text-align: center;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: #6B7280;
+    border: 1px solid #E5E7EB;
+    letter-spacing: 0.5px;
+}
+
+.permisos-table th:first-child {
+    text-align: left;
+}
+
+.permisos-table td {
+    padding: 12px;
+    text-align: center;
+    border: 1px solid #E5E7EB;
+}
+
+.permisos-table td:first-child {
+    text-align: left;
+    font-weight: 500;
+    font-size: 0.875rem;
+    color: #374151;
+}
+
+.permisos-table input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    accent-color: #3B82F6;
+}
+
+.permisos-table input[type="checkbox"]:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+/* Botones de acción */
+.action-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+    justify-content: flex-end;
+}
+
+.btn-secondary {
+    background: #E5E7EB;
+    color: #374151;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.875rem;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.btn-secondary:hover {
+    background: #D1D5DB;
+}
+
+.btn-warning {
+    background: #EF4444;
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.875rem;
+    transition: all 0.2s;
+}
+
+.btn-warning:hover {
+    background: #DC2626;
+}
+
+.btn-export {
+    background: #6B7280;
+    color: white;
+}
+
+.btn-export:hover {
+    background: #4B5563;
+}
+
+.btn-bitacora {
+    background: #F59E0B;
+    color: white;
+}
+
+.btn-bitacora:hover {
+    background: #D97706;
+}
+
+/* Ajustes Responsive */
+@media (max-width: 1200px) {
+    .usuarios-layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+
+    .app-status-bar .time-stats,
+    .status-separator:nth-child(2),
+    .status-separator:nth-child(4) {
+        display: none;
+    }
+
+    .app-main-container {
+        padding-top: 20px;
+    }
+
+    .filter-bar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .filter-group input,
+    .filter-group select {
+        min-width: 100%;
+    }
+}
+/* =========================================================
+   14. COMPONENTES EXTRA: MODAL & RESPONSIVE (SMTP)
+   ========================================================= */
+
+/* ---- Modal Flotante ---- */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.modal-overlay.open {
+    visibility: visible;
+    opacity: 1;
+}
+
+.modal-content {
+    background: white;
+    padding: 30px;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.modal-header h2 {
+    margin: 0;
+    font-size: 1.25rem;
+    color: var(--color-primary);
+}
+
+.close-modal {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #6B7280;
+}
+
+/* ---- Sem�foro SMTP ---- */
+.btn-smtp {
+    font-weight: 700 !important;
+    transition: all 0.3s ease;
+}
+
+.btn-smtp.status-ok {
+    background-color: var(--color-success) !important;
+    color: white !important;
+}
+
+.btn-smtp.status-error {
+    background-color: #FCD34D !important; /* Amarillo */
+    color: #B45309 !important; /* Texto rojizo */
+    border: 2px solid #EF4444 !important;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+/* ---- RESPONSIVIDAD (Media Queries) ---- */
+/* Tablet (Portrait) y menores */
+@media (max-width: 900px) {
+    .usuarios-layout {
+        grid-template-columns: 1fr; /* Una sola columna */
+    }
+    
+    .filter-bar {
+        flex-wrap: wrap;
+    }
+    
+    .usuarios-list {
+        order: 2; /* Listado abajo en tablet */
+    }
+    
+    .usuario-detail {
+        order: 1; /* Detalle arriba para edici�n r�pida */
+    }
+}
+
+/* M�vil */
+@media (max-width: 600px) {
+    .usuarios-header h1 { font-size: 1.25rem; }
+    .app-main-container { padding: 80px 10px 10px 10px; }
+    
+    .action-buttons-container {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .action-buttons-left, .action-buttons-right {
+        width: 100%;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
+    
+    .btn-primary, .btn-secondary, .btn-warning {
+        width: 100%;
+    }
+}
+
+
+/* ---- COMPONENTES COMPARTIDOS (Add Clientes) ---- */
+.section-separator {
+    border-top: 1px solid #E5E7EB;
+    margin: 15px 0;
+    padding-top: 10px;
+    font-size: 0.85rem;
+    color: #6B7280;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+}
+
+.section-separator::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: #E5E7EB;
+    margin-left: 10px;
+}
+/ *   = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =   * /  
+ / *   E X T E N S I �  N   P A R A   E T A P A   2   ( C L I E N T E S )   -   M E J O R A S   V I S U A L E S   * /  
+ / *   E 2 - 0 0 3 :   E s t i l o   C e b r a   y   A l e r t a s   d e   E s t a t u s   * /  
+ / *   = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =   * /  
+  
+ / *   E s t i l o   C e b r a   p a r a   t a b l a s   ( S t r i p e d   R o w s )   * /  
+ . t a b l e - b a s e   t b o d y   t r : n t h - c h i l d ( e v e n )   {  
+         b a c k g r o u n d - c o l o r :   # f 9 f a f b ;   / *   G r i s   m u y   c l a r o   n 5 0   * /  
+ }  
+  
+ . t a b l e - b a s e   t b o d y   t r : h o v e r   {  
+         b a c k g r o u n d - c o l o r :   # f 3 f 4 f 6 ;   / *   G r i s   c l a r o   n 1 0 0   -   H i g h l i g h t   h o v e r   * /  
+         c u r s o r :   p o i n t e r ;   / *   I n d i c a r   i n t e r a c t i v i d a d   E 2 - 0 0 4   * /  
+ }  
+  
+ / *   B a d g e   e s p e c � � f i c o   p a r a   I N A C T I V O   r e s a l t a d o   * /  
+ . b a d g e - d a n g e r - a l e r t   {  
+         b a c k g r o u n d - c o l o r :   # F E F 3 C 7 ;   / *   F o n d o   A m a r i l l o   C l a r o   ( A m b e r   1 0 0 )   * /  
+         c o l o r :   # D C 2 6 2 6 ;                         / *   T e x t o   R o j o   I n t e n s o   ( R e d   6 0 0 )   * /  
+         b o r d e r :   1 p x   s o l i d   # F C A 5 A 5 ;   / *   B o r d e   R o j o   C l a r o   * /  
+         f o n t - w e i g h t :   7 0 0 ;  
+ }  
+ 

@@ -1,0 +1,5 @@
+alias monitor='bash /tmp/vps_monitor.sh'
+alias status='echo "=== SERVICIOS ==="; echo -n "Backend: "; systemctl is-active omcgc-erp.service; echo -n "Nginx:   "; systemctl is-active nginx; echo -n "MariaDB: "; systemctl is-active mariadb; echo; echo "=== JAVA ==="; ps aux | grep omcgc | grep -v grep'
+alias logs='tail -30 /root/erp_log.txt'
+alias wdlog='cat /tmp/watchdog.log'
+alias restart-backend='systemctl restart omcgc-erp.service && echo OK && systemctl status omcgc-erp.service --no-pager'

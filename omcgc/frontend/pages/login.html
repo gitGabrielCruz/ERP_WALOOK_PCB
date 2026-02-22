@@ -1,0 +1,245 @@
+<!--
+============================================================
+Nombre del archivo : login.html
+Ruta              : omcgc/frontend/pages/login.html
+Tipo              : Frontend (HTML5)
+
+Proyecto          : Sistema ERP en la nube para gestión de ópticas OMCGC
+Empresa           : WALOOK MEXICO, S.A. de C.V.
+
+Autor             : Gabriel Amílcar Cruz Canto
+Matrícula         : ES1821003109
+Programa          : Licenciatura en Ingeniería en Desarrollo de Software
+Unidad didáctica  : Proyecto Terminal I / Proyecto Terminal II
+Periodo académico : PT1 – PT2 (Agosto 2025 – Enero 2026)
+
+Versión           : v1.1
+
+Propósito:
+Proveer la interfaz gráfica para la autenticación de usuarios al sistema ERP.
+
+Trazabilidad y Mapeo Funcional:
+------------------------------------------------------------
+1. HU-M01-01 (Inicio de Sesión):
+   - Formulario de captura de credenciales (Usuario/Contraseña).
+   - Invocación al servicio de autenticación ('login-service.js').
+   - Retroalimentación visual de errores de acceso (Credenciales inválidas, bloqueo).
+2. RF-04 (Seguridad Visual):
+   - Implementación de control de visibilidad de contraseña (Toggle Masking).
+   - Implementación de Content Security Policy (CSP) en cabeceras.
+3. RNF-01 (Usabilidad):
+   - Persistencia local de preferencia de usuario ('Recuérdame').
+============================================================
+-->
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- CSP: Generado dinámicamente por api-config.js según el entorno detectado -->
+    <meta name="description" content="Acceso ERP Walook">
+    <title>Login | OPTICA ERP</title>
+
+    <!-- CSS CANONICO DEL SISTEMA -->
+    <link rel="stylesheet" href="../assets/css/ui-base.css">
+    <!-- CSS DEL SISTEMA DE MENSAJES -->
+    <link rel="stylesheet" href="../assets/css/message-styles.css">
+</head>
+
+<body class="login-body">
+
+    <div class="login-container">
+
+        <img src="../assets/img/logo.png" alt="OPTICA ERP Logo" class="login-logo">
+
+        <div class="card">
+            <div class="text-center" style="margin-bottom: 24px;">
+                <!-- Encabezado de sección -->
+                <h1 class="text-title" style="text-align: center;">Login</h1>
+            </div>
+
+            <form id="loginForm" autocomplete="off">
+                <div class="form-group">
+                    <label for="email" class="text-label">Usuario</label>
+                    <input type="text" id="email" name="email" class="input-base" placeholder="usuario@ejemplo.com"
+                        required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password" class="text-label">Contraseña</label>
+                    <div class="input-group">
+                        <input type="password" id="password" name="password" class="input-base" placeholder="••••••••"
+                            required>
+                        <button type="button" class="icon-action" onclick="togglePassword()"
+                            title="Mostrar/Ocultar">👁️</button>
+                    </div>
+                </div>
+
+                <div class="login-actions">
+                    <label class="checkbox-inline">
+                        <input type="checkbox" id="rememberMe"> Recuérdame
+                    </label>
+                    <button type="submit" class="btn-primary" id="btnLogin">Acceder</button>
+                </div>
+
+                <div class="login-links">
+                    <a href="#" onclick="mostrarRecuperacionPassword(); return false;">¿Olvidaste tu contraseña?</a>
+                </div>
+
+                <!-- Contenedor dinámico de alertas y errores -->
+                <div id="errorMsg" class="alert alert-error" style="display: none; margin-top: 16px;"></div>
+            </form>
+        </div>
+
+        <div class="app-footer">
+            WALOOK México • ERP Cloud System
+        </div>
+    </div>
+
+    <!-- Script de configuracion -->
+    <script src="../assets/js/api-config.js"></script>
+    <!-- Script de autenticacion -->
+    <script src="../assets/js/auth-service.js"></script>
+    <!-- Script del sistema de mensajes -->
+    <script src="../assets/js/message-service.js"></script>
+    <!-- Script de logica -->
+    <script src="../assets/js/login-service.js"></script>
+    <script>
+        // --- Estrategia de Mitigacion de XSS ---
+        // Se utiliza la propiedad 'textContent' para la insercion segura de texto,
+        // evitando la interpretacion de HTML no confiable ('innerHTML').
+
+        function togglePassword() {
+            const pwdInput = document.getElementById('password');
+            const btn = document.querySelector('.icon-action');
+            if (pwdInput.type === 'password') {
+                pwdInput.type = 'text';
+                btn.textContent = '🔒';
+            } else {
+                pwdInput.type = 'password';
+                btn.textContent = '👁️';
+            }
+        }
+
+        /**
+         * Muestra mensaje de modulo no implementado (Recuperacion de Password).
+         * Utiliza MessageService tipo 9 (Advertencia Simple).
+         */
+        function mostrarRecuperacionPassword() {
+            const titulo = 'Modulo no disponible';
+            const mensaje = 'El modulo de recuperacion de contraseña aun no esta implementado.';
+            const recomendacion = 'Contacte al administrador del sistema para restablecer su contraseña.';
+            MessageService.mostrar(9, titulo, mensaje, recomendacion);
+        }
+
+        // Recuperación de identidad persistente (Preferencia 'Recuérdame')
+        window.addEventListener('load', () => {
+            const savedEmail = localStorage.getItem('remember_email');
+            if (savedEmail) {
+                document.getElementById('email').value = savedEmail;
+                document.getElementById('rememberMe').checked = true;
+            }
+        });
+
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const email = document.getElementById('email').value.trim(); // Normalizacion de cadena (Trim)
+            const password = document.getElementById('password').value;
+            const rememberMe = document.getElementById('rememberMe').checked;
+
+            const btn = document.getElementById('btnLogin');
+            const errorDiv = document.getElementById('errorMsg');
+
+            // Restablecimiento de estado de interfaz de usuario
+            errorDiv.style.display = 'none';
+
+            try {
+                // Validacion de integridad de datos de entrada
+                if (!email || !password) {
+                    // Mensaje tipo 1: Error de Validacion
+                    const titulo = 'Campos incompletos';
+                    const mensajePrincipal = 'Debe ingresar usuario y contraseña para acceder al sistema.';
+                    const mensajeSecundario = 'Complete todos los campos obligatorios.';
+                    const campoError = '';
+                    MessageService.mostrar(1, titulo, mensajePrincipal, mensajeSecundario, campoError);
+                    return;
+                }
+
+                // Mostrar spinner de procesamiento (tipo 6)
+                const tituloSpinner = 'Verificando credenciales';
+                const mensajeSpinner = 'Espere mientras se valida su acceso al sistema.';
+                MessageService.mostrar(6, tituloSpinner, mensajeSpinner, 'No cierre la ventana ni actualice la pagina.');
+
+                // Invocacion asincrona al servicio de autenticacion
+                const result = await LoginService.login(email, password);
+
+                // Cerrar spinner
+                MessageService.cerrar();
+
+                if (result.success) {
+                    // Gestion de persistencia local de identidad (Preferencia de usuario)
+                    if (rememberMe) {
+                        localStorage.setItem('remember_email', email);
+                    } else {
+                        localStorage.removeItem('remember_email');
+                    }
+
+                    // LIMPIEZA CRITICA DE CACHE DE PERMISOS
+                    // Eliminar cualquier rastro de permisos anteriores para forzar recarga segura
+                    try {
+                        Object.keys(sessionStorage).forEach(key => {
+                            if (key && (key.startsWith('erp_permisos_') || key === 'erp_permisos_enc')) {
+                                sessionStorage.removeItem(key);
+                            }
+                        });
+                        console.log("[LOGIN] Cache de permisos depurado.");
+                    } catch (e) {
+                        console.warn("[LOGIN] Error limpiando cache de permisos", e);
+                    }
+
+                    // Almacenamiento de sesion volatil (SessionStorage)
+                    sessionStorage.setItem('user', JSON.stringify(result));
+
+                    // Generar token de sesion (simulado - en produccion vendria del backend)
+                    const token = btoa(`${result.userId}-${Date.now()}`);
+                    sessionStorage.setItem('token_erp', token);
+
+                    // Guardar permisos encriptados
+                    if (result.permisos && Array.isArray(result.permisos)) {
+                        AuthService.guardarPermisosEncriptados(result.permisos);
+                        console.log(`[LOGIN] Permisos encriptados guardados: ${result.permisos.length} modulos`);
+                    } else {
+                        console.warn("[LOGIN] No se recibieron permisos del backend");
+                    }
+
+                    // Redireccion al panel principal
+                    window.location.href = 'menu.html';
+                } else {
+                    // Mensaje tipo 1: Error de Validacion (Credenciales invalidas)
+                    const titulo = 'Error de autenticacion';
+                    const mensajePrincipal = result.message || 'Las credenciales ingresadas no son validas.';
+                    const mensajeSecundario = 'Verifique su usuario y contraseña e intente nuevamente.';
+                    const campoError = `Usuario: ${email}`;
+                    MessageService.mostrar(1, titulo, mensajePrincipal, mensajeSecundario, campoError);
+                }
+
+            } catch (err) {
+                console.error("[ERROR] Excepcion capturada en flujo de login:", err);
+
+                // Cerrar spinner si esta abierto
+                MessageService.cerrar();
+
+                // Mensaje tipo 3: Error de Sistema
+                const titulo = 'Error del sistema';
+                const mensajePrincipal = 'Ocurrio un error inesperado al procesar la solicitud de acceso.';
+                const mensajeSecundario = 'Puede descargar el reporte tecnico y enviarlo al area de desarrollo.';
+                const detalleTecnico = `ErrorCode: SYS-LOGIN-001\n${err.message}\n${err.stack || 'Stack trace no disponible'}`;
+                MessageService.mostrar(3, titulo, mensajePrincipal, mensajeSecundario, detalleTecnico);
+            }
+        });
+    </script>
+</body>
+
+</html>

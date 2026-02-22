@@ -1,0 +1,39 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] --------------------< com.omcgc:omcgc-erp-backend >---------------------
+[INFO] Building omcgc-erp-backend 0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ omcgc-erp-backend ---
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.11.0:compile (default-compile) @ omcgc-erp-backend ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ omcgc-erp-backend ---
+[INFO] skip non existing resourceDirectory D:\_sTIC\Documents\_Empresa GraxSofT\_CODE_\ERP_WALOOK\omcgc\backend\src\test\resources
+[INFO] 
+[INFO] --- compiler:3.11.0:testCompile (default-testCompile) @ omcgc-erp-backend ---
+[INFO] No sources to compile
+[INFO] 
+[INFO] --- surefire:3.0.0:test (default-test) @ omcgc-erp-backend ---
+[INFO] Tests are skipped.
+[INFO] 
+[INFO] --- jar:3.3.0:jar (default-jar) @ omcgc-erp-backend ---
+[INFO] 
+[INFO] --- spring-boot:3.1.5:repackage (repackage) @ omcgc-erp-backend ---
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  1.376 s
+[INFO] Finished at: 2026-02-06T01:54:37-06:00
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.springframework.boot:spring-boot-maven-plugin:3.1.5:repackage (repackage) on project omcgc-erp-backend: Execution repackage of goal org.springframework.boot:spring-boot-maven-plugin:3.1.5:repackage failed: Unable to rename 'D:\_sTIC\Documents\_Empresa GraxSofT\_CODE_\ERP_WALOOK\omcgc\backend\target\omcgc-erp-backend-0.0.1-SNAPSHOT.jar' to 'D:\_sTIC\Documents\_Empresa GraxSofT\_CODE_\ERP_WALOOK\omcgc\backend\target\omcgc-erp-backend-0.0.1-SNAPSHOT.jar.original' -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/PluginExecutionException

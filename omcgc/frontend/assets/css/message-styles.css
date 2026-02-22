@@ -1,0 +1,679 @@
+/*
+============================================================
+Nombre del archivo : message-styles.css
+Ruta              : omcgc/frontend/assets/css/message-styles.css
+Tipo              : Hoja de Estilos (CSS)
+Proyecto          : ERP WALOOK
+Proposito         : Estilos para el sistema de mensajes y notificaciones
+============================================================
+
+REGLAS DE USO:
+------------------------------------------------------------
+1. Este archivo DEBE importarse en TODAS las paginas que usen MessageService.
+2. NO modificar colores fuera de las variables de ui-base.css.
+3. NO crear estilos inline en JavaScript.
+4. Todos los mensajes usan las mismas clases base.
+5. La animacion del spinner es obligatoria para tipo 6 (procesando).
+
+ESTRUCTURA:
+------------------------------------------------------------
+1. Overlay y Modal Base
+2. Componentes del Mensaje (header, titulo, textos)
+3. Elementos Especiales (campo error, area tecnica, textarea)
+4. Botones por Tipo
+5. Animaciones
+
+COMPATIBILIDAD:
+------------------------------------------------------------
+- Navegadores: Chrome 90+, Firefox 88+, Edge 90+
+- Responsive: Si (adaptable a pantallas pequenas)
+- Accesibilidad: Cumple WCAG 2.1 nivel AA
+============================================================
+*/
+
+/* ========== 1. OVERLAY Y MODAL BASE ========== */
+
+/**
+ * Overlay: Fondo oscuro semitransparente que cubre toda la pantalla.
+ * Proposito: Enfocar la atencion del usuario en el mensaje.
+ */
+.message-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+/**
+ * Modal: Contenedor principal del mensaje.
+ * Dimensiones: 
+ * - Ancho: Fijo segun tipo (definido por JavaScript)
+ * - Altura: Minima segun tipo, maxima +20%, luego scroll
+ */
+.message-modal {
+    background: #ffffff;
+    border-radius: 8px;
+    border: 1px solid #d1d5db;
+    padding: 40px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+    /* La altura ahora es dinámica: se ajusta al contenido hasta un límite saludable */
+    min-height: auto;
+    max-height: 85vh;
+    overflow-y: auto;
+}
+
+/* Dimensiones base por tipo de mensaje (Desktop) */
+.message-modal.type-1 {
+    width: 520px;
+    min-height: 200px;
+}
+
+.message-modal.type-2 {
+    width: 520px;
+    min-height: 180px;
+}
+
+.message-modal.type-3 {
+    width: 640px;
+    min-height: 300px;
+}
+
+.message-modal.type-4 {
+    width: 520px;
+    min-height: 160px;
+}
+
+.message-modal.type-5 {
+    width: 600px;
+    min-height: 280px;
+}
+
+.message-modal.type-6 {
+    width: 420px;
+    min-height: 140px;
+}
+
+.message-modal.type-7 {
+    width: 520px;
+    min-height: 160px;
+}
+
+.message-modal.type-8 {
+    width: 520px;
+    min-height: 160px;
+}
+
+.message-modal.type-9 {
+    width: 650px;
+    /* Un poco más ancho para logs */
+    min-height: 160px;
+}
+
+.message-modal.type-10 {
+    width: 700px;
+    max-width: 90vw;
+}
+
+.message-modal.type-10 .message-main {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 13px;
+    white-space: pre;
+    background: #f8fafc;
+    padding: 15px;
+    border-radius: 6px;
+    border: 1px solid #e2e8f0;
+    overflow-x: auto;
+    max-height: 350px;
+    overflow-y: auto;
+    line-height: 1.2;
+    color: #1e293b;
+}
+
+.message-modal.type-10 .message-title {
+    color: #0f172a;
+}
+
+
+/* Colores de iconos SVG por tipo */
+.icon-error {
+    color: #dc2626;
+}
+
+/* Rojo - Tipos 1, 3, 8 */
+.icon-info {
+    color: #2563eb;
+}
+
+/* Azul - Tipos 2, 6, 7 */
+.icon-success {
+    color: #10b981;
+}
+
+/* Verde - Tipo 4 */
+.icon-warning {
+    color: #f59e0b;
+}
+
+/* Naranja - Tipos 5, 9 */
+
+/* ========== 2. COMPONENTES DEL MENSAJE ========== */
+
+/**
+ * Header: Contenedor del icono y titulo.
+ * Layout: Flexbox horizontal con gap de 16px.
+ */
+.message-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+/**
+ * Titulo: Texto principal del encabezado.
+ * Tipografia: Inter 18px semibold (alineado con ui-base.css).
+ */
+.message-title {
+    font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0;
+}
+
+/**
+ * Divisor: Linea horizontal que separa el header del contenido.
+ */
+.message-divider {
+    border: none;
+    border-top: 1px solid #e5e7eb;
+    margin: 16px 0;
+}
+
+/**
+ * Mensaje Principal: Texto descriptivo principal.
+ * Tipografia: Inter 15px regular.
+ */
+.message-main {
+    font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif;
+    font-size: 15px;
+    color: #374151;
+    margin: 16px 0;
+    line-height: 1.5;
+}
+
+/**
+ * Mensaje Secundario: Texto de ayuda o informacion adicional.
+ * Tipografia: Inter 14px regular, color gris.
+ */
+.message-secondary {
+    font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif;
+    font-size: 14px;
+    color: #6b7280;
+    margin: 8px 0;
+    line-height: 1.5;
+}
+
+/* ========== 3. ELEMENTOS ESPECIALES ========== */
+
+/**
+ * Campo Error: Muestra el valor que causo el error (tipo 1).
+ * Diseno: Fondo rojo claro con borde rojo.
+ */
+.message-field-error {
+    background: #fef2f2;
+    border: 1px solid #dc2626;
+    border-radius: 4px;
+    padding: 12px;
+    margin: 16px 0;
+    font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif;
+    font-size: 14px;
+    color: #dc2626;
+}
+
+/**
+ * Area Tecnica: Contenedor de detalles tecnicos (tipo 3).
+ * Diseno: Fondo gris claro con scroll interno.
+ */
+.message-technical {
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 4px;
+    padding: 16px;
+    margin: 16px 0;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.message-technical h3 {
+    font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: #374151;
+    margin: 0 0 12px 0;
+}
+
+.message-technical pre {
+    font-family: monospace;
+    font-size: 12px;
+    color: #6b7280;
+    margin: 0;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+/**
+ * Label: Etiqueta para textarea (tipo 5).
+ */
+.message-label {
+    display: block;
+    font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: #374151;
+    margin: 16px 0 8px 0;
+}
+
+/**
+ * Textarea: Campo de texto para justificacion (tipo 5).
+ * Altura fija: 80px segun diseño.
+ */
+.message-textarea {
+    width: 100%;
+    height: 80px;
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+    padding: 12px;
+    font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif;
+    font-size: 13px;
+    color: #374151;
+    resize: none;
+}
+
+.message-textarea::placeholder {
+    color: #9ca3af;
+}
+
+.message-textarea:focus {
+    outline: 2px solid #2563eb;
+    border-color: #2563eb;
+}
+
+/* ========== 4. BOTONES POR TIPO ========== */
+
+/**
+ * Contenedor de Botones: Alineacion a la derecha con gap de 12px.
+ */
+.message-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 24px;
+}
+
+/**
+ * Estilos Base de Botones.
+ * Altura: 44px (segun diseño).
+ */
+.message-buttons button {
+    height: 44px;
+    padding: 0 24px;
+    border: none;
+    border-radius: 4px;
+    font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+/**
+ * Boton Primario (Azul): Confirmaciones y acciones principales.
+ */
+.btn-primary {
+    background-color: #2563eb;
+    color: #ffffff;
+}
+
+.btn-primary:hover {
+    background-color: #1d4ed8;
+}
+
+.btn-primary:active {
+    background-color: #1e40af;
+}
+
+/**
+ * Boton Exito (Verde): Confirmacion de operaciones exitosas.
+ */
+.btn-success {
+    background-color: #10b981;
+    color: #ffffff;
+}
+
+.btn-success:hover {
+    background-color: #059669;
+}
+
+.btn-success:active {
+    background-color: #047857;
+}
+
+/**
+ * Boton Error (Rojo): Acciones de correccion de errores.
+ */
+.btn-error {
+    background-color: #dc2626;
+    color: #ffffff;
+}
+
+.btn-error:hover {
+    background-color: #b91c1c;
+}
+
+.btn-error:active {
+    background-color: #991b1b;
+}
+
+/**
+ * Boton Peligro (Rojo Claro): Confirmacion de operaciones criticas.
+ */
+.btn-danger {
+    background-color: #ef4444;
+    color: #ffffff;
+}
+
+.btn-danger:hover {
+    background-color: #dc2626;
+}
+
+.btn-danger:active {
+    background-color: #b91c1c;
+}
+
+/**
+ * Boton Advertencia (Naranja): Aceptacion de advertencias.
+ */
+.btn-warning {
+    background-color: #f59e0b;
+    color: #ffffff;
+}
+
+.btn-warning:hover {
+    background-color: #d97706;
+}
+
+.btn-warning:active {
+    background-color: #b45309;
+}
+
+/**
+ * Boton Cancelar (Gris): Cancelacion de acciones.
+ */
+.btn-cancelar {
+    background-color: #e5e7eb;
+    color: #374151;
+}
+
+.btn-cancelar:hover {
+    background-color: #d1d5db;
+}
+
+.btn-cancelar:active {
+    background-color: #9ca3af;
+}
+
+/* ========== 5. ANIMACIONES ========== */
+
+/**
+ * Animacion del Spinner (tipo 6 - procesando).
+ * Rotacion continua de 360 grados en 1 segundo.
+ */
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.spinner {
+    animation: spin 1s linear infinite;
+}
+
+/* ========== 6. RESPONSIVE ========== */
+
+/**
+ * Adaptacion para diferentes dispositivos siguiendo estandar institucional.
+ * Breakpoints:
+ * - 1024px: Tablets grandes / Laptops pequenas
+ * - 768px: Tablets
+ * - 640px: Moviles grandes
+ * - 480px: Moviles pequenos
+ */
+
+/* --- DESKTOP / PANTALLAS GRANDES (1025px y mas) --- */
+@media (min-width: 1025px) {
+    .message-buttons {
+        flex-direction: row !important;
+    }
+
+    .message-buttons button {
+        width: fit-content !important;
+        height: 44px !important;
+        font-size: 14px !important;
+    }
+}
+
+/* --- TABLETS GRANDES / LAPTOPS PEQUENAS (1024px y menos) --- */
+@media (max-width: 1024px) {
+    .message-modal {
+        padding: 32px;
+        max-width: 92% !important;
+        width: auto !important;
+    }
+
+    .message-title {
+        font-size: 17px;
+    }
+
+    .message-main {
+        font-size: 14px;
+    }
+
+    .message-secondary {
+        font-size: 13px;
+    }
+
+    /* Reset de estilos mobile */
+    .message-buttons {
+        flex-direction: row;
+    }
+
+    .message-buttons button {
+        width: fit-content;
+        height: 44px;
+        font-size: 14px;
+    }
+}
+
+/* --- TABLETS (768px y menos) --- */
+@media (max-width: 768px) {
+    .message-modal {
+        padding: 24px;
+        max-width: 95% !important;
+        width: auto !important;
+    }
+
+    .message-title {
+        font-size: 16px;
+    }
+
+    .message-main {
+        font-size: 14px;
+    }
+
+    .message-secondary {
+        font-size: 13px;
+    }
+
+    .message-buttons {
+        flex-direction: column !important;
+        align-items: flex-end;
+        /* Alinear a la derecha */
+        gap: 8px;
+    }
+
+    .message-buttons button {
+        width: fit-content !important;
+        /* Ajustar al texto */
+        min-width: 120px;
+        /* Ancho minimo para consistencia */
+        height: 44px;
+        font-size: 14px;
+    }
+
+    .message-technical {
+        max-height: 150px;
+    }
+}
+
+/* --- MOVILES GRANDES (640px y menos) --- */
+@media (max-width: 640px) {
+    .message-modal {
+        padding: 20px;
+        max-width: 98% !important;
+        width: auto !important;
+    }
+
+    .message-header {
+        gap: 12px;
+    }
+
+    .message-title {
+        font-size: 15px;
+    }
+
+    .message-main {
+        font-size: 13px;
+    }
+
+    .message-secondary {
+        font-size: 12px;
+    }
+
+    .message-field-error {
+        font-size: 13px;
+        padding: 10px;
+    }
+
+    .message-buttons {
+        flex-direction: column !important;
+        align-items: flex-end;
+    }
+
+    .message-buttons button {
+        width: fit-content !important;
+        min-width: 120px;
+        height: 40px;
+        font-size: 13px;
+    }
+}
+
+/* --- MOVILES PEQUENOS (480px y menos) --- */
+@media (max-width: 480px) {
+    .message-modal {
+        padding: 16px;
+        max-width: 100% !important;
+        width: 100% !important;
+        border-radius: 0;
+    }
+
+    .message-header {
+        gap: 10px;
+    }
+
+    .message-title {
+        font-size: 14px;
+    }
+
+    .message-main {
+        font-size: 12px;
+    }
+
+    .message-secondary {
+        font-size: 11px;
+    }
+
+    .message-divider {
+        margin: 12px 0;
+    }
+
+    .message-field-error {
+        font-size: 12px;
+        padding: 8px;
+    }
+
+    .message-technical {
+        max-height: 120px;
+        padding: 12px;
+    }
+
+    .message-technical h3 {
+        font-size: 12px;
+    }
+
+    .message-technical pre {
+        font-size: 11px;
+    }
+
+    .message-textarea {
+        height: 60px;
+        font-size: 12px;
+    }
+
+    .message-buttons {
+        margin-top: 16px;
+        gap: 6px;
+        flex-direction: column !important;
+        align-items: flex-end;
+    }
+
+    .message-buttons button {
+        width: fit-content !important;
+        min-width: 100px;
+        height: 38px;
+        font-size: 12px;
+        padding: 0 16px;
+    }
+}
+
+/* ========== 7. ACCESIBILIDAD ========== */
+
+/**
+ * Focus visible para navegacion por teclado.
+ */
+.message-buttons button:focus {
+    outline: 2px solid #2563eb;
+    outline-offset: 2px;
+}
+
+/**
+ * Reduccion de movimiento para usuarios con preferencias de accesibilidad.
+ */
+@media (prefers-reduced-motion: reduce) {
+    .spinner {
+        animation: none;
+    }
+
+    .message-buttons button {
+        transition: none;
+    }
+}

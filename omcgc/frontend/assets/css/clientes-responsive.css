@@ -1,0 +1,242 @@
+/* ========================================
+   DISEÑO RESPONSIVO - CLIENTES
+   ======================================== */
+
+/* --- TABLETS (1024px y menos) --- */
+@media (max-width: 1024px) {
+    .main-card {
+        padding: 20px 25px;
+        margin: 15px;
+    }
+
+    .filter-bar {
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
+    .filter-group {
+        flex: 1 1 calc(50% - 6px);
+        min-width: 200px;
+    }
+
+    .table-area {
+        height: 500px;
+    }
+
+    th,
+    td {
+        padding: 10px 8px;
+        font-size: 13px;
+    }
+
+    .detail-panel {
+        padding: 20px;
+    }
+
+    .form-row {
+        gap: 12px;
+    }
+}
+
+/* --- TABLETS PEQUEÑAS (768px y menos) --- */
+@media (max-width: 768px) {
+    .main-card {
+        padding: 15px 20px;
+        margin: 10px;
+    }
+
+    .header-section h1 {
+        font-size: 1.5rem;
+    }
+
+    .filter-bar {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .filter-group {
+        flex: 1 1 100%;
+        min-width: 100%;
+    }
+
+    /* Scrollbars para Tabla de Clientes - Reforzado */
+    .usuarios-list>div {
+        max-height: 400px;
+        overflow-x: auto !important;
+        overflow-y: auto !important;
+        display: block;
+        width: 100%;
+    }
+
+    .table-base,
+    table {
+        min-width: 800px !important;
+        width: auto !important;
+    }
+
+    .toolbar {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .btn-primary,
+    .btn-light {
+        padding: 8px 14px;
+        font-size: 13px;
+    }
+
+    .table-area {
+        height: 400px;
+        overflow-x: auto;
+    }
+
+    table {
+        min-width: 800px;
+    }
+
+    /* Ocultar columnas menos importantes en móvil */
+    th:nth-child(3),
+    td:nth-child(3),
+    th:nth-child(5),
+    td:nth-child(5) {
+        display: none;
+    }
+
+    .detail-panel {
+        padding: 15px;
+    }
+
+    .form-row {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .form-group {
+        flex: 1 1 100%;
+    }
+
+    .detail-actions {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .detail-actions button {
+        width: 100%;
+    }
+}
+
+/* --- MÓVILES (640px y menos) --- */
+@media (max-width: 640px) {
+    .main-card {
+        padding: 12px 15px;
+        margin: 5px;
+        border-radius: 8px;
+    }
+
+    .header-section {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .header-section h1 {
+        font-size: 1.25rem;
+    }
+
+    .filter-group label {
+        font-size: 0.65rem;
+    }
+
+    .input-control,
+    .input-base {
+        padding: 6px 10px;
+        font-size: 13px;
+    }
+
+    .toolbar {
+        justify-content: stretch;
+    }
+
+    .toolbar button {
+        flex: 1;
+        font-size: 12px;
+        padding: 6px 10px;
+    }
+
+    .table-area {
+        height: 350px;
+    }
+
+    th,
+    td {
+        padding: 8px 6px;
+        font-size: 12px;
+    }
+
+    .badge {
+        font-size: 10px;
+        padding: 2px 6px;
+    }
+
+    .btn-ver,
+    .btn-action {
+        padding: 3px 8px;
+        font-size: 11px;
+    }
+
+    .detail-panel {
+        padding: 12px;
+    }
+
+    .detail-header h2 {
+        font-size: 1.1rem;
+    }
+
+    .form-group label {
+        font-size: 12px;
+    }
+
+    .form-group input,
+    .form-group select {
+        font-size: 13px;
+        padding: 6px 10px;
+    }
+
+    .detail-actions button {
+        padding: 8px 12px;
+        font-size: 13px;
+    }
+}
+
+/* --- MÓVILES MUY PEQUEÑOS (480px y menos) --- */
+@media (max-width: 480px) {
+    .main-card {
+        padding: 10px;
+        margin: 0;
+        border-radius: 0;
+    }
+
+    .header-section h1 {
+        font-size: 1.1rem;
+    }
+
+    .table-area {
+        height: 300px;
+    }
+
+    /* Mostrar solo columnas esenciales */
+    th:nth-child(2),
+    td:nth-child(2),
+    th:nth-child(4),
+    td:nth-child(4) {
+        display: none;
+    }
+
+    .detail-panel {
+        padding: 10px;
+    }
+
+    .form-group {
+        margin-bottom: 8px;
+    }
+}

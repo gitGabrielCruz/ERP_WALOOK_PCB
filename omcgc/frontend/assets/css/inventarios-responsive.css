@@ -1,0 +1,110 @@
+/* ========================================
+   DISEÑO RESPONSIVO - MEDIA QUERIES (HOMOLOGADO)
+   ======================================== */
+
+/* --- TABLETS (1024px y menos) --- */
+@media (max-width: 1024px) {
+    .app-main-container>div {
+        padding: 0 15px;
+    }
+
+    .filter-bar {
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
+    .col-search {
+        flex: 1 1 100% !important;
+    }
+
+    .col-category,
+    .col-status {
+        flex: 1 1 calc(50% - 6px) !important;
+        min-width: 150px;
+    }
+
+    .table-area {
+        max-height: 500px;
+    }
+
+    .right-panel {
+        width: 100% !important;
+        max-width: 100%;
+    }
+}
+
+/* --- TABLETS PEQUEÑAS (768px y menos) --- */
+@media (max-width: 768px) {
+    .usuarios-header h1 {
+        font-size: 1.5rem;
+    }
+
+    .filter-bar {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .filter-group {
+        width: 100% !important;
+        flex: none !important;
+    }
+
+    /* CRÍTICO: Convertir split-layout a columna vertical */
+    .split-layout {
+        flex-direction: column !important;
+    }
+
+    .left-panel {
+        order: 1;
+        /* Catálogo primero en responsivo */
+    }
+
+    .right-panel {
+        order: 2;
+        /* Ficha Técnica después */
+        width: 100% !important;
+    }
+
+    .table-area {
+        max-height: 400px;
+        overflow-x: auto;
+    }
+
+    table {
+        min-width: 600px;
+    }
+}
+
+/* --- MÓVILES (640px y menos) --- */
+@media (max-width: 640px) {
+    .usuarios-header h1 {
+        font-size: 1.25rem;
+    }
+
+    .input-base {
+        padding: 8px 10px;
+        font-size: 13px;
+    }
+
+    .status-btn {
+        padding: 6px 10px;
+        font-size: 11px;
+    }
+
+    .form-actions {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .actions-left,
+    .actions-right {
+        width: 100%;
+        justify-content: stretch;
+    }
+
+    .actions-left button,
+    .actions-right button {
+        flex: 1;
+        font-size: 12px;
+    }
+}

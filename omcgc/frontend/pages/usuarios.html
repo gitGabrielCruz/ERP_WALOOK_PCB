@@ -1,0 +1,509 @@
+<!--
+============================================================
+Nombre del archivo : usuarios.html
+Ruta              : omcgc/frontend/pages/usuarios.html
+Tipo              : Frontend (HTML5)
+
+Proyecto          : Sistema ERP en la nube para gestión de ópticas OMCGC
+Empresa           : WALOOK MEXICO, S.A. de C.V.
+
+Autor             : Gabriel Amílcar Cruz Canto
+Matrícula         : ES1821003109
+Programa          : Licenciatura en Ingeniería en Desarrollo de Software
+Unidad didáctica  : Proyecto Terminal I / Proyecto Terminal II
+Periodo académico : PT1 – PT2 (Agosto 2025 – Enero 2026)
+
+Versión           : v1.2
+
+Propósito:
+Proveer la interfaz gráfica para la Administración Integral de Usuarios (ABM),
+Gestión de Roles y Configuración Granular de Permisos de Acceso.
+
+Trazabilidad y Mapeo Funcional:
+------------------------------------------------------------
+1. HU-M02-01 (Gestión de Usuarios):
+   - Listado paginado y filtrable de usuarios del sistema.
+   - Formulario de Alta y Edición de datos maestos (Nombre, Correo, Rol).
+2. HU-M02-02 (Control de Estatus):
+   - Mecanismo para activar/desactivar usuarios (Baja lógica).
+3. HU-M02-03 (Matriz de Permisos):
+   - Tabla interactiva para asignar permisos CRUD por módulo.
+   - Herencia de permisos base desde Roles predefinidos.
+4. RF-04 (Seguridad y Auditoría):
+   - Restricción de elementos UI basada en 'permisosActuales' del operador.
+   - Bloqueo de campos en modo "Solo Lectura".
+============================================================
+-->
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OPTICA ERP - Usuarios, Roles y Permisos</title>
+    <link rel="stylesheet" href="../assets/css/ui-base.css">
+    <link rel="stylesheet" href="../assets/css/usuarios-custom.css">
+    <link rel="stylesheet" href="../assets/css/message-styles.css">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
+    <style>
+        /* 1. Zebra Striping (Base) */
+        #usuariosTableBody tr:nth-child(even) td {
+            background-color: #f9fafb;
+            /* Gris suave */
+        }
+
+        #usuariosTableBody tr:nth-child(odd) td {
+            background-color: #ffffff;
+            /* Blanco */
+        }
+
+        /* 2. Hover Sutil (Sobrepone Zebra) */
+        #usuariosTableBody tr:hover td {
+            background-color: #e0f2fe !important;
+            cursor: pointer;
+            transition: background-color 0.1s ease;
+        }
+
+        /* 3. Fila Seleccionada (Activa Permanentemente - Gana a todo) */
+        #usuariosTableBody tr.selected-row td {
+            background-color: #bae6fd !important;
+            /* Azul distinto */
+            font-weight: 500;
+
+            /* TRUCO VISUAL: Expande el color a los lados para tapar los huecos verticales */
+            box-shadow: 5px 0 0 #bae6fd, -5px 0 0 #bae6fd;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Borde indicador solo en la primera celda */
+        #usuariosTableBody tr.selected-row td:first-child {
+            border-left: 4px solid #0284c7;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app-wrapper">
+
+        <!-- 
+        [RF-05] HEADER BAR ESTÁNDAR 
+        Componente global de navegación y estado de sesión.
+        [JS BINDING] Datos poblados por MenuService / usuarios-service.js (userName, userRole).
+        -->
+        <header class="app-header-bar">
+            <div class="header-left" style="cursor: pointer;" onclick="window.location.href='menu.html'">
+                <img src="../assets/img/logo.png" alt="OPTICA ERP Logo" class="header-logo">
+                <div class="header-brand-box">
+                    <div class="header-brand-title">
+                        OPTICA ERP
+                        <span class="material-symbols-outlined header-module-icon">manage_accounts</span>
+                    </div>
+                    <span id="currentDate" class="header-date">--/--/----</span>
+                </div>
+            </div>
+
+            <div class="app-status-bar">
+                <div class="status-item">
+                    <span style="font-weight: 600;" id="userName">Cargando...</span>
+                    <span
+                        style="font-size: 0.75rem; color: #6B7280; background: #F3F4F6; padding: 2px 6px; border-radius: 4px;"
+                        id="userRole">...</span>
+                </div>
+                <div class="status-separator"></div>
+                <div class="time-stats">
+                    <div class="time-stat-box">
+                        <div class="time-label">INGRESO</div>
+                        <div class="time-value" id="loginTime">--:--</div>
+                    </div>
+                    <div class="time-stat-box">
+                        <div class="time-label">ACTUAL</div>
+                        <div class="time-value" id="currentClock">--:--</div>
+                    </div>
+                    <div class="time-stat-box">
+                        <div class="time-label">CONEXIÓN</div>
+                        <div class="time-value" style="color: var(--color-success);" id="sessionTimer">00:00:00</div>
+                    </div>
+                </div>
+                <div class="status-separator"></div>
+                <!-- Botón SMTP (Movido al Header) -->
+                <button id="btnSmtpConfig" class="btn-primary btn-smtp"
+                    style="display: none; margin-right: 15px; padding: 6px 12px; font-size: 0.8rem;"
+                    onclick="UsuariosService.abrirSmtpModal()">
+                    <span class="material-symbols-outlined"
+                        style="font-size: 1.1rem; margin-right:5px;">mail_lock</span>
+                    SMTP
+                </button>
+                <button
+                    onclick="if(document.referrer.indexOf(window.location.host) !== -1) { history.back(); } else { window.location.href='menu.html'; }"
+                    class="btn-logout">SALIR ✕</button>
+            </div>
+        </header>
+
+        <!-- MAIN CONTENT -->
+        <main class="app-main-container">
+            <div style="width: 100%; max-width: 1400px;">
+
+                <!-- ENCABEZADO Y BOTÓN SMTP -->
+                <div class="usuarios-header" style="position: relative;">
+                    <h1>Usuarios, Roles y Permisos</h1>
+                    <p>Control de usuarios, roles y permisos de acceso a usuarios del sistema</p>
+
+
+                </div>
+
+                <!-- 
+                [HU-M02-01] BARRA DE HERRAMIENTAS Y FILTRADO
+                Permite la localización rápida de registros mediante búsqueda textual o filtros por Rol/Estatus.
+                [JS BINDING] Eventos 'input' y 'change' vinculados a UsuariosService.filtrarUsuarios().
+                -->
+                <div class="filter-bar">
+                    <div class="filter-group" style="flex: 1; min-width: 200px;">
+                        <label>Buscar</label>
+                        <input type="text" id="searchInput" placeholder="Nombre, correo..." class="input-base">
+                    </div>
+                    <div class="filter-group" style="min-width: 150px;">
+                        <label>Rol</label>
+                        <select id="filterRol" class="input-base">
+                            <option value="">Todos</option>
+                            <option value="ADMIN">ADMIN</option>
+                            <option value="CAJA">CAJA</option>
+                            <option value="OPTOMETRIA">OPTOMETRIA</option>
+                            <option value="TALLER">TALLER</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Estatus</label>
+                        <div class="status-toggle">
+                            <button class="status-btn active" data-status="activo">Activos</button>
+                            <button class="status-btn" data-status="inactivo">Inactivos</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- LAYOUT 2 COLUMNAS (Responsive vía CSS) -->
+                <div class="usuarios-layout">
+
+                    <!-- COLUMNA IZQUIERDA: LISTADO 
+                    [HU-M02-01] LISTADO MAESTRO DE USUARIOS
+                    [JS BINDING] Renderizado por UsuariosService.renderTabla().
+                    [COMPORTAMIENTO] Carga inicial automática (init) y reactiva a filtros.
+                    -->
+                    <div class="usuarios-list">
+                        <h3 style="margin-top: 0; margin-bottom: 15px; font-size: 1rem;">Listado de usuarios</h3>
+                        <div style="overflow-x: auto;">
+                            <table class="table-base">
+                                <thead>
+                                    <tr>
+                                        <th>Usuario</th>
+                                        <th>Correo</th>
+                                        <th>Rol</th>
+                                        <th>Estatus</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="usuariosTableBody">
+                                    <tr>
+                                        <td colspan="5" style="text-align: center; padding: 30px; color: #9CA3AF;">
+                                            Cargando usuarios...
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- COLUMNA DERECHA: DETALLE 
+                    [HU-M02-01] FORMULARIO DE EDICIÓN
+                    [RF-04] PROTECCIÓN DE INTERFAZ (Bloqueo de campos)
+                    [JS BINDING] Controlado por cargarDetalleUsuario(). Los inputs se deshabilitan si 'permisosActuales.editar' es false.
+                    -->
+                    <div class="usuario-detail">
+                        <h3 style="margin-top: 0; margin-bottom: 15px; font-size: 1rem;">Detalle del usuario</h3>
+                        <input type="hidden" id="detailIdUsuario"> <!-- Hidden ID -->
+
+                        <div class="detail-field">
+                            <label>Usuario</label>
+                            <!-- 
+                            [CAMPO] ID USUARIO
+                            [REGLA] ReadOnly. Generado por Backend (UUID/Auto-inc).
+                            -->
+                            <input type="text" id="detailUsuario" class="input-base" readonly
+                                placeholder="Se genera automático">
+                        </div>
+
+                        <div class="detail-field">
+                            <label>Correo</label>
+                            <input type="email" id="detailCorreo" class="input-base" placeholder="email@ejemplo.com">
+                        </div>
+
+                        <div class="detail-field">
+                            <label>Nombre completo</label>
+                            <input type="text" id="detailNombre" class="input-base" placeholder="Nombre Apellido">
+                        </div>
+
+                        <div class="detail-field">
+                            <label>Rol</label>
+
+                            <!-- Checkbox de Seguridad [RF-PERMISOS-02] -->
+                            <div style="margin-bottom: 8px; font-size: 0.85rem;">
+                                <label
+                                    style="display: inline-flex; align-items: center; cursor: pointer; user-select: none;">
+                                    <input type="checkbox" id="chkHabilitarRol"
+                                        style="width: 16px; height: 16px; margin-right: 8px;">
+                                    <span>
+                                        Modificar permisos de roles
+                                        <span id="txtEstadoRol"
+                                            style="color: #EF4444; font-weight: bold; margin-left: 4px;">DESACTIVADO</span>
+                                    </span>
+                                </label>
+                            </div>
+
+                            <select id="detailRol" class="input-base" disabled>
+                                <option value="">Seleccionar...</option>
+                                <option value="ADMIN">ADMIN</option>
+                                <option value="CAJA">CAJA</option>
+                                <option value="OPTOMETRIA">OPTOMETRIA</option>
+                                <option value="TALLER">TALLER</option>
+                            </select>
+                        </div>
+
+                        <div class="detail-field">
+                            <!-- [HU-M02-02] CONTROL DE ESTATUS (BAJA LÓGICA) -->
+                            <label>Estatus</label>
+                            <select id="detailEstatus" class="input-base">
+                                <option value="activo">Activo</option>
+                                <option value="inactivo">Inactivo</option>
+                            </select>
+                        </div>
+
+                        <div class="detail-field">
+                            <label>Seguridad</label>
+                            <button id="btnResetPassword" class="btn-secondary" style="width: 100%;"
+                                onclick="UsuariosService.resetPassword()" disabled>
+                                Forzar cambio de contraseña
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- MATRIZ DE PERMISOS 
+                [HU-M02-03] ASIGNACIÓN GRANULAR DE PRIVILEGIOS
+                [JS BINDING] Renderizada por cargarPermisosRol/Usuario.
+                [REGLA] Checkboxes disabled si no se tiene permiso de EDITAR.
+                -->
+                <div class="permisos-matrix">
+                    <h3 style="margin-top: 0; margin-bottom: 15px; font-size: 1rem;">Permisos por módulo</h3>
+                    <div style="overflow-x: auto;">
+                        <table class="permisos-table">
+                            <thead>
+                                <tr>
+                                    <th style="text-align: left;">Módulo</th>
+                                    <th class="text-center">Ver</th>
+                                    <th class="text-center">Crear</th>
+                                    <th class="text-center">Editar</th>
+                                    <th class="text-center">Eliminar</th>
+                                </tr>
+                            </thead>
+                            <tbody id="permisosTableBody">
+                                <tr>
+                                    <td colspan="5" class="text-center" style="padding: 20px; color: #9CA3AF;">
+                                        Seleccione un Rol para ver/editar permisos
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+
+                <!-- BOTONES DE ACCIÓN 
+                [RF-04] VALIDACIÓN DE SEGURIDAD EN ACCIONES
+                [JS BINDING] Visibilidad controlada por aplicarSeguridadGlobal().
+                [REGLA] Guardar valida permisos en Backend antes de enviar.
+                -->
+                <div class="action-buttons-container">
+                    <div class="action-buttons-left">
+                        <!-- Botón Bitácora (Solo Admin) -->
+                        <button id="btnBitacora" class="btn-secondary btn-bitacora"
+                            onclick="UsuariosService.verBitacora()" style="display: none;"
+                            title="Solo Administradores - Auditoría de accesos">
+                            <span class="material-symbols-outlined"
+                                style="font-size: 1.2rem; margin-right: 5px;">admin_panel_settings</span>
+                            Ver bitácora <span style="font-size: 0.7em; opacity: 0.7;">(Admin)</span>
+                        </button>
+                    </div>
+                    <div class="action-buttons-right">
+                        <button id="btnGuardar" class="btn-primary" onclick="UsuariosService.guardar()">
+                            <span class="material-symbols-outlined"
+                                style="font-size: 1.2rem; margin-right: 5px;">save</span>
+                            Guardar
+                        </button>
+                        <button class="btn-secondary" onclick="UsuariosService.limpiarFormulario()">Cancelar</button>
+                        <button class="btn-primary" onclick="UsuariosService.nuevo()">
+                            <span class="material-symbols-outlined"
+                                style="font-size: 1.2rem; margin-right: 5px;">add_circle</span>
+                            Nuevo
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- MODAL DE CONFIGURACIÓN SMTP -->
+    <div id="smtpModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Configuración SMTP Segura</h2>
+                <button class="close-modal" onclick="UsuariosService.cerrarSmtpModal()">×</button>
+            </div>
+
+            <form id="smtpForm" onsubmit="event.preventDefault();">
+                <div class="form-group">
+                    <label class="text-label">Perfil de Proveedor</label>
+                    <select id="smtpPerfil" class="input-base" onchange="UsuariosService.cambiarPerfilSmtp()">
+                        <option value="custom">Dominio Propio / Personalizado</option>
+                        <option value="gmail">Gmail</option>
+                        <option value="hotmail">Outlook / Hotmail</option>
+                    </select>
+                </div>
+
+                <div class="form-group" style="display: grid; grid-template-columns: 2fr 1fr; gap: 10px;">
+                    <div>
+                        <label class="text-label">Servidor (Host)</label>
+                        <input type="text" id="smtpHost" class="input-base" placeholder="smtp.ejemplo.com">
+                    </div>
+                    <div>
+                        <label class="text-label">Puerto</label>
+                        <input type="number" id="smtpPort" class="input-base" placeholder="587">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="text-label">Correo Saliente (User)</label>
+                    <input type="email" id="smtpUser" class="input-base" placeholder="notificaciones@dominio.com">
+                </div>
+
+                <div class="form-group">
+                    <label class="text-label">Contraseña / App Password</label>
+                    <input type="password" id="smtpPass" class="input-base">
+                </div>
+
+                <div class="form-group" style="display: flex; gap: 20px;">
+                    <label class="checkbox-inline">
+                        <input type="checkbox" id="smtpAuth" checked> Requiere Autenticación
+                    </label>
+                    <label class="checkbox-inline">
+                        <input type="checkbox" id="smtpTls" checked> STARTTLS
+                    </label>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; margin-top: 20px;">
+                    <button type="button" class="btn-secondary" onclick="UsuariosService.probarSmtp()">
+                        <span class="material-symbols-outlined" style="font-size:1.1rem; margin-right:5px;">send</span>
+                        Probar
+                    </button>
+                    <button type="button" class="btn-primary" onclick="UsuariosService.guardarSmtp()">
+                        <span class="material-symbols-outlined" style="font-size:1.1rem; margin-right:5px;">lock</span>
+                        Guardar Seguro
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL DE BITÁCORA DE SEGURIDAD (SOLO ADMIN) -->
+    <div id="bitacoraModal" class="modal-overlay">
+        <div class="modal-content" style="max-width: 1100px; width: 95%;">
+            <div class="modal-header">
+                <div style="display: flex; align-items: center;">
+                    <span class="material-symbols-outlined"
+                        style="margin-right: 12px; color: #1F3A5F; font-size: 2rem;">shield_person</span>
+                    <div>
+                        <h2 style="margin: 0;">Bitácora de Auditoría</h2>
+                        <p style="margin: 0; font-size: 0.8rem; color: #6B7280; font-weight: normal;">Registro histórico
+                            de
+                            operaciones críticas y accesos.</p>
+                    </div>
+                </div>
+                <button class="close-modal" onclick="UsuariosService.cerrarBitacoraModal()">×</button>
+            </div>
+
+            <!-- Filtros de Bitácora -->
+            <div class="filter-bar"
+                style="margin-bottom: 20px; box-shadow: none; border: 1px solid #e5e7eb; padding: 15px; background: #F9FAFB;">
+                <div class="filter-group">
+                    <label>Desde</label>
+                    <input type="date" id="bitacoraDesde" class="input-base">
+                </div>
+                <div class="filter-group">
+                    <label>Hasta</label>
+                    <input type="date" id="bitacoraHasta" class="input-base">
+                </div>
+                <div class="filter-group">
+                    <label>Usuario</label>
+                    <select id="bitacoraUsuario" class="input-base">
+                        <option value="">Todos los usuarios</option>
+                    </select>
+                </div>
+                <div class="filter-group" style="flex: 1;">
+                    <label>Buscar Evento / Detalle</label>
+                    <input type="text" id="bitacoraBuscar" class="input-base"
+                        placeholder="Ej: LOGIN, USER_CREATE, RESET_PWD...">
+                </div>
+                <div class="filter-group" style="display: flex; align-items: flex-end;">
+                    <button class="btn-primary" onclick="UsuariosService.cargarBitacora()"
+                        style="height: 38px; display: flex; align-items: center; justify-content: center; width: 45px;">
+                        <span class="material-symbols-outlined">search</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Tabla de Resultados -->
+            <div
+                style="max-height: 500px; overflow-y: auto; border: 1px solid #e5e7eb; border-radius: 8px; background: white;">
+                <table class="table-base">
+                    <thead style="position: sticky; top: 0; background: #F3F4F6; z-index: 10;">
+                        <tr>
+                            <th style="width: 180px;">Fecha / Hora</th>
+                            <th>Usuario</th>
+                            <th>Evento</th>
+                            <th>IP Origen</th>
+                            <th>Detalles de la Operación</th>
+                        </tr>
+                    </thead>
+                    <tbody id="bitacoraTableBody">
+                        <tr>
+                            <td colspan="5" style="text-align: center; padding: 40px; color: #9CA3AF;">
+                                <span class="material-symbols-outlined"
+                                    style="font-size: 3rem; display: block; margin-bottom: 10px;">manage_search</span>
+                                Use los filtros para consultar el historial de auditoría.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="modal-footer"
+                style="margin-top: 20px; display: flex; justify-content: flex-end; gap: 10px; align-items: center; font-size: 0.8rem; color: #6b7280; padding-top: 15px; border-top: 1px solid #E5E7EB;">
+                <button class="btn-primary" onclick="UsuariosService.generarReporteBitacora()"
+                    style="background-color: #059669;">Generar Reporte .txt</button>
+                <button class="btn-secondary" onclick="UsuariosService.cerrarBitacoraModal()">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Alerta Flotante (Toast) -->
+    <div id="toastContainer" style="position: fixed; top: 20px; right: 20px; z-index: 2000;"></div>
+
+    <script src="../assets/js/api-config.js"></script>
+    <script src="../assets/js/message-service.js"></script>
+    <script src="../assets/js/menu-service.js"></script>
+    <script src="../assets/js/auth-service.js"></script>
+    <script src="../assets/js/usuarios-service.js"></script>
+</body>
+
+</html>

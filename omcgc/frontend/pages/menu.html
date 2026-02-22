@@ -1,0 +1,333 @@
+<!--
+============================================================
+Nombre del archivo : menu.html
+Ruta              : omcgc/frontend/pages/menu.html
+Tipo              : Frontend (HTML5)
+
+Proyecto          : Sistema ERP en la nube para gestión de ópticas OMCGC
+Empresa           : WALOOK MEXICO, S.A. de C.V.
+
+Autor             : Gabriel Amílcar Cruz Canto
+Matrícula         : ES1821003109
+Programa          : Licenciatura en Ingeniería en Desarrollo de Software
+Unidad didáctica  : Proyecto Terminal I / Proyecto Terminal II
+Periodo académico : PT1 – PT2 (Agosto 2025 – Enero 2026)
+
+Versión           : v1.1
+
+Propósito:
+Implementar el tablero de control principal (Dashboard) que centraliza el acceso
+a los módulos funcionales del ERP según los privilegios del usuario.
+
+ Trazabilidad y Mapeo Funcional:
+ ------------------------------------------------------------
+ 1. HU-M01-04 (Menú Principal):
+    - Estructuración de grilla de módulos funcionales (12 módulos base).
+    - Implementación de 'Header Bar' con identidad corporativa (Logo).
+    - Mecanismo de cierre de sesión definitivo ("Salir del Sistema").
+ 2. RF-04 (Control de Acceso de Interfaz):
+    - Bloqueo visual de módulos no implementados (Alertas "En Construcción").
+    - Validación de sesión activa pre-renderizado.
+ 3. RF-05 (Monitorización de Sesión):
+    - Visualización de datos de usuario (Nombre, Rol).
+    - Reloj de tiempo real (Hora Actual) y Cronómetro de sesión (Tiempo Conexión).
+    - Registro de hora de ingreso inmutable.
+ ============================================================
+-->
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OPTICA ERP - Menú Principal</title>
+    <!-- CSS CANÓNICO DEL SISTEMA -->
+    <link rel="stylesheet" href="../assets/css/ui-base.css">
+    <link rel="stylesheet" href="../assets/css/message-styles.css">
+    <!-- Iconos Material Symbols -->
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
+</head>
+
+<body>
+
+    <div class="app-wrapper"
+        style="background-color: #F4F6F8; min-height: 100vh; display: flex; flex-direction: column;">
+
+        <!-- 1. HEADER BAR ESTÁNDAR -->
+        <header class="app-header-bar">
+            <!-- Izquierda: Logo y Branding -->
+            <div class="header-left">
+                <img src="../assets/img/logo.png" alt="OPTICA ERP Logo" class="header-logo">
+                <div class="header-brand-box">
+                    <div class="header-brand-title">
+                        OPTICA ERP
+                        <span class="material-symbols-outlined header-module-icon">grid_view</span>
+                    </div>
+                    <span id="currentDate" class="header-date">--/--/----</span>
+                </div>
+            </div>
+
+            <!-- Centro/Derecha: Status Bar -->
+            <div class="app-status-bar">
+
+                <div class="status-item">
+                    <span style="font-weight: 600;" id="userName">Cargando...</span>
+                    <span
+                        style="font-size: 0.75rem; color: #6B7280; background: #F3F4F6; padding: 2px 6px; border-radius: 4px;"
+                        id="userRole">...</span>
+                </div>
+
+                <div class="status-separator"></div>
+
+                <div class="time-stats">
+                    <div class="time-stat-box">
+                        <div class="time-label">INGRESO</div>
+                        <div class="time-value" id="loginTime">--:--</div>
+                    </div>
+                    <div class="time-stat-box">
+                        <div class="time-label">ACTUAL</div>
+                        <div class="time-value" id="currentClock">--:--</div>
+                    </div>
+                    <div class="time-stat-box">
+                        <div class="time-label">CONEXIÓN</div>
+                        <div class="time-value" style="color: var(--color-success);" id="sessionTimer">00:00:00</div>
+                    </div>
+                </div>
+
+                <div class="status-separator"></div>
+
+                <!-- Botón Salir -->
+                <button onclick="MenuService.logout()" class="btn-logout">
+                    SALIR ✕
+                </button>
+            </div>
+        </header>
+
+        <!-- 2. MAIN CONTENT CENTRADO ESTÁNDAR -->
+        <main class="app-main-container">
+
+            <div class="menu-card"
+                style="background: white; padding: 40px; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.06); width: 100%; max-width: 1000px; margin-top: 0;">
+
+                <div class="dashboard-header" style="text-align: center; margin-bottom: 40px;">
+                    <h1 class="text-title" style="font-size: 26px; color: #111827; margin-bottom: 8px;">Menú principal —
+                        Módulos del Sistema</h1>
+                    <p class="text-normal" style="color: #9CA3AF; font-size: 15px;">Selecciona un módulo para continuar
+                    </p>
+                </div>
+
+                <!-- GRID ADAPTATIVO (TILES) CON ICONOS -->
+                <div class="menu-grid"
+                    style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; width: 100%; justify-items: stretch;">
+
+                    <!-- 1. LOGIN -->
+                    <button onclick="MenuService.navigate('login.html', 'Login System')" class="menu-btn special-blue">
+                        <span class="material-symbols-outlined icon-lg">vpn_key</span>
+                        <div class="btn-title">LOGIN</div>
+                        <div class="btn-subtitle">ACCESO AL SISTEMA</div>
+                    </button>
+
+                    <!-- 2. INVENTARIO -->
+                    <button onclick="MenuService.navigate('inventarios.html', 'Inventarios')" class="menu-btn">
+                        <span class="material-symbols-outlined icon-lg">inventory_2</span>
+                        INVENTARIOS
+                    </button>
+
+                    <!-- 3. AGENDA -->
+                    <button onclick="MenuService.navigate('agenda.html', 'Agenda Citas')" class="menu-btn">
+                        <span class="material-symbols-outlined icon-lg">calendar_month</span>
+                        AGENDA<br>CITAS
+                    </button>
+
+                    <!-- 4. PROVEEDORES -->
+                    <button onclick="MenuService.navigate('proveedores.html', 'Proveedores')" class="menu-btn">
+                        <span class="material-symbols-outlined icon-lg">local_shipping</span>
+                        PROVEEDORES
+                    </button>
+
+                    <!-- 5. EXPEDIENTE -->
+                    <button onclick="MenuService.navigate('expediente.html', 'Expediente')" class="menu-btn">
+                        <span class="material-symbols-outlined icon-lg">folder_shared</span>
+                        EXPEDIENTE<br>PACIENTE
+                    </button>
+
+                    <!-- 6. CLIENTES -->
+                    <button onclick="MenuService.navigate('clientes.html', 'Clientes')" class="menu-btn">
+                        <span class="material-symbols-outlined icon-lg">groups</span>
+                        CLIENTES
+                    </button>
+
+                    <!-- 7. VENTAS -->
+                    <button onclick="MenuService.navigate('ventas.html', 'Ventas')" class="menu-btn">
+                        <span class="material-symbols-outlined icon-lg">point_of_sale</span>
+                        VENTAS
+                    </button>
+
+                    <!-- 8. COMPRAS -->
+                    <button onclick="MenuService.navigate('compras.html', 'Ordenes Compra')" class="menu-btn">
+                        <span class="material-symbols-outlined icon-lg">shopping_cart</span>
+                        ORDENES<br>DE COMPRA
+                    </button>
+
+                    <!-- 9. TALLER -->
+                    <button onclick="MenuService.navigate('taller.html', 'Taller OT')" class="menu-btn">
+                        <span class="material-symbols-outlined icon-lg">build</span>
+                        TALLER<br>OT
+                    </button>
+
+                    <!-- 10. RECEPCION -->
+                    <button onclick="MenuService.navigate('recepcion.html', 'Recepcion')" class="menu-btn">
+                        <span class="material-symbols-outlined icon-lg">move_to_inbox</span>
+                        RECEPCION Y<br>DEVOLUCION
+                    </button>
+
+                    <!-- 11. FACTURACION -->
+                    <button onclick="MenuService.navigate('facturacion.html', 'Facturacion')" class="menu-btn">
+                        <span class="material-symbols-outlined icon-lg">receipt_long</span>
+                        FACTURACION<br>CFDI
+                    </button>
+
+                    <!-- 12. USUARIOS -->
+                    <button onclick="MenuService.navigate('usuarios.html', 'Usuarios')" class="menu-btn special-gray">
+                        <span class="material-symbols-outlined icon-lg">manage_accounts</span>
+                        USUARIOS,<br>ROLES Y PERMISOS
+                    </button>
+
+                </div>
+
+                <div class="menu-footer"
+                    style="text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid #F3F4F6; color: #9CA3AF; font-size: 0.75rem;">
+                    OPTICA ERP — WALOOK MEXICO, S.A. de C.V. · Prototipo de maquetado
+                </div>
+
+            </div>
+        </main>
+
+        <style>
+            .menu-btn {
+                background-color: #F3F4F6;
+                border: 1px solid #E5E7EB;
+                border-radius: 12px;
+                aspect-ratio: 1 / 0.8;
+                /* Casi cuadrado, un poco mas ancho */
+                min-height: 120px;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                gap: 10px;
+                /* Espacio entre icono y texto */
+                cursor: pointer;
+                transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
+                font-family: 'Inter', sans-serif;
+                font-weight: 700;
+                color: #374151;
+                font-size: 0.9rem;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                text-align: center;
+                padding: 15px;
+                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            }
+
+            .icon-lg {
+                font-size: 40px !important;
+                /* Icono Grande */
+                color: #1F2937;
+                /* Efecto Relieve (Sombra blanca abajo, oscura arriba) */
+                text-shadow: 1px 1px 0px rgba(255, 255, 255, 0.8), -1px -1px 0px rgba(0, 0, 0, 0.1);
+            }
+
+            .special-blue .icon-lg {
+                color: white !important;
+                text-shadow: none;
+                /* En fondo oscuro mejor limpio */
+            }
+
+            .menu-btn:hover {
+                background-color: #E5E7EB;
+                transform: translateY(-4px);
+                box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+                border-color: #D1D5DB;
+            }
+
+            .menu-btn:active {
+                transform: translateY(-1px);
+            }
+
+            .special-blue {
+                background-color: #1F3A5F !important;
+                color: white !important;
+                border: none;
+            }
+
+            .special-blue .btn-subtitle {
+                color: rgba(255, 255, 255, 0.7);
+            }
+
+            .special-blue:hover {
+                background-color: #162c4b !important;
+            }
+
+            .special-gray {
+                background-color: #E2E8F0;
+                border-color: #CBD5E1;
+            }
+
+            .btn-title {
+                line-height: 1.2;
+                font-size: 1rem;
+            }
+
+            .btn-subtitle {
+                font-size: 0.65rem;
+                font-weight: 400;
+                margin-top: 2px;
+                opacity: 0.9;
+            }
+
+            /* Responsive Adjustments */
+            @media (max-width: 640px) {
+                .menu-grid {
+                    grid-template-columns: 1fr 1fr !important;
+                    /* Force 2 columns on mobile */
+                    gap: 15px !important;
+                }
+
+                .menu-btn {
+                    font-size: 0.75rem;
+                    /* Smaller text */
+                    min-height: 100px;
+                }
+
+                .icon-lg {
+                    font-size: 32px !important;
+                }
+
+                .app-wrapper header {
+                    padding: 10px 15px !important;
+                }
+
+                .status-bar {
+                    display: none !important;
+                    /* Ocultar statusbar completo en movil muy pequeño, dejar solo logo y quiza salir abajo */
+                }
+
+                /* Mostrar boton salir en movil de otra forma si se oculta arriba */
+            }
+        </style>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../assets/js/api-config.js"></script>
+    <script src="../assets/js/auth-service.js"></script>
+    <script src="../assets/js/message-service.js"></script>
+    <script src="../assets/js/menu-service.js"></script>
+    // Funciones puente para los onclicks inline (si se requiriera, aunque se llaman directo a MenuService)
+    // La inicialización se hace automáticamente en DOMContentLoaded dentro de menu-service.js
+    </script>
+</body>
+
+</html>

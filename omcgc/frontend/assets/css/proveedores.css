@@ -1,0 +1,341 @@
+/*
+============================================================
+Nombre del archivo : proveedores.css
+Ruta              : omcgc/frontend/assets/css/proveedores.css
+Tipo              : Hoja de Estilos (CSS)
+Proyecto          : ERP WALOOK
+Propósito         : Layout Master-Detail (Split View) para Proveedores
+============================================================
+*/
+
+/* --- Contenedor Principal --- */
+.main-card {
+    background-color: #FFFFFF;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 1600px;
+    margin: 20px auto;
+    padding: 30px 40px;
+    display: flex;
+    flex-direction: column;
+}
+
+
+/* --- Barra de Filtros (Alineación y Dimensiones) --- */
+.filter-search {
+    flex: 2;
+    min-width: 250px;
+}
+
+.filter-rfc {
+    flex: 1;
+    min-width: 150px;
+}
+
+.filter-status {
+    flex: 0 0 auto;
+    min-width: 200px;
+}
+
+.filter-group label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #6B7280;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.status-toggle {
+    display: flex;
+    gap: 0;
+}
+
+.status-btn {
+    flex: 1;
+    padding: 8px 16px;
+    border: 1px solid #CBD5E1;
+    background: white;
+    color: #64748B;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.status-btn:first-child {
+    border-radius: 6px 0 0 6px;
+}
+
+.status-btn:last-child {
+    border-radius: 0 6px 6px 0;
+    border-left: none;
+}
+
+.status-btn:hover {
+    background: #F1F5F9;
+}
+
+.status-btn.active {
+    background: #3B82F6;
+    color: white;
+    border-color: #3B82F6;
+}
+
+/* --- Filtros --- */
+
+.input-control {
+    padding: 8px 12px;
+    border: 1px solid #CBD5E1;
+    border-radius: 6px;
+    font-size: 14px;
+    outline: none;
+    width: 100%;
+}
+
+.input-control:focus {
+    border-color: #3B82F6;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+}
+
+/* Segmented Control */
+.segmented-control {
+    display: flex;
+    width: 100%;
+}
+
+.segment-btn {
+    flex: 1;
+    background: white;
+    border: 1px solid #CBD5E1;
+    padding: 7px 10px;
+    font-size: 13px;
+    cursor: pointer;
+    border-right: none;
+    color: #64748B;
+    transition: all 0.2s;
+}
+
+.segment-btn:first-child {
+    border-radius: 6px 0 0 6px;
+}
+
+.segment-btn:last-child {
+    border-radius: 0 6px 6px 0;
+    border-right: 1px solid #CBD5E1;
+}
+
+.segment-btn:hover {
+    background-color: #F1F5F9;
+}
+
+.segment-btn.active {
+    background-color: #3B82F6;
+    color: white;
+    border-color: #3B82F6;
+}
+
+/* --- Split Layout --- */
+.split-layout {
+    display: flex;
+    gap: 30px;
+    flex: 1;
+}
+
+.left-panel {
+    flex: 1.4;
+    display: flex;
+    flex-direction: column;
+}
+
+.right-panel {
+    flex: 1;
+    background-color: #FBFCFE;
+    border: 1px solid #E2E8F0;
+    border-radius: 12px;
+    padding: 25px;
+}
+
+.panel-title {
+    font-size: 1rem;
+    /* Igual a Clientes */
+    font-weight: 700;
+    color: #111827;
+    /* Más oscuro */
+    margin-bottom: 15px;
+    text-transform: uppercase;
+}
+
+/* --- Tabla --- */
+.table-area {
+    border: 1px solid #E2E8F0;
+    border-radius: 8px;
+    background: white;
+    height: 1100px;
+    /* Aumentado para visualizar 20 renglones simultáneamente */
+    overflow-y: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+th {
+    background-color: #F8FAFC;
+    padding: 12px 15px;
+    text-align: left;
+    font-size: 11px;
+    font-weight: 700;
+    color: #64748B;
+    text-transform: uppercase;
+    border-bottom: 1px solid #E2E8F0;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+td {
+    padding: 8px 15px;
+    /* Compactado ligeramente para optimizar espacio */
+    border-bottom: 1px solid #F1F5F9;
+}
+
+tr:nth-child(even) {
+    background-color: #f9fafb;
+    /* Cebra igual que clientes */
+}
+
+tr:hover {
+    background-color: #F8FAFC;
+    cursor: pointer;
+}
+
+/* Fila Seleccionada (Igual a Clientes) - Especificidad aumentada */
+#proveedoresTableBody tr.selected-row td,
+tr.selected-row td {
+    background-color: #bae6fd !important;
+    /* Azul Clientes */
+    font-weight: 500;
+    box-shadow: 5px 0 0 #bae6fd, -5px 0 0 #bae6fd;
+    position: relative;
+    border-top: 1px solid #7dd3fc;
+    border-bottom: 1px solid #7dd3fc;
+}
+
+/* Status Badge */
+.badge {
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.status-activo {
+    background-color: #DCFCE7;
+    color: #166534;
+}
+
+.status-inactivo {
+    background-color: #FEE2E2;
+    color: #991B1B;
+}
+
+/* --- Formulario --- */
+.detail-form .form-group {
+    margin-bottom: 18px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: #475569;
+    margin-bottom: 6px;
+}
+
+.row-2-col {
+    display: flex;
+    gap: 15px;
+}
+
+.row-2-col .form-group {
+    flex: 1;
+}
+
+.header-group {
+    border-bottom: 1px solid #E2E8F0;
+    padding-bottom: 5px;
+    margin-top: 10px;
+}
+
+.header-group span {
+    font-size: 12px;
+    font-weight: 700;
+    color: #94A3B8;
+    text-transform: uppercase;
+}
+
+/* --- Botones --- */
+.action-buttons-container {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 25px;
+}
+
+.btn-action {
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s;
+    border: 1px solid transparent;
+}
+
+.btn-dark {
+    background: #0F172A;
+    color: white;
+}
+
+.btn-dark:hover {
+    background: #1E293B;
+}
+
+.btn-light {
+    background: white;
+    border-color: #CBD5E1;
+    color: #475569;
+}
+
+.btn-light:hover {
+    background: #F1F5F9;
+}
+
+.btn-dark-blue {
+    background: #1E3A8A;
+    color: white;
+}
+
+.btn-dark-blue:hover {
+    background: #1E40AF;
+}
+
+.btn-ver {
+    background: transparent;
+    border: 1px solid #3B82F6;
+    color: #3B82F6;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+}
+
+.btn-ver:hover {
+    background: #3B82F6;
+    color: white;
+}

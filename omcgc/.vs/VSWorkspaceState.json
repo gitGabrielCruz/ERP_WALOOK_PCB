@@ -1,0 +1,13 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\backend",
+    "\\database",
+    "\\docs",
+    "\\frontend",
+    "\\frontend\\assets",
+    "\\frontend\\assets\\js"
+  ],
+  "SelectedNode": "\\frontend\\assets\\js\\inventarios-service.js",
+  "PreviewInSolutionExplorer": false
+}

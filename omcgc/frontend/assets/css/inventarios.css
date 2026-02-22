@@ -1,0 +1,459 @@
+/*
+============================================================
+Nombre del archivo : inventarios.css
+Ruta              : omcgc/frontend/assets/css/inventarios.css
+Tipo              : Frontend (Estilos CSS)
+
+Proyecto          : Sistema ERP en la nube para gestión de ópticas OMCGC
+Empresa           : WALOOK MEXICO, S.A. de C.V.
+
+Autor             : Gabriel Amílcar Cruz Canto
+Matrícula         : ES1821003109
+Programa          : Licenciatura en Ingeniería en Desarrollo de Software
+Unidad didáctica  : Proyecto Terminal I / Proyecto Terminal II
+Periodo académico : PT1 – PT2 (Agosto 2025 – Enero 2026)
+
+Versión           : v1.0 (Diseño de Interfaz Premium)
+
+Propósito:
+Definición de estilos para el módulo de inventarios, implementando una 
+experiencia de usuario fluida mediante transiciones CSS, gestión de 
+layout mediante Flexbox/Grid y tematizado corporativo.
+============================================================
+*/
+
+/* --- Variables de Sistema y Tokens de Diseño --- */
+:root {
+    --primary-blue: #1F3A5F;
+    --success-green: #10B981;
+    --danger-red: #EF4444;
+    --warning-orange: #F59E0B;
+    --secondary-gray: #6B7280;
+    --bg-light: #F4F6F8;
+    --border-color: #E5E7EB;
+    --shadow-soft: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+/* --- Estructura Principal (Homologado con Clientes) --- */
+.app-main-container {
+    padding: 60px 20px 20px 20px !important;
+    /* Espacio Naranja: 60px exactos de Clientes */
+    background: var(--bg-light);
+    min-height: calc(100vh - 72px);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start !important;
+    /* CRÍTICO: Evitar centrado vertical que causaba el hueco gigante */
+    align-items: center;
+    /* Centrar el bloque de contenido horizontalmente */
+}
+
+/* Título de Módulo (Homologado con Clientes) */
+.usuarios-header {
+    margin: 0 0 20px 0 !important;
+    padding: 0 !important;
+    text-align: center !important;
+    /* Restaurar centrado de Clientes */
+}
+
+.usuarios-header h1 {
+    margin: 0 0 6px 0 !important;
+    font-size: 1.5rem !important;
+    font-weight: 700 !important;
+    color: var(--color-text-main) !important;
+}
+
+.usuarios-header p {
+    margin: 0 !important;
+    color: #6B7280 !important;
+    font-size: 0.875rem !important;
+}
+
+/* --- BARRA DE FILTROS (Homologado con Clientes) --- */
+.filter-bar {
+    background: white;
+    padding: 18px 25px;
+    border-radius: 12px;
+    display: flex;
+    gap: 15px;
+    box-shadow: var(--shadow-soft);
+    margin-bottom: 18px !important;
+    /* Espacio Verde: 18px exactos de Clientes */
+    align-items: flex-end;
+}
+
+.filter-group label {
+    display: block;
+    font-size: 0.7rem;
+    font-weight: 600;
+    /* Homologado con Clientes */
+    color: #6B7280;
+    margin-bottom: 5px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* --- MASTER-DETAIL LAYOUT (Homologado con Clientes) --- */
+.split-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    /* 50/50 homologado, minmax(0) evita que el contenido deforme las columnas */
+    gap: 20px;
+    align-items: stretch;
+    width: 100%;
+}
+
+.left-panel {
+    background: white;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: var(--shadow-soft);
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    min-height: 1050px;
+    border: 1px solid #E5E7EB;
+    /* Homologado */
+}
+
+.right-panel {
+    background: white;
+    /* FBFCFE era inconsistente */
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: var(--shadow-soft);
+    display: flex;
+    flex-direction: column;
+    min-height: 1050px;
+    border: 1px solid #E5E7EB;
+    /* Homologado */
+}
+
+.panel-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+}
+
+/* --- TABLAS Y GRIDS (ERGO-DENSITY 15 REGISTROS) --- */
+body .table-area {
+    flex: none !important;
+    /* Altura fija: registros excedentes se ven con scroll */
+    overflow-y: auto !important;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    margin-top: 10px !important;
+    height: 980px !important;
+    /* Anclado estricto para 15 registros */
+    background: white;
+}
+
+#inventarioTableBody tr:nth-child(even) td {
+    background-color: #F9FAFB;
+}
+
+#inventarioTableBody tr:nth-child(odd) td {
+    background-color: #FFFFFF;
+}
+
+#inventarioTableBody tr:hover td {
+    background-color: #F3F4F6 !important;
+    cursor: pointer;
+}
+
+#inventarioTableBody tr.selected-row td {
+    background-color: #BAE6FD !important;
+    font-weight: 500;
+    position: relative;
+    box-shadow: inset 0 1px 0 rgba(0, 0, 0, 0.05), inset 0 -1px 0 rgba(0, 0, 0, 0.05);
+}
+
+#inventarioTableBody tr.selected-row td:first-child {
+    border-left: 4px solid #0284C7;
+}
+
+table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+th {
+    background: #f1f5f9;
+    padding: 12px 15px;
+    font-size: 11px;
+    font-weight: 600;
+    color: #64748b;
+    text-transform: uppercase;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    border-bottom: 2px solid var(--border-color);
+}
+
+td {
+    padding: 14px 15px;
+    font-size: 13px;
+    color: #1F2937;
+    border-bottom: 1px solid var(--border-color);
+    transition: background 0.2s ease;
+}
+
+/* --- INDICADORES DINÁMICOS --- */
+.status-badge {
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.status-ok {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.status-low {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.status-empty {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+/* HOMOLOGACION CLIENTES: Indicadores de Estatus (punto verde/rojo) */
+.status-indicator {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 6px;
+    vertical-align: middle;
+}
+
+.status-indicator.activo {
+    background-color: #10B981;
+    box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
+}
+
+.status-indicator.inactivo {
+    background-color: #EF4444;
+    box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2);
+}
+
+.col-estatus {
+    white-space: nowrap;
+}
+
+/* --- COMPONENTES DE FORMULARIO --- */
+.detail-form .form-group {
+    margin-bottom: 18px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    /* Homologado con Clientes */
+    color: #4B5563;
+    margin-bottom: 5px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.row-2-col {
+    display: flex;
+    gap: 15px;
+}
+
+.row-2-col .form-group {
+    flex: 1;
+}
+
+.section-divider {
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 5px;
+    margin-top: 10px;
+    margin-bottom: 15px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #9CA3AF;
+    text-transform: uppercase;
+}
+
+/* --- CÓDIGO DE BARRAS REAL (JsBarcode) --- */
+.barcode-container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    min-width: 120px;
+    max-width: 200px;
+    height: 50px;
+    overflow: hidden;
+}
+
+.barcode-container svg {
+    max-height: 48px;
+    width: auto;
+}
+
+.barcode-fallback {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    opacity: 0.6;
+}
+
+.detail-tabs {
+    display: flex;
+    gap: 5px;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 20px;
+}
+
+.tab-btn {
+    padding: 10px 15px;
+    background: none;
+    border: none;
+    font-size: 12px;
+    font-weight: 600;
+    color: #94a3b8;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.tab-btn.active {
+    color: var(--accent-blue);
+    border-bottom: 3px solid var(--accent-blue);
+}
+
+.form-row {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 12px;
+}
+
+.flex-1 {
+    flex: 1;
+}
+
+.input-control {
+    width: 100%;
+    padding: 8px 12px;
+    border-radius: 6px;
+    /* Homologado con ui-base */
+    border: 1px solid #D1D5DB;
+    /* Homologado con ui-base */
+    font-size: 0.875rem;
+    transition: border-color 0.2s;
+}
+
+.input-control:focus {
+    border-color: var(--accent-blue);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.readonly {
+    background: #f1f5f9;
+    color: #64748b;
+    font-weight: 600;
+}
+
+.highlight-price {
+    font-size: 20px !important;
+    font-weight: 800 !important;
+    color: #111827 !important;
+    background: #F3F4F6 !important;
+    text-align: right;
+    border: 2px solid var(--primary-blue) !important;
+}
+
+/* --- ALERTAS Y NOTIFICACIONES INTERNAS --- */
+.alert-info-box {
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    border-radius: 8px;
+    padding: 12px;
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.alert-info-box p {
+    font-size: 12px;
+    color: #1e40af;
+    margin: 0;
+}
+
+/* --- BOTONES Y ACCIONES (Homologación por Referencia: NUEVO) --- */
+.right-panel .action-buttons-container {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 10px !important;
+    justify-content: flex-end !important;
+    /* Alineado a la derecha por presentación */
+    margin-top: 20px !important;
+    border-top: 1px solid var(--border-color);
+    padding-top: 20px !important;
+}
+
+.right-panel .action-buttons-left,
+.right-panel .action-buttons-right {
+    display: flex !important;
+    gap: 10px !important;
+}
+
+.right-panel .action-buttons-container button {
+    /* Auto-sizing: min-width mantiene proporción, width auto permite crecimiento */
+    min-width: 115px !important;
+    width: auto !important;
+    height: 45px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    white-space: nowrap !important;
+    text-align: center !important;
+    line-height: 1 !important;
+    font-size: 0.8rem !important;
+    padding: 5px 12px !important;
+    border-radius: 6px !important;
+}
+
+.right-panel .action-buttons-container button span {
+    margin-right: 4px !important;
+    font-size: 1.1rem !important;
+}
+
+/* Botones y Acciones se rigen por ui-base.css */
+
+/* --- ANIMACIONES --- */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.tab-content {
+    display: none;
+    animation: fadeIn 0.4s ease forwards;
+}
+
+.tab-content.active {
+    display: block;
+}
