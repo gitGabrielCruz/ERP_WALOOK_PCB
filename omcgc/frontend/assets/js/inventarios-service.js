@@ -661,10 +661,10 @@ const InventariosService = {
             const isSuma = parseInt(m.cantidad) > 0;
             const tipoClass = isSuma ? 'txt-success' : 'txt-danger';
 
-            // Formato Dual: FOLIO INTERNO | CONCEPTO [REF: DOC]
-            const folioInterno = m.folio || 'S/F';
-            const docRef = m.origenId ? ` [REF: ${m.origenId}]` : '';
-            const concepto = ((m.tipoMovimiento || '').replace(/_/g, ' ') + docRef + (m.observaciones ? ' - ' + m.observaciones : '')).toUpperCase();
+            // [REESTRUCTURACIÓN SOLICITUD 48 - Style Institucional]
+            const idMov = m.idMovimiento || 'S/ID';
+            const folioDoc = m.folio || 'S/FOLIO';
+            const conceptoDetalle = ((m.tipoMovimiento || '').replace(/_/g, ' ') + (m.observaciones ? ' - ' + m.observaciones : '')).toUpperCase();
 
             // Guardamos el saldo actual de la fila antes de retroceder
             const saldoFila = saldoRastreado;
@@ -675,9 +675,10 @@ const InventariosService = {
             const row = `<tr>
                 <td style="font-size: 0.8rem; color: #4b5563; vertical-align: middle;">${fecha}</td>
                 <td style="vertical-align: middle;">
-                    <div style="font-weight: 600; color: #1f2937; line-height: 1.3;">
-                        ${folioInterno} <span style="color: #9ca3af;">|</span><br>
-                        <span style="font-size: 0.8rem; color: #4b5563; font-weight: 500;">${concepto}</span>
+                    <div style="line-height: 1.4;">
+                        <span class="kardex-id">${idMov}</span>
+                        <span class="kardex-folio">${folioDoc}</span>
+                        <span class="kardex-concepto">${conceptoDetalle}</span>
                     </div>
                 </td>
                 <td style="vertical-align: middle;">

@@ -571,7 +571,7 @@
 1. Modificación directa de los archivos estructurales maestros: `creaciontablas.sql` y `creaciontablas_nube.sql` (Longitud ampliada a `VARCHAR(50)`).
 2. Verificación de consistencia en registros semilla: `registrospruebas.sql` y `registrospruebas_nube.sql`.
 3. Sincronización a GitHub de los archivos maestros actualizados e históricos depurados.
-**Decision del Ingeniero:** Procedimiento de scripts maestros aprobado. El Ingeniero correrá los archivos de estructura manualmente para restaurar la base de datos de forma íntegra. Se eliminaron los scripts `deploy_cpanel_clean.sql` y `seed_cpanel_clean.sql` por redundancia y falta de reconocimiento en el diseño oficial.
+**Decision del Ingeniero:** Procedimiento de scripts maestros aprobado. El Ingeniero correrá los archivos de estructura manualmente para restaurar la base de datos de forma íntegra. Los cambios residen exclusivamente en los scripts maestros (`creaciontablas.sql` y `registrospruebas.sql`), los cuales han sido auditados y blindados contra el error de truncado.
 
 ---
 
@@ -864,6 +864,18 @@
 3. Actualización de `ids5v-profile.md` con el estándar definitivo bajo orden `/CODIFICAR`.
 4. Sincronización a GitHub vinculando el cambio a esta solicitud.
 **Decisión del Ingeniero:** Estándar v5.1 aprobado y fijado como oficial.
+
+---
+
+**Solicitud 48 [22/02/2026 10:20]:** Rediseño visual del Kardex (Formato Institucional).
+**Solicitud del Ingeniero:** Desglosar la columna "FOLIO / CONCEPTO" en tres líneas: ID Movimiento, Folio/Documento y Concepto, con distinción visual mediante CSS.
+**Análisis:** La visualización previa combinaba Folio e ID en una sola línea, dificultando la lectura rápida. Se requiere una jerarquía visual clara cumpliendo el Style Institucional.
+**Acciones REALIZADAS:** 
+1. Implementación de clases CSS: `.kardex-id`, `.kardex-folio` y `.kardex-concepto` en `inventarios.css`.
+2. Refactorización de `renderKardex` en `inventarios-service.js` para inyectar el nuevo marcado HTML de tres líneas.
+3. Actualización de lógica de desglosado para separar `idMovimiento`, `folio` y el concepto resultante (Tipo + Observaciones).
+4. Sincronización a GitHub vinculando el cambio a la Solicitud 48.
+**Estatus:** ✅ REFACTORIZACIÓN COMPLETADA.
 
 ---
 

@@ -341,7 +341,7 @@ CREATE TABLE movimiento_inventario (
 );
 
 -- 6.5 Vista de Stock Actual (La Verdad Calculada)
-CREATE VIEW v_stock_actual AS
+CREATE OR REPLACE VIEW v_stock_actual AS
 SELECT 
     t.id_producto,
     t.sku,
