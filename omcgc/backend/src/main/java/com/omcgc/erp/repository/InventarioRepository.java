@@ -245,6 +245,7 @@ public class InventarioRepository {
                     tipo_movimiento = VALUES(tipo_movimiento),
                     observaciones = VALUES(observaciones),
                     costo_historico = VALUES(costo_historico),
+                    origen_id = VALUES(origen_id),
                     existencia_anterior = VALUES(existencia_anterior),
                     existencia_actual = VALUES(existencia_actual),
                     fecha = NOW()

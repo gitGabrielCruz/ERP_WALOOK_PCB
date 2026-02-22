@@ -682,7 +682,9 @@ const InventariosService = {
                     </div>
                 </td>
                 <td style="vertical-align: middle;">
-                    <span style="font-weight: 700; color: ${isSuma ? '#10b981' : '#ef4444'}; font-size: 0.85rem;">AJUSTE</span>
+                    <span class="badge ${tipoClass}" style="font-size: 0.75rem;">
+                        ${(m.tipoMovimiento || 'AJUSTE').replace(/_/g, ' ')}
+                    </span>
                 </td>
                 <td class="${tipoClass}" style="font-weight: 700; text-align: center; vertical-align: middle; font-size: 0.95rem;">
                     ${m.cantidad}

@@ -893,6 +893,20 @@
 
 ---
 
+**Solicitud 50 [22/02/2026 12:12]:** Corrección de Persistencia y Visualización del Kardex.
+**Solicitud del Ingeniero:** El folio/documento manual no se guardaba y la columna "AFECTACIÓN" siempre mostraba "AJUSTE" sin importar el tipo real.
+**Análisis:** 
+1. `InventarioRepository.java` omitía `origen_id` en la cláusula de actualización.
+2. `inventarios-service.js` tenía el texto "AJUSTE" hardcodeado en la función de renderizado.
+**Acciones REALIZADAS:** 
+1. Backend: Actualización de `saveMovimiento` en `InventarioRepository` para incluir `origen_id`.
+2. Frontend: Dinamización de `renderKardex` para mostrar `m.tipoMovimiento` formateado en la columna de afectación.
+3. Validación de consistencia transaccional.
+4. Sincronización a GitHub.
+**Estatus:** ✅ CORRECCIÓN FUNCIONAL COMPLETADA.
+
+---
+
 **Instruccion para el Agente:** Al reiniciar cualquier conversacion, leer siempre este archivo completo y actualizar la seccion "ESTADO ACTUAL (SNAPSHOT)" y el "REGISTRO CRONOLOGICO DE EVENTOS" con cada interaccion.
 
 ---
