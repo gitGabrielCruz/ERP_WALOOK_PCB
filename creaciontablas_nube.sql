@@ -264,7 +264,7 @@ CREATE TABLE cat_marca (
 );
 
 CREATE TABLE IF NOT EXISTS sucursal (
-  id_sucursal CHAR(36) PRIMARY KEY,
+  id_sucursal VARCHAR(50) PRIMARY KEY,
   nombre VARCHAR(120) NOT NULL,
   telefono VARCHAR(40)
 );
@@ -310,7 +310,7 @@ CREATE TABLE producto (
 CREATE TABLE existencia (
   id_existencia CHAR(36) PRIMARY KEY,
   id_producto   CHAR(36) NOT NULL,
-  id_sucursal   CHAR(36) NOT NULL,
+  id_sucursal   VARCHAR(50) NOT NULL,
   cantidad      INT NOT NULL DEFAULT 0,
   UNIQUE KEY unique_existencia (id_producto, id_sucursal),
   FOREIGN KEY (id_producto) REFERENCES producto(id_producto),
@@ -324,7 +324,7 @@ CREATE TABLE movimiento_inventario (
     tipo_movimiento     ENUM('ENTRADA_COMPRA', 'SALIDA_VENTA', 'DEVOLUCION_PROVEEDOR', 
                              'DEVOLUCION_CLIENTE', 'MERMA', 'AJUSTE', 'TRASPASO') NOT NULL,
     id_producto         CHAR(36) NOT NULL,
-    id_sucursal         CHAR(36) NOT NULL,
+    id_sucursal         VARCHAR(50) NOT NULL,
     cantidad            INT NOT NULL,
     costo_historico     DECIMAL(10,2),
     existencia_anterior INT,
@@ -389,7 +389,7 @@ CREATE TABLE IF NOT EXISTS venta (
   id_venta CHAR(36) PRIMARY KEY,
   id_paciente CHAR(36) NOT NULL,
   id_receta CHAR(36),
-  id_sucursal CHAR(36) NOT NULL,
+  id_sucursal VARCHAR(50) NOT NULL,
   id_estado_venta CHAR(36) NOT NULL,
   fecha TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   total DECIMAL(12,2) NOT NULL,

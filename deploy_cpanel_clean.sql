@@ -141,7 +141,7 @@ CREATE TABLE proveedor (
   actualizado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 CREATE TABLE sucursal (
-  id_sucursal CHAR(36) PRIMARY KEY,
+  id_sucursal VARCHAR(50) PRIMARY KEY,
   nombre VARCHAR(120) NOT NULL,
   telefono VARCHAR(40)
 );
@@ -157,7 +157,7 @@ CREATE TABLE producto (
 CREATE TABLE existencia (
   id_existencia CHAR(36) PRIMARY KEY,
   id_producto CHAR(36) NOT NULL,
-  id_sucursal CHAR(36) NOT NULL,
+  id_sucursal VARCHAR(50) NOT NULL,
   stock DECIMAL(12,3) NOT NULL,
   min_stock DECIMAL(12,3) NOT NULL,
   UNIQUE (id_producto, id_sucursal),
@@ -167,7 +167,7 @@ CREATE TABLE existencia (
 CREATE TABLE movimiento_inventario (
   id_movimiento CHAR(36) PRIMARY KEY,
   id_producto CHAR(36) NOT NULL,
-  id_sucursal CHAR(36) NOT NULL,
+  id_sucursal VARCHAR(50) NOT NULL,
   id_tipo_mov CHAR(36) NOT NULL,
   cantidad DECIMAL(12,3) NOT NULL,
   motivo TEXT,
@@ -180,7 +180,7 @@ CREATE TABLE venta (
   id_venta CHAR(36) PRIMARY KEY,
   id_paciente CHAR(36) NOT NULL,
   id_receta CHAR(36),
-  id_sucursal CHAR(36) NOT NULL,
+  id_sucursal VARCHAR(50) NOT NULL,
   id_estado_venta CHAR(36) NOT NULL,
   fecha TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   total DECIMAL(12,2) NOT NULL,
