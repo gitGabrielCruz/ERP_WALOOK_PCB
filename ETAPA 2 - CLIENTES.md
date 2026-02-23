@@ -2,15 +2,21 @@
 **PROYECTO:** Sistema Web ERP en la nube - OMCGC  
 **EMPRESA:** WALOOK MÉXICO, S.A. de C.V.  
 **DOCUMENTO:** ETAPA 2 - Módulo Clientes  
-**VERSIÓN:** 1.0  
-**FECHA:** 04 de febrero de 2026  
-**AUTOR:** Ing. Gabriel Amilcar Cruz Canto  
+**PROYECTO:** Sistema Web ERP en la nube - OMCGC  
+**EMPRESA:** WALOOK MÉXICO, S.A. de C.V.  
+**DOCUMENTO:** ETAPA 2 - Módulo Clientes  
+**VERSIÓN:** 1.1  
+**FECHA:** 22 de febrero de 2026  
+**AUTOR:** Ing. Gabriel Amilcar Cruz Canto / Antigravity AI  
 
 ---
 
 # 📊 ETAPA 2 - MÓDULO CLIENTES
 
 ## 2.1 INCISO 2.1 — MÓDULO CLIENTES (Clientes.svg)
+
+> [!NOTE]
+> **Definición de Nomenclatura:** Para fines operativos del ERP, se utilizará el término **Cliente**. El término **Paciente** se mantiene como alias técnico en la base de datos (`Paciente.java`) para asegurar la compatibilidad con el Expediente Clínico de la Etapa 4.
 
 ### 🔴 PASO 1 — EXTRACCIÓN LITERAL DEL DISEÑO
 
@@ -290,7 +296,9 @@ Retorna 200 OK + Cliente actualizado
 Frontend: recargar tabla + toast éxito
 ```
 
-#### 3.3 Mapeo a base de datos
+#### 3.3 Mapeo a base de datos (SSoT y Auditoría Forense)
+
+Para garantizar la integridad y segregación de información, la tabla de clientes incorpora el patrón de **Gobernanza Multi-Sucursal** y la **Auditoría Forense Cifrada** implementada en la v3.2 del sistema.
 
 **Tabla: `cliente`**
 
@@ -313,11 +321,14 @@ CREATE TABLE cliente (
     telefono            VARCHAR(20),                       -- Teléfono de contacto
     correo              VARCHAR(100),                      -- Email de contacto
     
-    -- Control
+    -- Control y Segregación (SSoT)
+    id_sucursal         VARCHAR(36) NOT NULL,              -- Sincronización Multi-Sucursal
     estatus             ENUM('ACTIVO', 'INACTIVO') DEFAULT 'ACTIVO',
     fusionado_con       VARCHAR(20),                       -- ID del cliente maestro si fue fusionado
     
-    -- Auditoría
+    -- Auditoría Forense Cifrada (AuditPatternService)
+    uuid_auditoria      VARCHAR(36) UNIQUE,                -- Enlace a Bitácora Forense
+    hash_forense        VARCHAR(64),                       -- Firma SHA-256 de integridad
     fecha_creacion      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     fecha_modificacion  TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     usuario_creacion    VARCHAR(50),
@@ -713,6 +724,6 @@ Response 200:
 
 ---
 
-**Última actualización:** 04 de febrero de 2026, 02:58 AM  
-**Estado:** Documentación completa  
-**Siguiente:** Módulo Proveedores
+**Última actualización:** 22 de febrero de 2026, 03:00 PM  
+**Estado:** Sincronizado con v3.2 (Auditoría Forense)  
+**Siguiente:** Módulo Proveedores (Sincronización v1.1)

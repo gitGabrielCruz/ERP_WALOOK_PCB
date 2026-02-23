@@ -2,9 +2,9 @@
 **PROYECTO:** Sistema Web ERP en la nube - OMCGC  
 **EMPRESA:** WALOOK MÉXICO, S.A. de C.V.  
 **DOCUMENTO:** Análisis General del Sistema (M00)  
-**VERSIÓN:** 2.0  
-**FECHA:** 15 de febrero de 2026  
-**AUTOR:** Ing. Gabriel Amilcar Cruz Canto  
+**VERSIÓN:** 2.1  
+**FECHA:** 22 de febrero de 2026  
+**AUTOR:** Ing. Gabriel Amilcar Cruz Canto / Antigravity AI  
 
 ---
 
@@ -16,7 +16,7 @@ El presente proyecto desarrolla un Sistema Web ERP en la nube para la gestión a
 
 Para atender esta problemática se diseñó e implementó un sistema centralizado, accesible y seguro, empleando el marco ágil Scrum, estructurado en 24 sprints, complementado con un Diagrama de Gantt para la planificación temporal del proyecto. Durante las fases de análisis y diseño se utilizaron instrumentos de modelado estructural, incluyendo diagramas UML, diagramas Entidad–Relación, Modelo Lógico, Diagrama Relacional y Diccionario de Datos, los cuales permitieron definir la arquitectura y estructura del sistema. La solución se soporta en una base de datos normalizada en MySQL y en una arquitectura multicapa, integrada mediante una API REST y un esquema de Control de Acceso por Roles (RBAC).
 
-Como resultado del proyecto se desarrollaron los módulos funcionales de Inventario, Punto de Venta (POS), Agenda de Citas, Expediente Clínico, Proveedores, Clientes, Taller/Órdenes de Trabajo, Facturación CFDI y Reportes, así como un modelo de datos completo, prototipos de interfaz de usuario en alta fidelidad y un mapa de navegabilidad. Estos productos conforman una solución tecnológica que optimiza los procesos operativos y administrativos de la organización.
+Como resultado del proyecto se desarrollaron los módulos funcionales de **Inventario (v3.2)**, **Punto de Venta (v3.1)**, **Agenda de Citas**, **Expediente Clínico**, **Proveedores**, **Clientes** y los cimientos de **Taller / Órdenes de Trabajo**. Se implementaron características transversales de alto impacto como la **Auditoría Forense Cifrada (AES-256)** y la **Gobernanza Multi-Sucursal (SSoT)**, asegurando la integridad de los datos en toda la organización. Estos productos conforman una solución tecnológica que optimiza los procesos operativos y administrativos con un **avance consolidado del 53%**.
 
 ## 1. PLANTEAMIENTO DEL PROBLEMA
 
@@ -227,7 +227,7 @@ _Estrategia de implementación incremental dividida en 7 etapas funcionales._
 | :---: | :--- | :--- | :--- | :---: | :---: |
 | **0** | Preparación del sistema e infraestructura base | RF-00 Preparación del entorno<br>RF-01 Estructura de proyecto<br>RF-02 Base de datos vacía | RNF-00 Estructura mantenible<br>RNF-01 Configuración reproducible | 10% | 10% |
 | **1** | Base funcional del sistema | RF-01 Autenticación<br>RF-02 Gestión de usuarios<br>RF-03 Roles y permisos<br>RF-04 Navegación base<br>RF-05 Comunicación API<br>RF-06 Persistencia básica | RNF-02 Seguridad básica<br>RNF-03 Integración front-back<br>RNF-04 Consistencia visual | 20% | 30% |
-| **2** | Gestión operativa principal | RF-07 Clientes<br>RF-08 Proveedores<br>RF-09 Inventarios<br>RF-10 Órdenes de trabajo | RNF-05 Integridad de datos<br>RNF-06 Validaciones operativas | 20% | 50% |
+| **2** | Gestión operativa principal | RF-07 Clientes (v1.1)<br>RF-08 Proveedores (v1.1)<br>RF-09 Inventarios (v3.2)<br>RF-10 Órdenes de trabajo (Hitos base) | RNF-05 Integridad de datos (Audit Forensic)<br>RNF-06 Validaciones SSoT (Sucursales) | 23% | 53% |
 | **3** | Gestión transaccional | RF-11 Ventas<br>RF-12 Compras<br>RF-13 Facturación<br>RF-14 Pagos | RNF-07 Trazabilidad transaccional<br>RNF-08 Control de errores | 20% | 70% |
 | **4** | Reportes y consultas | RF-15 Reportes operativos<br>RF-16 Reportes administrativos | RNF-09 Rendimiento en consultas<br>RNF-10 Exportación de información | 15% | 85% |
 | **5** | Seguridad avanzada y control | RF-17 Auditoría<br>RF-18 Bitácoras<br>RF-19 Control de accesos avanzados | RNF-11 Seguridad reforzada<br>RNF-12 Cumplimiento normativo | 10% | 95% |

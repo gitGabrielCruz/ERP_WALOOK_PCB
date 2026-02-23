@@ -2,9 +2,12 @@
 **PROYECTO:** Sistema Web ERP en la nube - OMCGC  
 **EMPRESA:** WALOOK MÉXICO, S.A. de C.V.  
 **DOCUMENTO:** ETAPA 2 - Módulo Proveedores  
-**VERSIÓN:** 1.0  
-**FECHA:** 04 de febrero de 2026  
-**AUTOR:** Ing. Gabriel Amilcar Cruz Canto  
+**PROYECTO:** Sistema Web ERP en la nube - OMCGC  
+**EMPRESA:** WALOOK MÉXICO, S.A. de C.V.  
+**DOCUMENTO:** ETAPA 2 - Módulo Proveedores  
+**VERSIÓN:** 1.1  
+**FECHA:** 22 de febrero de 2026  
+**AUTOR:** Ing. Gabriel Amilcar Cruz Canto / Antigravity AI  
 
 ---
 
@@ -275,7 +278,9 @@ Retorna 201 Created + OC creada
 Frontend: mostrar OC creada + toast éxito
 ```
 
-#### 3.3 Mapeo a base de datos
+#### 3.3 Mapeo a base de datos (SSoT y Auditoría Forense)
+
+Siguiendo el estándar de **Gobernanza de Datos** v3.2, la tabla de proveedores incorpora la segregación por sucursal y el enlace a la bitácora cifrada.
 
 **Tabla: `proveedor`**
 
@@ -297,10 +302,13 @@ CREATE TABLE proveedor (
     -- Condiciones comerciales
     condicion_pago      VARCHAR(50) NOT NULL,              -- "Contado", "15 días", etc. (Flexible)
     
-    -- Control
+    -- Control y Segregación (SSoT)
+    id_sucursal         VARCHAR(36) NOT NULL,              -- Sincronización Multi-Sucursal
     estatus             ENUM('ACTIVO', 'INACTIVO') NOT NULL DEFAULT 'ACTIVO',
     
-    -- Auditoría
+    -- Auditoría Forense Cifrada (AuditPatternService)
+    uuid_auditoria      VARCHAR(36) UNIQUE,                -- Enlace a Bitácora Forense
+    hash_forense        VARCHAR(64),                       -- Firma SHA-256 de integridad
     creado_en           TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     actualizado_en      TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     
@@ -883,6 +891,7 @@ Response 201:
 
 ---
 
-**Última actualización:** 04 de febrero de 2026, 03:00 AM  
-**Estado:** Documentación completa  
-**Siguiente:** Módulo Órdenes de Trabajo
+**Última actualización:** 22 de febrero de 2026, 03:10 PM  
+**Estado:** Sincronizado con v3.2 (Auditoría Forense)  
+**Siguiente:** Módulo Inventarios
+

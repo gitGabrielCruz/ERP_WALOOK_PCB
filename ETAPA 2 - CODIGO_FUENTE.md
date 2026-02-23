@@ -2,9 +2,9 @@
 **PROYECTO:** Sistema Web ERP en la nube - OMCGC  
 **EMPRESA:** WALOOK MÉXICO, S.A. de C.V.  
 **DOCUMENTO:** ETAPA 2 - Repositorio de Código Fuente Consolidado  
-**VERSIÓN:** 1.0  
-**FECHA:** 15 de febrero de 2026  
-**AUTOR:** Ing. Gabriel Amilcar Cruz Canto  
+**VERSIÓN:** 1.1  
+**FECHA:** 22 de febrero de 2026  
+**AUTOR:** Ing. Gabriel Amilcar Cruz Canto / Antigravity AI  
 
 ---
 
@@ -28,7 +28,8 @@ omcgc/
 │       │   └── ProveedorRepository.java
 │       └── service/
 │           ├── ClienteService.java
-│           └── ProveedorService.java
+│           ├── ProveedorService.java
+│           └── AuditPatternService.java
 └── frontend/
     └── assets/js/
         ├── clientes-service.js
@@ -71,13 +72,18 @@ public class Paciente {
     private String usoCfdi;
     private String domicilioFiscal;
 
-    // Control
+    // Control y Gobernanza (SSoT)
+    private String idSucursal;
     private String estatus; 
     private String fusionadoCon;
 
-    // Auditoría
+    // Auditoría Forense Cifrada (AES-256)
+    private String uuidAuditoria;
+    private String hashForense;
     private Timestamp fechaRegistro;
     private Timestamp fechaModificacion;
+    private String usuarioCreacion;
+    private String usuarioModificacion;
 
     // Getters and Setters
     public String getIdPaciente() { return idPaciente; }
@@ -145,9 +151,17 @@ public class Proveedor {
     private String telefono;
     private String email;
     private String condicionPago;
+    // Control y Gobernanza (SSoT)
+    private String idSucursal;
     private String estatus;
+
+    // Auditoría Forense Cifrada (AES-256)
+    private String uuidAuditoria;
+    private String hashForense;
     private Timestamp creadoEn;
     private Timestamp actualizadoEn;
+    private String usuarioCreacion;
+    private String usuarioModificacion;
 
     public Proveedor() {}
 
