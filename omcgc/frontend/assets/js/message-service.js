@@ -318,6 +318,7 @@ const MessageService = {
             " DETALLE DEL ERROR",
             "------------------------------------------------------------",
             `TÍTULO:      ${titulo}`,
+            `MENSAJE:     ${detalle.split('\n')[0]}`, // Intentar extraer la primera línea como mensaje si no se pasó separado
             "",
             "STACK TRACE / MENSAJE TÉCNICO:",
             detalle || "No disponible",

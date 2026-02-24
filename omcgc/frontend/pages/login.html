@@ -45,6 +45,80 @@ Trazabilidad y Mapeo Funcional:
     <link rel="stylesheet" href="../assets/css/ui-base.css">
     <!-- CSS DEL SISTEMA DE MENSAJES -->
     <link rel="stylesheet" href="../assets/css/message-styles.css">
+
+    <style>
+        /* Efecto de Aura Pulsante de Neón para Logo en Bienvenida */
+        @keyframes neon-pulse {
+            0% {
+                box-shadow: 0 0 8px rgba(255, 152, 0, 0.3), 0 0 15px rgba(255, 152, 0, 0.1);
+                transform: scale(1);
+            }
+
+            50% {
+                box-shadow: 0 0 20px rgba(255, 152, 0, 0.6), 0 0 35px rgba(255, 152, 0, 0.3);
+                transform: scale(1.01);
+            }
+
+            100% {
+                box-shadow: 0 0 8px rgba(255, 152, 0, 0.3), 0 0 15px rgba(255, 152, 0, 0.1);
+                transform: scale(1);
+            }
+        }
+
+        .logo-neon-aura {
+            width: 120px;
+            /* Tamaño refinado por Ingeniero */
+            height: auto;
+            display: block;
+            margin: 15px auto;
+            padding: 10px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            animation: neon-pulse 2.5s infinite ease-in-out;
+            border: 1px solid rgba(255, 152, 0, 0.3);
+            filter: drop-shadow(0 0 5px rgba(255, 152, 0, 0.2));
+        }
+
+        /* Refinamiento Tipográfico Modal Bienvenida (Tipo 4) */
+        .message-modal.type-4 {
+            padding: 30px !important;
+        }
+
+        .message-modal.type-4 .message-header {
+            justify-content: center;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .message-modal.type-4 .message-title {
+            font-size: 20px;
+            text-align: center;
+            color: var(--color-primary);
+        }
+
+        .message-modal.type-4 .message-main {
+            font-size: 22px !important;
+            /* Prominencia solicitada */
+            font-weight: 500;
+            text-align: center;
+            color: #1a1a1a;
+            margin: 15px 0;
+            line-height: 1.4;
+        }
+
+        .message-modal.type-4 .message-secondary {
+            font-size: 14px !important;
+            /* Jerarquía refinada */
+            color: #666 !important;
+            text-align: center;
+            line-height: 1.5;
+        }
+
+        .message-modal.type-4 .message-buttons {
+            justify-content: center;
+            margin-top: 20px;
+        }
+    </style>
 </head>
 
 <body class="login-body">
@@ -59,18 +133,16 @@ Trazabilidad y Mapeo Funcional:
                 <h1 class="text-title" style="text-align: center;">Login</h1>
             </div>
 
-            <form id="loginForm" autocomplete="off">
+            <form id="loginForm" autocomplete="off" novalidate>
                 <div class="form-group">
                     <label for="email" class="text-label">Usuario</label>
-                    <input type="text" id="email" name="email" class="input-base" placeholder="usuario@ejemplo.com"
-                        required>
+                    <input type="text" id="email" name="email" class="input-base" placeholder="usuario@ejemplo.com">
                 </div>
 
                 <div class="form-group">
                     <label for="password" class="text-label">Contraseña</label>
                     <div class="input-group">
-                        <input type="password" id="password" name="password" class="input-base" placeholder="••••••••"
-                            required>
+                        <input type="password" id="password" name="password" class="input-base" placeholder="••••••••">
                         <button type="button" class="icon-action" onclick="togglePassword()"
                             title="Mostrar/Ocultar">👁️</button>
                     </div>
@@ -158,12 +230,21 @@ Trazabilidad y Mapeo Funcional:
             try {
                 // Validacion de integridad de datos de entrada
                 if (!email || !password) {
-                    // Mensaje tipo 1: Error de Validacion
                     const titulo = 'Campos incompletos';
                     const mensajePrincipal = 'Debe ingresar usuario y contraseña para acceder al sistema.';
                     const mensajeSecundario = 'Complete todos los campos obligatorios.';
-                    const campoError = '';
-                    MessageService.mostrar(1, titulo, mensajePrincipal, mensajeSecundario, campoError);
+                    MessageService.mostrar(1, titulo, mensajePrincipal, mensajeSecundario);
+                    return;
+                }
+
+                // VALIDACIÓN DE SINTAXIS DE CORREO (Escenario P3 - Plan Maestro)
+                // EXCEPCIÓN: Usuario 'root' bypass (Acceso Reservado)
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (email !== 'root' && !emailRegex.test(email)) {
+                    const titulo = 'Error de Sintaxis';
+                    const mensajePrincipal = 'Error: El formato de correo no es válido.';
+                    const mensajeSecundario = 'Asegúrese de ingresar una dirección de correo válida.';
+                    MessageService.mostrar(1, titulo, mensajePrincipal, mensajeSecundario);
                     return;
                 }
 
@@ -214,8 +295,48 @@ Trazabilidad y Mapeo Funcional:
                         console.warn("[LOGIN] No se recibieron permisos del backend");
                     }
 
-                    // Redireccion al panel principal
-                    window.location.href = 'menu.html';
+                    // Redirección con Mensaje de Bienvenida, Efecto Neón y Audio (Premium UX)
+                    const tituloB = '¡Bienvenido al Sistema!';
+                    const nombreUsuario = result.nombre || 'Usuario';
+                    const msgPrincipal = `Hola, <strong>${nombreUsuario}</strong>.`;
+
+                    // Inyectamos el logo con la clase de animacion neon en el mensaje secundario
+                    const logoNeonHTML = `<img src="../assets/img/logo.png" class="logo-neon-aura" alt="Logo">`;
+                    const msgSecundario = `${logoNeonHTML}<br>Estamos preparando su entorno de trabajo.<br>Pulse <strong>ESC</strong> o espere 10 segundos para entrar...`;
+
+                    // 1. Disparar Sonido Institucional (Opción 2: Armonía)
+                    try {
+                        const welcomeAudio = new Audio('../assets/audio/welcome.mp3');
+                        welcomeAudio.play().catch(e => console.warn("[UX] Audio bloqueado por navegador o archivo no encontrado", e));
+                    } catch (e) {
+                        console.error("[UX] Error al inicializar audio", e);
+                    }
+
+                    // 2. Mostrar el modal de éxito (Tipo 4)
+                    MessageService.mostrar(4, tituloB, msgPrincipal, msgSecundario);
+
+                    // 3. Control de Flujo: Redirección con Tiempo de Cortesía (10s)
+                    let redirectTimeout;
+
+                    const goToMenu = () => {
+                        clearTimeout(redirectTimeout);
+                        window.removeEventListener('keydown', handleEscKey);
+                        window.location.href = 'menu.html';
+                    };
+
+                    // Handler para tecla ESC (Cierre y redirección inmediata)
+                    const handleEscKey = (event) => {
+                        if (event.key === 'Escape' || event.keyCode === 27) {
+                            console.log("[UX] Redireccion inmediata por tecla ESC detectada.");
+                            goToMenu();
+                        }
+                    };
+
+                    // Registrar listener de teclado
+                    window.addEventListener('keydown', handleEscKey);
+
+                    // Programar redireccion automatica a los 10 segundos
+                    redirectTimeout = setTimeout(goToMenu, 10000);
                 } else {
                     // Mensaje tipo 1: Error de Validacion (Credenciales invalidas)
                     const titulo = 'Error de autenticacion';

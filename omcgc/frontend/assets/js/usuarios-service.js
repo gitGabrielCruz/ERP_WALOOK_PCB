@@ -1068,10 +1068,17 @@ const UsuariosService = {
                 if (data.status === 'CONFIG_OK') {
                     btnSmtp.classList.add('status-ok');
                     btnSmtp.classList.remove('status-error');
-                } else {
+                } else if (data.status === 'CONFIG_MISSING') {
+                    // ESCENARIO 2026-F01: Si no hay config, el botón se pone rojo pero NO bloquea el sistema.
+                    // Solo se notifica como advertencia informativa.
                     btnSmtp.classList.add('status-error');
                     btnSmtp.classList.remove('status-ok');
-                    this.showToast("⚠️ Alerta: Configuración SMTP no detectada o corrupta", "error");
+                    this.showToast("Nota: Configuración SMTP pendiente de establecer.", "warning");
+                } else {
+                    // Corrupción o error real.
+                    btnSmtp.classList.add('status-error');
+                    btnSmtp.classList.remove('status-ok');
+                    this.showToast("⚠️ Alerta: Configuración SMTP corrupta detectada.", "error");
                 }
             }
         } catch (e) {

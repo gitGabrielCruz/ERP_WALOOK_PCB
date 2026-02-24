@@ -56,9 +56,10 @@ const LoginService = {
                 // Gestion de codigos de estado HTTP 401/403 (No Autorizado)
                 // RETORNAR objeto en lugar de lanzar excepcion
                 if (response.status === 401 || response.status === 403) {
+                    const errorData = await response.json();
                     return {
                         success: false,
-                        message: "Usuario o contraseña incorrectos."
+                        message: errorData.message || "Usuario o contraseña incorrectos."
                     };
                 }
 
