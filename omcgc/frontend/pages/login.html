@@ -302,7 +302,7 @@ Trazabilidad y Mapeo Funcional:
 
                     // Inyectamos el logo con la clase de animacion neon en el mensaje secundario
                     const logoNeonHTML = `<img src="../assets/img/logo.png" class="logo-neon-aura" alt="Logo">`;
-                    const msgSecundario = `${logoNeonHTML}<br>Estamos preparando su entorno de trabajo.<br>Pulse <strong>ESC</strong> o espere 10 segundos para entrar...`;
+                    const msgSecundario = `${logoNeonHTML}<br>Estamos preparando su entorno de trabajo.<br>Pulse <strong>ESC</strong> o espere 3 segundos para entrar...`;
 
                     // 1. Disparar Sonido Institucional (Opción 2: Armonía)
                     try {
@@ -315,7 +315,7 @@ Trazabilidad y Mapeo Funcional:
                     // 2. Mostrar el modal de éxito (Tipo 4)
                     MessageService.mostrar(4, tituloB, msgPrincipal, msgSecundario);
 
-                    // 3. Control de Flujo: Redirección con Tiempo de Cortesía (10s)
+                    // 3. Control de Flujo: Redirección con Tiempo de Cortesía (3s)
                     let redirectTimeout;
 
                     const goToMenu = () => {
@@ -335,8 +335,8 @@ Trazabilidad y Mapeo Funcional:
                     // Registrar listener de teclado
                     window.addEventListener('keydown', handleEscKey);
 
-                    // Programar redireccion automatica a los 10 segundos
-                    redirectTimeout = setTimeout(goToMenu, 10000);
+                    // Programar redireccion automatica a los 3 segundos
+                    redirectTimeout = setTimeout(goToMenu, 3000);
                 } else {
                     // Mensaje tipo 1: Error de Validacion (Credenciales invalidas)
                     const titulo = 'Error de autenticacion';
