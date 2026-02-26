@@ -62,8 +62,8 @@ public class AuditPatternService {
                 List<LogPattern> list = new ArrayList<>();
 
                 // --- SEGURIDAD (AUTH) ---
-                list.add(new LogPattern("AUTH-01", "CORRECTO", "AUTH", "Acceso concedido al sistema para {X}.",
-                                "SUCESO: Login (Inicio de sesión) | ESTADO: Identidad Verificada | SESIÓN: Nueva_JWT"));
+                list.add(new LogPattern("AUTH-01", "CORRECTO", "AUTH", "Acceso concedido al sistema: {X}",
+                                "SUCESO: Login (Inicio de sesión) | IDENTIDAD: {S} | ESTADO: Identidad Verificada | SESIÓN: Nueva_JWT"));
                 list.add(new LogPattern("AUTH-02", "ERROR", "AUTH", "Credenciales inválidas.",
                                 "SUCESO: Validación de identidad | ERROR: Contraseña incorrecta o usuario inexistente"));
                 list.add(new LogPattern("AUTH-03", "ALERTA", "AUTH", "Cuenta desactivada por administración.",
@@ -90,8 +90,8 @@ public class AuditPatternService {
                                 "SUCESO: Actualización de permisos | IMPACTO: Acceso Global"));
 
                 // --- INVENTARIOS (INV) ---
-                list.add(new LogPattern("INV-01", "CORRECTO", "INV", "Movimiento de inventario registrado.",
-                                "{S}"));
+                list.add(new LogPattern("INV-01", "CORRECTO", "INV", "Movimiento de inventario: {X}",
+                                "DETALLE: {S}"));
 
                 // --- PRODUCTOS (PRO) ---
                 list.add(new LogPattern("PRO-01", "CORRECTO", "PRODUCT", "Nuevo producto registrado en catálogo.",
@@ -183,26 +183,30 @@ public class AuditPatternService {
                         return "Unknown Event | ID: " + id;
 
                 String tec = lp.getAnalisisTecnico();
+                String amigable = lp.getMensajeAmigable();
+
                 // Mapeo flexible de placeholders según la Matriz Maestra
                 if (paramX != null) {
                         tec = tec.replace("{X}", paramX)
                                         .replace("{T}", paramX)
-                                        .replace("{M}", paramX) // Soporte para Módulo
+                                        .replace("{M}", paramX)
                                         .replace("{P}", paramX)
                                         .replace("{f}", paramX)
-                                        .replace("{K}", paramX)
-                                        .replace("{qty_A -> qty_B}", paramX);
+                                        .replace("{K}", paramX);
+                        amigable = amigable.replace("{X}", paramX);
                 }
                 if (paramS != null) {
                         tec = tec.replace("{S}", paramS)
                                         .replace("{id}", paramS)
                                         .replace("{D}", paramS)
-                                        .replace("{E}", paramS) // Soporte para Entidad
+                                        .replace("{E}", paramS)
                                         .replace("{U}", paramS)
-                                        .replace("{R}", paramS);
+                                        .replace("{R}", paramS)
+                                        .replace("{qty_A -> qty_B}", paramS);
+                        amigable = amigable.replace("{S}", paramS);
                 }
 
                 return String.format("%s | [%s] | %s | %s | %s",
-                                lp.getImpacto(), lp.getCategoria(), lp.getMensajeAmigable(), tec, lp.getId());
+                                lp.getImpacto(), lp.getCategoria(), amigable, tec, lp.getId());
         }
 }

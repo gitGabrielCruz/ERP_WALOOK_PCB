@@ -67,6 +67,8 @@ public class BitacoraService {
                     sbAnalisis.append(" | ");
             }
             String analisis = sbAnalisis.toString();
+            if (analisis.isEmpty())
+                analisis = "Sin detalle técnico adicional";
 
             Bitacora b = new Bitacora();
             b.setIdUsuario(idUsuario);

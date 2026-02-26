@@ -66,7 +66,7 @@ public class AuthController {
             Usuario usuario = authService.login(email, password);
 
             // REGISTRO DE EVENTO: LOGIN EXITOSO (PATRON MAESTRO CIFRADO)
-            bitacoraService.registrarEvento(usuario.getIdUsuario(), "AUTH-01", ip, email, null);
+            bitacoraService.registrarEvento(usuario.getIdUsuario(), "AUTH-01", ip, usuario.getNombre(), email);
 
             // Obtener permisos del usuario
             List<Map<String, Object>> permisos = usuarioService.getPermissionsByUsuario(usuario.getIdUsuario());

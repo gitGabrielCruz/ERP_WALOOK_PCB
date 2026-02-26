@@ -158,7 +158,7 @@ public class InventarioService {
         Producto pInfo = inventarioRepository.findById(m.getIdProducto());
         String prodDesc = pInfo != null ? "[" + pInfo.getSku() + "] " + pInfo.getNombre() : "ID: " + m.getIdProducto();
         String flowSign = (m.getCantidad() >= 0 ? "+" : "");
-        String sucesoInv = String.format("[INVENTARIO] - %s", m.getTipoMovimiento().replace("_", " "));
+        String sucesoInv = String.format("Póliza: %s [%s]", m.getFolio(), m.getTipoMovimiento().replace("_", " "));
 
         String rastroDetalle = String.format(
                 "PROD: %s\nDOCTO: %s\nOPERACIÓN: Se sumaron %s%d unidades.\nEVOLUCIÓN: Stock %d -> %d\nOBS: %s",
@@ -274,7 +274,7 @@ public class InventarioService {
         Producto pInfo = inventarioRepository.findById(n.getIdProducto());
         String prodDesc = pInfo != null ? "[" + pInfo.getSku() + "] " + pInfo.getNombre() : "ID: " + n.getIdProducto();
 
-        String sucesoInv = String.format("[MODIFICACIÓN] - Póliza %s",
+        String sucesoInv = String.format("Edición Póliza: %s",
                 (n.getFolio() != null ? n.getFolio() : n.getIdMovimiento()));
 
         StringBuilder deltas = new StringBuilder();
