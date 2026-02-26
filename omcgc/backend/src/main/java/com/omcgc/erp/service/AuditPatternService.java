@@ -62,7 +62,7 @@ public class AuditPatternService {
                 List<LogPattern> list = new ArrayList<>();
 
                 // --- SEGURIDAD (AUTH) ---
-                list.add(new LogPattern("AUTH-01", "CORRECTO", "AUTH", "Acceso concedido al sistema.",
+                list.add(new LogPattern("AUTH-01", "CORRECTO", "AUTH", "Acceso concedido al sistema para {X}.",
                                 "SUCESO: Login (Inicio de sesión) | ESTADO: Identidad Verificada | SESIÓN: Nueva_JWT"));
                 list.add(new LogPattern("AUTH-02", "ERROR", "AUTH", "Credenciales inválidas.",
                                 "SUCESO: Validación de identidad | ERROR: Contraseña incorrecta o usuario inexistente"));

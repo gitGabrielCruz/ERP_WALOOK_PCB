@@ -270,10 +270,29 @@ public class InventarioService {
         inventarioRepository.saveMovimiento(n);
         inventarioRepository.updateExistencia(n.getIdProducto(), n.getIdSucursal(), nuevoStock);
 
-        // Bitácora de Edición (Auditoría Forense v5.2)
-        bitacoraService.registrarEvento(n.getIdUsuario(), "INV-01", ip,
-                "MODIFICACIÓN: " + stockActual + " -> " + nuevoStock,
-                "Edición de póliza Folio: " + n.getFolio() + " | Detalle: "
-                        + (n.getObservaciones() != null ? n.getObservaciones() : "Sin observaciones"));
+        // Trazabilidad Forense (v5.2 - Detección de Deltas)
+        Producto pInfo = inventarioRepository.findById(n.getIdProducto());
+        String prodDesc = pInfo != null ? "[" + pInfo.getSku() + "] " + pInfo.getNombre() : "ID: " + n.getIdProducto();
+
+        String sucesoInv = String.format("[MODIFICACIÓN] - Póliza %s",
+                (n.getFolio() != null ? n.getFolio() : n.getIdMovimiento()));
+
+        StringBuilder deltas = new StringBuilder();
+        deltas.append("PROD: ").append(prodDesc).append("\n");
+        deltas.append("AJUSTES REALIZADOS:\n");
+
+        if (!o.getCantidad().equals(n.getCantidad())) {
+            deltas.append(String.format("- Cantidad: %d -> %d\n", o.getCantidad(), n.getCantidad()));
+        }
+        if (o.getTipoMovimiento() != null && !o.getTipoMovimiento().equals(n.getTipoMovimiento())) {
+            deltas.append(String.format("- Tipo: %s -> %s\n", o.getTipoMovimiento(), n.getTipoMovimiento()));
+        }
+
+        deltas.append(String.format("IMPACTO EN EXISTENCIA: %d -> %d\n", stockActual, nuevoStock));
+        deltas.append("OBS: ")
+                .append(n.getObservaciones() != null && !n.getObservaciones().isEmpty() ? n.getObservaciones()
+                        : "Sin observaciones");
+
+        bitacoraService.registrarEvento(n.getIdUsuario(), "INV-01", ip, sucesoInv, deltas.toString());
     }
 }
