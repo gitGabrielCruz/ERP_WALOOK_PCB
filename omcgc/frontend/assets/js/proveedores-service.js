@@ -7,7 +7,7 @@ Tipo              : Frontend (Lógica de Negocio y API)
 Proyecto          : Sistema ERP WALOOK
 Empresa           : WALOOK MEXICO, S.A. de C.V.
 
-Autor             : Gabriel Amílcar Cruz Canto
+Autor             : Gabriel Amilcar Cruz Canto
 Versión           : v1.0
 
 Propósito:

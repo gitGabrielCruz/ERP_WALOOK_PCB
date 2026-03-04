@@ -7,7 +7,7 @@ Tipo              : Configuración Global Frontend
 Proyecto          : Sistema ERP en la nube para gestión de ópticas OMCGC
 Empresa           : WALOOK MEXICO, S.A. de C.V.
 
-Autor             : Gabriel Amílcar Cruz Canto
+Autor             : Gabriel Amilcar Cruz Canto
 Versión           : v2.0
 
 Propósito:
