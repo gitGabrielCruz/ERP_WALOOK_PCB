@@ -1,0 +1,45 @@
+<svg width="1280" height="800" viewBox="0 0 1280 800" xmlns="http://www.w3.org/2000/svg">
+  <!-- Fondo Principal -->
+  <rect width="1280" height="800" fill="#F4F6F8" />
+  
+  <!-- Contenedor de Login (Efecto de centrado) -->
+  <g transform="translate(440, 100)">
+    
+    <!-- Logo (Representación simplificada) -->
+    <rect x="120" y="0" width="160" height="60" rx="8" fill="#FFFFFF" stroke="#DADADA" stroke-width="1" />
+    <text x="200" y="38" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="bold" fill="#1F3A5F" text-anchor="middle">OPTICA ERP</text>
+    <path d="M140 30 L160 30 M150 20 L150 40" stroke="#1F3A5F" stroke-width="2" />
+    
+    <!-- Card de Login -->
+    <rect x="0" y="80" width="400" height="480" rx="6" fill="#FFFFFF" stroke="#DADADA" stroke-width="1" filter="drop-shadow(0 2px 4px rgba(0,0,0,0.05))" />
+    
+    <!-- Título Login -->
+    <text x="200" y="140" font-family="Inter, Arial, sans-serif" font-size="28" font-weight="600" fill="#1F3A5F" text-anchor="middle">Login</text>
+    
+    <!-- Formulario: Usuario -->
+    <text x="40" y="200" font-family="Inter, Arial, sans-serif" font-size="14.4" font-weight="500" fill="#6B6B6B">Usuario</text>
+    <rect x="40" y="210" width="320" height="45" rx="6" fill="#FFFFFF" stroke="#DADADA" stroke-width="1" />
+    <text x="50" y="238" font-family="Inter, Arial, sans-serif" font-size="16" fill="#9E9E9E">usuario@ejemplo.com</text>
+    
+    <!-- Formulario: Contraseña -->
+    <text x="40" y="290" font-family="Inter, Arial, sans-serif" font-size="14.4" font-weight="500" fill="#6B6B6B">Contraseña</text>
+    <rect x="40" y="300" width="320" height="45" rx="6" fill="#FFFFFF" stroke="#DADADA" stroke-width="1" />
+    <text x="50" y="328" font-family="Inter, Arial, sans-serif" font-size="16" fill="#9E9E9E">••••••••</text>
+    <text x="330" y="330" font-family="Inter, Arial, sans-serif" font-size="18" fill="#2E2E2E">👁️</text>
+    
+    <!-- Acciones -->
+    <rect x="40" y="370" width="16" height="16" rx="2" fill="#FFFFFF" stroke="#DADADA" stroke-width="1" />
+    <text x="65" y="383" font-family="Inter, Arial, sans-serif" font-size="14" fill="#2E2E2E">Recuérdame</text>
+    
+    <!-- Botón Acceder -->
+    <rect x="230" y="365" width="130" height="45" rx="6" fill="#1F3A5F" />
+    <text x="295" y="393" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="500" fill="#FFFFFF" text-anchor="middle">Acceder</text>
+    
+    <!-- Link Recuperación -->
+    <text x="200" y="450" font-family="Inter, Arial, sans-serif" font-size="14" fill="#1F3A5F" text-anchor="middle" text-decoration="underline">¿Olvidaste tu contraseña?</text>
+    
+    <!-- Pie de Aplicación -->
+    <text x="200" y="540" font-family="Inter, Arial, sans-serif" font-size="12.8" fill="#9E9E9E" text-anchor="middle">WALOOK México • ERP Cloud System</text>
+    
+  </g>
+</svg>
