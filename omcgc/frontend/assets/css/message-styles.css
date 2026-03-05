@@ -2,32 +2,22 @@
 ============================================================
 Nombre del archivo : message-styles.css
 Ruta              : omcgc/frontend/assets/css/message-styles.css
-Tipo              : Hoja de Estilos (CSS)
-Proyecto          : ERP WALOOK
-Proposito         : Estilos para el sistema de mensajes y notificaciones
-============================================================
+Tipo              : Hoja de Estilos (Servicio de Notificaciones)
 
-REGLAS DE USO:
-------------------------------------------------------------
-1. Este archivo DEBE importarse en TODAS las paginas que usen MessageService.
-2. NO modificar colores fuera de las variables de ui-base.css.
-3. NO crear estilos inline en JavaScript.
-4. Todos los mensajes usan las mismas clases base.
-5. La animacion del spinner es obligatoria para tipo 6 (procesando).
+Proyecto          : Sistema ERP en la nube para gestión de ópticas OMCGC
+Empresa           : WALOOK MEXICO, S.A. de C.V.
 
-ESTRUCTURA:
-------------------------------------------------------------
-1. Overlay y Modal Base
-2. Componentes del Mensaje (header, titulo, textos)
-3. Elementos Especiales (campo error, area tecnica, textarea)
-4. Botones por Tipo
-5. Animaciones
+Autor             : Gabriel Amilcar Cruz Canto
+Matrícula         : ES1821003109
+Programa          : Licenciatura en Ingeniería en Desarrollo de Software
+Unidad didáctica  : Proyecto Terminal I / Proyecto Terminal II
+Periodo académico : PT1 – PT2 (Agosto 2025 – Enero 2026)
 
-COMPATIBILIDAD:
-------------------------------------------------------------
-- Navegadores: Chrome 90+, Firefox 88+, Edge 90+
-- Responsive: Si (adaptable a pantallas pequenas)
-- Accesibilidad: Cumple WCAG 2.1 nivel AA
+Versión           : v1.1
+
+Propósito:
+Estilos para el sistema de mensajes y notificaciones institucionales.
+Define overlays, modales dinámicos y estados visuales (Error, Éxito, Procesando).
 ============================================================
 */
 

@@ -7,7 +7,7 @@ Tipo              : Backend (Modelo de Dominio / Entidad)
 Proyecto          : Sistema ERP en la nube para gestión de ópticas OMCGC
 Empresa           : WALOOK MEXICO, S.A. de C.V.
 
-Autor             : Gabriel Amílcar Cruz Canto
+Autor             : Gabriel Amilcar Cruz Canto
 Matrícula         : ES1821003109
 Programa          : Licenciatura en Ingeniería en Desarrollo de Software
 Unidad didáctica  : Proyecto Terminal I / Proyecto Terminal II
@@ -16,7 +16,7 @@ Periodo académico : PT1 – PT2 (Agosto 2025 – Enero 2026)
 Versión           : v1.1
 
 Propósito:
-Entidad maestra cl.Producto destinada a encapsular la totalidad de atributos
+Entidad maestra destinada a encapsular la totalidad de atributos
 técnicos, comerciales, fiscales y logísticos de un artículo del inventario.
 Actúa como el núcleo central de la lógica operacional del módulo M01.
 
@@ -37,99 +37,95 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
- * Entidad de dominio fundamental cl.Producto.
- * Mapeada a la tabla tb.producto, coordina la jerarquía de categorías,
+ * Entidad de dominio fundamental.
+ * Mapeada a la tabla producto, coordina la jerarquía de categorías,
  * parámetros de stock, datos fiscales del SAT y variables financieras.
  */
 public class Producto {
 
     // --- SECCIÓN: IDENTIDAD Y CODIFICACIÓN ---
 
-    /** Identificador de objeto único vr.idProducto */
+    /** Identificador de objeto único */
     private String idProducto;
-    /** Stock Keeping Unit - Identificador único comercial vr.sku */
+    /** Stock Keeping Unit - Identificador único comercial */
     private String sku;
-    /** Denominación comercial completa del producto vr.nombre */
+    /** Denominación comercial completa del producto */
     private String nombre;
-    /** Representación simbólica del código de barras vr.codigoBarras */
+    /** Representación simbólica del código de barras */
     private String codigoBarras;
 
     // --- SECCIÓN: CLASIFICACIÓN JERÁRQUICA ---
 
-    /** Relación con el grupo raíz vr.idGrupo */
+    /** Relación con el grupo raíz */
     private String idGrupo;
-    /** Relación con la familia específica vr.idFamilia */
+    /** Relación con la familia específica */
     private String idFamilia;
-    /** Relación con el catálogo de marcas vr.idMarca */
+    /** Relación con el catálogo de marcas */
     private String idMarca;
 
     /**
-     * Atributos transitorios (Transient) para visualización en UI sin re-mapeo
-     * vr.nombreGrupo
+     * Atributos transitorios para visualización en UI sin re-mapeo
      */
     private String nombreGrupo;
     /**
-     * Atributos transitorios (Transient) para visualización en UI sin re-mapeo
-     * vr.nombreFamilia
+     * Atributos transitorios para visualización en UI sin re-mapeo
      */
     private String nombreFamilia;
     /**
-     * Atributos transitorios (Transient) para visualización en UI sin re-mapeo
-     * vr.nombreMarca
+     * Atributos transitorios para visualización en UI sin re-mapeo
      */
     private String nombreMarca;
 
     // --- SECCIÓN: CONTROL LOGÍSTICO (EXISTENCIAS) ---
 
-    /** Límite inferior de stock para alertas de reabastecimiento vr.stockMinimo */
+    /** Límite inferior de stock para alertas de reabastecimiento */
     private Integer stockMinimo;
     private Integer stockMaximo;
 
-    /** Identificador del usuario que realiza la operacion (Transient) */
+    /** Identificador del usuario que realiza la operacion (Transitorio) */
     private String idUsuarioOperacion;
     /**
-     * Existencia actual operativa (Transient, calculada desde existencia)
-     * vr.existenciaActual
+     * Existencia actual operativa (Transitorio, calculada desde existencia)
      */
     private Integer existenciaActual;
 
     // --- SECCIÓN: VARIABLES FINANCIERAS ---
 
-    /** Valor de adquisición neto por unidad vr.costoUnitario */
+    /** Valor de adquisición neto por unidad */
     private BigDecimal costoUnitario;
-    /** Margen de ganancia porcentual pretendido vr.porcentajeUtilidad */
+    /** Margen de ganancia porcentual pretendido */
     private BigDecimal porcentajeUtilidad;
     /**
-     * Valor de mercado resultante (Sincronizado vía base de datos) vr.precioVenta
+     * Valor de mercado resultante (Sincronizado vía base de datos)
      */
     private BigDecimal precioVenta;
 
     // --- SECCIÓN: CUMPLIMIENTO FISCAL (CFDI 4.0) ---
 
-    /** Clave de producto o servicio según catálogo del SAT vr.claveProdServ */
+    /** Clave de producto o servicio según catálogo del SAT */
     private String claveProdServ;
-    /** Clave de unidad de medida comercial vr.claveUnidad */
+    /** Clave de unidad de medida comercial */
     private String claveUnidad;
-    /** Indicador de objeto de impuesto (01, 02) vr.objetoImpuesto */
+    /** Indicador de objeto de impuesto (01, 02) */
     private String objetoImpuesto;
-    /** Tasa impositiva aplicable (ej: 16.00) vr.ivaAplicable */
+    /** Tasa impositiva aplicable (ej: 16.00) */
     private BigDecimal ivaAplicable;
 
     // --- SECCIÓN: AUDITORÍA Y ESTADO ---
 
-    /** Identificador del proveedor preferencial vr.idProveedor */
+    /** Identificador del proveedor preferencial */
     private String idProveedor;
-    /** Nombre comercial del proveedor (Transient) vr.nombreProveedor */
+    /** Nombre comercial del proveedor (Transitorio) */
     private String nombreProveedor;
-    /** Estado operativo de la entidad (ACTIVO/INACTIVO) vr.estatus */
+    /** Estado operativo de la entidad (ACTIVO/INACTIVO) */
     private String estatus;
-    /** Fecha de registro inicial vr.fechaCreacion */
+    /** Fecha de registro inicial */
     private LocalDateTime fechaCreacion;
-    /** Fecha del último cambio registrado vr.fechaModificacion */
+    /** Fecha del último cambio registrado */
     private LocalDateTime fechaModificacion;
 
     /**
-     * Constructor fn.Producto por defecto.
+     * Constructor por defecto.
      */
     public Producto() {
     }

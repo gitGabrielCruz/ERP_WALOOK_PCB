@@ -7,7 +7,7 @@ Tipo              : Backend (Controller / API REST)
 Proyecto          : Sistema ERP en la nube para gestión de ópticas OMCGC
 Empresa           : WALOOK MEXICO, S.A. de C.V.
 
-Autor             : Gabriel Amílcar Cruz Canto
+Autor             : Gabriel Amilcar Cruz Canto
 Matrícula         : ES1821003109
 Programa          : Licenciatura en Ingeniería en Desarrollo de Software
 Unidad didáctica  : Proyecto Terminal I / Proyecto Terminal II
@@ -104,8 +104,9 @@ public class InventarioController {
      */
     @DeleteMapping("/productos/{id}")
     public ResponseEntity<Void> deleteProducto(@PathVariable String id) {
-        // En una implementación IDS5v real, aquí se validaría la existencia y falta de
-        // movimientos
+        // En una implementación de alta integridad, aquí se validaría la existencia y
+        // falta de
+        // movimientos históricos antes de permitir la eliminación.
         inventarioService.deleteProduct(id);
         return ResponseEntity.ok().build();
     }

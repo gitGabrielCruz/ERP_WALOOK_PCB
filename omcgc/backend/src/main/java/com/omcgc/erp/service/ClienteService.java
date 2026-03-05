@@ -7,7 +7,7 @@ Tipo              : Backend (Servicio de Negocio)
 Proyecto          : Sistema ERP en la nube para gestión de ópticas OMCGC
 Empresa           : WALOOK MEXICO, S.A. de C.V.
 
-Autor             : Gabriel Amílcar Cruz Canto
+Autor             : Gabriel Amilcar Cruz Canto
 Matrícula         : ES1821003109
 Programa          : Licenciatura en Ingeniería en Desarrollo de Software
 Unidad didáctica  : Proyecto Terminal I / Proyecto Terminal II
@@ -18,11 +18,15 @@ Versión           : v1.0
 Propósito:
 Lógica de negocio para la gestión de clientes (pacientes).
 Controla el flujo de registro, validaciones de integridad fiscal
-(RFC único, formato) y coherencia de datos.
+(RFC único, formato) y coherencia de datos del expediente.
 
-Trazabilidad:
-- Reglas de negocio para HU-M06-01 (RNF-06: Validaciones de RFC/Email).
-- Coordina repositorio para HU-M06-02 (Búsqueda).
+Trazabilidad y Mapeo Funcional:
+------------------------------------------------------------
+1. HU-M06-01 (Gestión de Clientes):
+   - Validaciones de RFC único y formatos de contacto.
+   - Normalización de datos de personas físicas y morales.
+2. HU-M06-02 (Consulta de Cartera):
+   - Coordinación de filtros de búsqueda avanzados.
 ============================================================
 */
 package com.omcgc.erp.service;

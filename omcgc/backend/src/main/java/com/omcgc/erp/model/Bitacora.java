@@ -1,12 +1,28 @@
 /*
 ============================================================
 Nombre del archivo : Bitacora.java
-Ruta              : backend/src/main/java/com/omcgc/erp/model/Bitacora.java
+Ruta              : omcgc/backend/src/main/java/com/omcgc/erp/model/Bitacora.java
 Tipo              : Backend (Model / Entidad)
+
+Proyecto          : Sistema ERP en la nube para gestión de ópticas OMCGC
+Empresa           : WALOOK MEXICO, S.A. de C.V.
+
+Autor             : Gabriel Amilcar Cruz Canto
+Matrícula         : ES1821003109
+Programa          : Licenciatura en Ingeniería en Desarrollo de Software
+Unidad didáctica  : Proyecto Terminal I / Proyecto Terminal II
+Periodo académico : PT1 – PT2 (Agosto 2025 – Enero 2026)
+
+Versión           : v1.0
 
 Propósito:
 Representar un registro de auditoría. Los campos 'accion', 'ipOrigen' 
 y 'detalles' se transportan y almacenan cifrados para privacidad total.
+
+Trazabilidad y Mapeo Funcional:
+------------------------------------------------------------
+1. RNF-01 (Auditoría Técnica):
+   - Estructura de persistencia para eventos del sistema.
 ============================================================
 */
 package com.omcgc.erp.model;
@@ -17,9 +33,9 @@ public class Bitacora {
     private String idBitacora;
     private String idUsuario;
     private String nombreUsuario; // Campo transitorio para visualización
-    private String accion; // AES Encrypted
-    private String ipOrigen; // AES Encrypted
-    private String detalles; // AES Encrypted
+    private String accion; // Cifrado AES
+    private String ipOrigen; // Cifrado AES
+    private String detalles; // Cifrado AES
     private Timestamp fecha;
 
     public Bitacora() {

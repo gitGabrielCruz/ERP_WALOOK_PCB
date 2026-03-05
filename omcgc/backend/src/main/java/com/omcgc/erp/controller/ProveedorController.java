@@ -1,13 +1,13 @@
 /*
 ============================================================
 Nombre del archivo : ProveedorController.java
-Ruta              : backend/src/main/java/com/omcgc/erp/controller/ProveedorController.java
+Ruta              : omcgc/backend/src/main/java/com/omcgc/erp/controller/ProveedorController.java
 Tipo              : Backend (REST Controller)
 
 Proyecto          : Sistema ERP en la nube para gestión de ópticas OMCGC
 Empresa           : WALOOK MEXICO, S.A. de C.V.
 
-Autor             : Gabriel Amílcar Cruz Canto
+Autor             : Gabriel Amilcar Cruz Canto
 Matrícula         : ES1821003109
 Programa          : Licenciatura en Ingeniería en Desarrollo de Software
 Unidad didáctica  : Proyecto Terminal I / Proyecto Terminal II

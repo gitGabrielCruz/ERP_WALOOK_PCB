@@ -1,17 +1,28 @@
 /*
 ============================================================
 Nombre del archivo : UsuarioRepository.java
-Ruta              : backend/src/main/java/com/omcgc/erp/repository/UsuarioRepository.java
+Ruta              : omcgc/backend/src/main/java/com/omcgc/erp/repository/UsuarioRepository.java
 Tipo              : Backend (Repositorio de Datos)
 
 Proyecto          : Sistema ERP en la nube para gestión de ópticas OMCGC
 Empresa           : WALOOK MEXICO, S.A. de C.V.
 
-Autor             : Gabriel Amílcar Cruz Canto
-Versión           : v3.0
+Autor             : Gabriel Amilcar Cruz Canto
+Matrícula         : ES1821003109
+Programa          : Licenciatura en Ingeniería en Desarrollo de Software
+Unidad didáctica  : Proyecto Terminal I / Proyecto Terminal II
+Periodo académico : PT1 – PT2 (Agosto 2025 – Enero 2026)
+
+Versión           : v3.1
 
 Propósito:
 Repositorio completo para gestión de usuarios con sintaxis correcta de JdbcTemplate.
+Garantiza la administración de identidades, roles y permisos modulares.
+
+Trazabilidad y Mapeo Funcional:
+------------------------------------------------------------
+1. RF-01 (Gestión de Usuarios):
+   - CRUD de usuarios, roles y asignación de permisos por módulo.
 ============================================================
 */
 package com.omcgc.erp.repository;

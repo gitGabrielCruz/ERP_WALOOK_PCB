@@ -1,13 +1,13 @@
 /*
 ============================================================
 Nombre del archivo : AuthService.java
-Ruta              : omcgc/backend/src/service/AuthService.java
+Ruta              : omcgc/backend/src/main/java/com/omcgc/erp/service/AuthService.java
 Tipo              : Backend (Java Spring Boot)
 
 Proyecto          : Sistema ERP en la nube para gestión de ópticas OMCGC
 Empresa           : WALOOK MEXICO, S.A. de C.V.
 
-Autor             : Gabriel Amílcar Cruz Canto
+Autor             : Gabriel Amilcar Cruz Canto
 Matrícula         : ES1821003109
 Programa          : Licenciatura en Ingeniería en Desarrollo de Software
 Unidad didáctica  : Proyecto Terminal I / Proyecto Terminal II
@@ -70,7 +70,7 @@ public class AuthService {
             throw new RuntimeException("Error Crítico: El sistema no puede conectar con la Base de Datos.");
         }
 
-        // Normal Flow
+        // Flujo normal de identificación
         Usuario usuario = usuarioRepository.findByEmail(email);
 
         if (usuario != null) {
@@ -97,7 +97,7 @@ public class AuthService {
     }
 
     private Usuario createSuperAdminUser() {
-        // Check DB Status using Service
+        // Verificar el estado de la base de datos mediante el servicio de salud
         String dbStatus = dbHealthService.isConnected() ? "CONECTADO" : "DESCONECTADO";
 
         // UUID fijo — alineado con datos semilla en 02_create_tables_usuarios.sql

@@ -1,13 +1,13 @@
 /*
 ============================================================
 Nombre del archivo : UsuarioController.java
-Ruta              : backend/src/main/java/com/omcgc/erp/controller/UsuarioController.java
+Ruta              : omcgc/backend/src/main/java/com/omcgc/erp/controller/UsuarioController.java
 Tipo              : Backend (REST Controller)
 
 Proyecto          : Sistema ERP en la nube para gestión de ópticas OMCGC
 Empresa           : WALOOK MEXICO, S.A. de C.V.
 
-Autor             : Gabriel Amílcar Cruz Canto
+Autor             : Gabriel Amilcar Cruz Canto
 Matrícula         : ES1821003109
 Programa          : Licenciatura en Ingeniería en Desarrollo de Software
 Unidad didáctica  : Proyecto Terminal I / Proyecto Terminal II
@@ -17,11 +17,12 @@ Versión           : v1.0
 
 Propósito:
 Controlador REST para la gestión completa de usuarios (CRUD), incluyendo
-asignación de roles y permisos. Implementa los endpoints del módulo 1.3.
+asignación de roles y permisos. Implementa la seguridad de acceso al sistema.
 
-Trazabilidad:
-- HU-M01-03: Gestión de Usuarios, Roles y Permisos
-- Endpoints: GET, POST, PUT, DELETE /api/usuarios
+Trazabilidad y Mapeo Funcional:
+------------------------------------------------------------
+1. HU-M01-03: Gestión de Usuarios, Roles y Permisos.
+2. RNF-02: Control de Acceso basado en Roles (RBAC).
 ============================================================
 */
 

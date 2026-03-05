@@ -1,11 +1,28 @@
 /*
 ============================================================
 Nombre del archivo : BitacoraRepository.java
-Ruta              : backend/src/main/java/com/omcgc/erp/repository/BitacoraRepository.java
+Ruta              : omcgc/backend/src/main/java/com/omcgc/erp/repository/BitacoraRepository.java
 Tipo              : Backend (Repository / Persistence)
 
+Proyecto          : Sistema ERP en la nube para gestión de ópticas OMCGC
+Empresa           : WALOOK MEXICO, S.A. de C.V.
+
+Autor             : Gabriel Amilcar Cruz Canto
+Matrícula         : ES1821003109
+Programa          : Licenciatura en Ingeniería en Desarrollo de Software
+Unidad didáctica  : Proyecto Terminal I / Proyecto Terminal II
+Periodo académico : PT1 – PT2 (Agosto 2025 – Enero 2026)
+
+Versión           : v1.1
+
 Propósito:
-Manejar la persistencia de los logs en la tabla bitacora_seguridad.
+Manejar la persistencia de los logs de auditoría en la tabla bitacora_seguridad.
+Garantizar la integridad de los registros de eventos del sistema.
+
+Trazabilidad y Mapeo Funcional:
+------------------------------------------------------------
+1. RNF-01 (Auditoría y Trazabilidad):
+   - Registro persistente de acciones de usuario y eventos técnicos.
 ============================================================
 */
 package com.omcgc.erp.repository;

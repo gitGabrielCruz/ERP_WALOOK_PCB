@@ -1,18 +1,29 @@
-/* 
+/*
 ============================================================
 Nombre del archivo : proveedores-service.js
 Ruta              : omcgc/frontend/assets/js/proveedores-service.js
 Tipo              : Frontend (Lógica de Negocio y API)
 
-Proyecto          : Sistema ERP WALOOK
+Proyecto          : Sistema ERP en la nube para gestión de ópticas OMCGC
 Empresa           : WALOOK MEXICO, S.A. de C.V.
 
 Autor             : Gabriel Amilcar Cruz Canto
-Versión           : v1.0
+Matrícula         : ES1821003109
+Programa          : Licenciatura en Ingeniería en Desarrollo de Software
+Unidad didáctica  : Proyecto Terminal I / Proyecto Terminal II
+Periodo académico : PT1 – PT2 (Agosto 2025 – Enero 2026)
+
+Versión           : v1.1
 
 Propósito:
 Gestionar el ciclo de vida del catálogo de proveedores (CRUD).
 Permite listar, filtrar, crear, editar y consultar detalles de proveedores.
+
+Trazabilidad y Mapeo Funcional (Historias de Usuario):
+------------------------------------------------------------
+1. HU-M04-01: Registro de proveedores
+2. HU-M04-02: Consulta de proveedores
+3. HU-M04-03: Edición de proveedores
 ============================================================
 */
 

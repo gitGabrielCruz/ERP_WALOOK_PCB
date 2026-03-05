@@ -7,7 +7,7 @@ Tipo              : Backend (Modelo de Dominio / Entidad)
 Proyecto          : Sistema ERP en la nube para gestión de ópticas OMCGC
 Empresa           : WALOOK MEXICO, S.A. de C.V.
 
-Autor             : Gabriel Amílcar Cruz Canto
+Autor             : Gabriel Amilcar Cruz Canto
 Matrícula         : ES1821003109
 Programa          : Licenciatura en Ingeniería en Desarrollo de Software
 Unidad didáctica  : Proyecto Terminal I / Proyecto Terminal II
@@ -30,28 +30,33 @@ Trazabilidad y Mapeo Funcional:
 package com.omcgc.erp.model;
 
 /**
- * Entidad de dominio cl.CatFamilia mapeada a la tabla tb.cat_familia.
+ * Entidad de dominio mapeada a la tabla cat_familia.
  * Implementa el patrón de especialización jerárquica para la granularidad
  * de los activos del inventario.
  */
 public class CatFamilia {
 
-    /** Identificador único de la familia vr.idFamilia */
+    /** Identificador único de la familia */
     private String idFamilia;
 
-    /** Referencia (Foreign Key) al identificador del grupo padre vr.idGrupo */
+    /** Referencia (Foreign Key) al identificador del grupo padre */
     private String idGrupo;
 
-    /** Nombre comercial o técnico de la familia vr.nombre */
+    /** Nombre comercial o técnico de la familia */
     private String nombre;
-    
-    /** Campo transitorio para facilitar la visualización del nombre del grupo en la UI vr.nombreGrupo */
+
+    /**
+     * Campo transitorio para facilitar la visualización del nombre del grupo en la
+     * UI vr.nombreGrupo
+     */
     private String nombreGrupo;
 
     /**
-     * Constructor fn.CatFamilia por defecto para procesos de Marshalling/Unmarshalling.
+     * Constructor fn.CatFamilia por defecto para procesos de
+     * Marshalling/Unmarshalling.
      */
-    public CatFamilia() {}
+    public CatFamilia() {
+    }
 
     public String getIdFamilia() {
         return idFamilia;

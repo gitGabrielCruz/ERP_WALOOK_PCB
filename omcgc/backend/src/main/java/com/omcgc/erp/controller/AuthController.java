@@ -1,13 +1,13 @@
 /*
 ============================================================
 Nombre del archivo : AuthController.java
-Ruta              : omcgc/backend/src/controller/AuthController.java
+Ruta              : omcgc/backend/src/main/java/com/omcgc/erp/controller/AuthController.java
 Tipo              : Backend (Controlador REST)
 
 Proyecto          : Sistema ERP en la nube para gestión de ópticas OMCGC
 Empresa           : WALOOK MEXICO, S.A. de C.V.
 
-Autor             : Gabriel Amílcar Cruz Canto
+Autor             : Gabriel Amilcar Cruz Canto
 Matrícula         : ES1821003109
 Programa          : Licenciatura en Ingeniería en Desarrollo de Software
 Unidad didáctica  : Proyecto Terminal I / Proyecto Terminal II
@@ -71,7 +71,7 @@ public class AuthController {
             // Obtener permisos del usuario
             List<Map<String, Object>> permisos = usuarioService.getPermissionsByUsuario(usuario.getIdUsuario());
 
-            // Returns user data + permissions
+            // Retorna los datos básicos del usuario y su matriz de permisos
             return ResponseEntity.ok(Map.of(
                     "success", true,
                     "message", "Login exitoso",

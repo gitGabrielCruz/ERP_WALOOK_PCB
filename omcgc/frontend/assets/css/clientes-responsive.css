@@ -1,6 +1,25 @@
-/* ========================================
-   DISEÑO RESPONSIVO - CLIENTES
-   ======================================== */
+/*
+============================================================
+Nombre del archivo : clientes-responsive.css
+Ruta              : omcgc/frontend/assets/css/clientes-responsive.css
+Tipo              : Hoja de Estilos (Adaptación de Pantalla)
+
+Proyecto          : Sistema ERP en la nube para gestión de ópticas OMCGC
+Empresa           : WALOOK MEXICO, S.A. de C.V.
+
+Autor             : Gabriel Amilcar Cruz Canto
+Matrícula         : ES1821003109
+Programa          : Licenciatura en Ingeniería en Desarrollo de Software
+Unidad didáctica  : Proyecto Terminal I / Proyecto Terminal II
+Periodo académico : PT1 – PT2 (Agosto 2025 – Enero 2026)
+
+Versión           : v1.0
+
+Propósito:
+Definir las medias queries y reglas de adaptación visual para Clientes.
+Asegura la usabilidad en Tablets (1024px), Móviles (480px) y resoluciones intermedias.
+============================================================
+*/
 
 /* --- TABLETS (1024px y menos) --- */
 @media (max-width: 1024px) {

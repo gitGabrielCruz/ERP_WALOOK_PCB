@@ -1,13 +1,13 @@
 /*
 ============================================================
 Nombre del archivo : DatabaseConfig.java
-Ruta              : omcgc/backend/src/config/DatabaseConfig.java
+Ruta              : omcgc/backend/src/main/java/com/omcgc/erp/config/DatabaseConfig.java
 Tipo              : Backend (Configuración de Infraestructura)
 
 Proyecto          : Sistema ERP en la nube para gestión de ópticas OMCGC
 Empresa           : WALOOK MEXICO, S.A. de C.V.
 
-Autor             : Gabriel Amílcar Cruz Canto
+Autor             : Gabriel Amilcar Cruz Canto
 Matrícula         : ES1821003109
 Programa          : Licenciatura en Ingeniería en Desarrollo de Software
 Unidad didáctica  : Proyecto Terminal I / Proyecto Terminal II
@@ -17,13 +17,12 @@ Versión           : v1.0
 
 Propósito:
 Centralizar la configuración programática de la persistencia de datos.
-Actúa como la única fuente de la verdad para los parámetros de conexión JDBC,
-implementando el patrón de diseño "Factory" para el bean de DataSource.
+Actúa como la única fuente de la verdad para los parámetros de conexión JDBC.
 
 Trazabilidad y Mapeo Funcional:
 ------------------------------------------------------------
 1. RNF-05 (Mantenibilidad y Centralización):
-   - Encapsulamiento estricto de credenciales y cadena de conexión (JDBC URL).
+   - Encapsulamiento de credenciales y URL de conexión según el entorno (Dev/Prod).
    - Inyección de dependencias del Driver MySQL Connector/J.
 ============================================================
 */

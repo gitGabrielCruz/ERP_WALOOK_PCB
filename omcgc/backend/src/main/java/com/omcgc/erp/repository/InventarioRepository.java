@@ -7,7 +7,7 @@ Tipo              : Backend (Repositorio de Datos / Persistencia)
 Proyecto          : Sistema ERP en la nube para gestión de ópticas OMCGC
 Empresa           : WALOOK MEXICO, S.A. de C.V.
 
-Autor             : Gabriel Amílcar Cruz Canto
+Autor             : Gabriel Amilcar Cruz Canto
 Matrícula         : ES1821003109
 Programa          : Licenciatura en Ingeniería en Desarrollo de Software
 Unidad didáctica  : Proyecto Terminal I / Proyecto Terminal II
@@ -18,7 +18,7 @@ Versión           : v1.2
 Propósito:
 Proveer la capa de persistencia para el maestro de productos y las 
 transacciones de inventario (Kardex). Implementa operaciones de lectura 
-avanzada con JOINS y persistencia mediante tb.producto y tb.movimiento_inventario.
+avanzada con JOINS y persistencia mediante las tablas de producto y movimientos.
 
 Trazabilidad y Mapeo Funcional:
 ------------------------------------------------------------
@@ -42,14 +42,14 @@ import java.util.List;
 import java.util.UUID;
 
 /**
- * Clase cl.InventarioRepository encargada de la materialización de objetos
+ * Clase encargada de la materialización de objetos
  * de inventario desde el motor de base de datos relacional MySQL.
  */
 @Repository
 public class InventarioRepository {
 
     /**
-     * Instancia de cl.JdbcTemplate inyectada para operaciones SQL vr.jdbcTemplate
+     * Instancia de JdbcTemplate inyectada para operaciones SQL
      */
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -57,8 +57,8 @@ public class InventarioRepository {
     // --- SECCIÓN: MAPPERS TÉCNICOS ---
 
     /**
-     * Mapeador vr.PRODUCTO_MAPPER para la des-serialización de registros de la
-     * tabla tb.producto
+     * Mapeador para la des-serialización de registros de la
+     * tabla producto
      */
     private static final RowMapper<Producto> PRODUCTO_MAPPER = (rs, rowNum) -> {
         Producto p = new Producto();
@@ -110,8 +110,8 @@ public class InventarioRepository {
     };
 
     /**
-     * Mapeador vr.MOVIMIENTO_MAPPER para la des-serialización de registros de la
-     * tabla tb.movimiento_inventario
+     * Mapeador para la des-serialización de registros de la
+     * tabla movimiento_inventario
      */
     private static final RowMapper<MovimientoInventario> MOVIMIENTO_MAPPER = (rs, rowNum) -> {
         MovimientoInventario m = new MovimientoInventario();
@@ -226,9 +226,9 @@ public class InventarioRepository {
     }
 
     /**
-     * Persiste un nuevo movimiento de inventario fn.saveMovimiento.
+     * Persiste un nuevo movimiento de inventario.
      * 
-     * @param m Instancia de cl.MovimientoInventario.
+     * @param m Instancia de MovimientoInventario.
      */
     public void saveMovimiento(MovimientoInventario m) {
         if (m.getIdMovimiento() == null)
@@ -258,8 +258,7 @@ public class InventarioRepository {
     }
 
     /**
-     * Actualiza la tabla existencia con el nuevo stock operativo
-     * fn.updateExistencia.
+     * Actualiza la tabla existencia con el nuevo stock operativo.
      * Si no existe el registro, lo crea (INSERT ON DUPLICATE KEY UPDATE).
      */
     public void updateExistencia(String idProducto, String idSucursal, int nuevoStock) {
@@ -272,8 +271,7 @@ public class InventarioRepository {
     }
 
     /**
-     * Obtiene la existencia actual operativa de un producto en una sucursal
-     * fn.getCurrentStock.
+     * Obtiene la existencia actual operativa de un producto en una sucursal.
      * Basado en la vista v_stock_actual.
      */
     public Integer getCurrentStock(String idProducto, String idSucursal) {

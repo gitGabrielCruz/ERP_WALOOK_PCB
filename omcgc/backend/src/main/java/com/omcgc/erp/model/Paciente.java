@@ -7,7 +7,7 @@ Tipo              : Backend (Modelo/Entidad Java)
 Proyecto          : Sistema ERP en la nube para gestión de ópticas OMCGC
 Empresa           : WALOOK MEXICO, S.A. de C.V.
 
-Autor             : Gabriel Amílcar Cruz Canto
+Autor             : Gabriel Amilcar Cruz Canto
 Matrícula         : ES1821003109
 Programa          : Licenciatura en Ingeniería en Desarrollo de Software
 Unidad didáctica  : Proyecto Terminal I / Proyecto Terminal II
@@ -20,9 +20,11 @@ Entidad POJO que representa la tabla 'paciente' en la base de datos.
 Mapea los datos personales, fiscales y de control requeridos para
 la funcionalidad del módulo de Clientes.
 
-Trazabilidad:
-- Entidad mapeada en 'paciente' (BD).
-- Estructura base para HU-M06-01 y HU-M06-02.
+Trazabilidad y Mapeo Funcional:
+------------------------------------------------------------
+1. HU-M06-01 / HU-M06-02 (Gestión de Pacientes/Clientes):
+   - Definición de atributos personales y fiscales (CFDI).
+   - Soporte para auditoría y control de estatus.
 ============================================================
 */
 package com.omcgc.erp.model;

@@ -7,7 +7,7 @@ Tipo              : Backend (Controlador REST Spring Boot)
 Proyecto          : Sistema ERP en la nube para gestión de ópticas OMCGC
 Empresa           : WALOOK MEXICO, S.A. de C.V.
 
-Autor             : Gabriel Amílcar Cruz Canto
+Autor             : Gabriel Amilcar Cruz Canto
 Matrícula         : ES1821003109
 Programa          : Licenciatura en Ingeniería en Desarrollo de Software
 Unidad didáctica  : Proyecto Terminal I / Proyecto Terminal II
@@ -19,10 +19,12 @@ Propósito:
 Exponer endpoints API REST para el módulo de Clientes.
 Mapea las peticiones HTTP (GET, POST, PUT) y coordina la seguridad y respuestas JSON.
 
-Trazabilidad:
-- Endpoint GET /api/clientes (HU-M06-02).
-- Endpoint POST /api/clientes (HU-M06-01).
-- Manejo de excepciones (RF-06).
+Trazabilidad y Mapeo Funcional:
+------------------------------------------------------------
+1. RF-06 (Manejo de Clientes):
+   - Endpoint GET /api/clientes (HU-M06-02).
+   - Endpoint POST /api/clientes (HU-M06-01).
+   - Manejo centralizado de excepciones y respuestas HTTP.
 ============================================================
 */
 package com.omcgc.erp.controller;

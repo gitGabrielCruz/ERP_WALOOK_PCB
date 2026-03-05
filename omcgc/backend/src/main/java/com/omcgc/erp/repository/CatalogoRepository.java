@@ -7,7 +7,7 @@ Tipo              : Backend (Repositorio de Datos / Persistencia)
 Proyecto          : Sistema ERP en la nube para gestión de ópticas OMCGC
 Empresa           : WALOOK MEXICO, S.A. de C.V.
 
-Autor             : Gabriel Amílcar Cruz Canto
+Autor             : Gabriel Amilcar Cruz Canto
 Matrícula         : ES1821003109
 Programa          : Licenciatura en Ingeniería en Desarrollo de Software
 Unidad didáctica  : Proyecto Terminal I / Proyecto Terminal II
@@ -17,7 +17,7 @@ Versión           : v1.1
 
 Propósito:
 Gestionar el acceso a datos para las tablas de catálogos base (Grupos, Familias 
-y Marcas). Utiliza cl.JdbcTemplate para garantizar un control granular 
+y Marcas). Utiliza JdbcTemplate para garantizar un control granular 
 sobre las consultas SQL y optimizar el rendimiento de las lecturas jerárquicas.
 
 Trazabilidad y Mapeo Funcional:
@@ -41,22 +41,22 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 /**
- * Repositorio cl.CatalogoRepository especializado en operaciones de lectura
+ * Repositorio especializado en operaciones de lectura
  * sobre catálogos maestros. Implementa el patrón Repository para desacoplar
  * el modelo de dominio de la lógica de persistencia.
  */
 @Repository
 public class CatalogoRepository {
 
-    /** Inyección del motor de ejecución SQL vr.jdbcTemplate */
+    /** Inyección del motor de ejecución SQL */
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
     // --- SECCIÓN: MAPPERS TÉCNICOS ---
 
     /**
-     * Mapeador estático vr.GRUPO_MAPPER para transformar filas de tb.cat_grupo a
-     * objetos cl.CatGrupo
+     * Mapeador estático para transformar filas de cat_grupo a
+     * objetos CatGrupo
      */
     private static final RowMapper<CatGrupo> GRUPO_MAPPER = (rs, rowNum) -> {
         CatGrupo g = new CatGrupo();
@@ -69,8 +69,8 @@ public class CatalogoRepository {
     };
 
     /**
-     * Mapeador estático vr.FAMILIA_MAPPER para transformar filas de tb.cat_familia
-     * a objetos cl.CatFamilia
+     * Mapeador estático para transformar filas de cat_familia
+     * a objetos CatFamilia
      */
     private static final RowMapper<CatFamilia> FAMILIA_MAPPER = (rs, rowNum) -> {
         CatFamilia f = new CatFamilia();
@@ -86,7 +86,7 @@ public class CatalogoRepository {
     };
 
     /**
-     * Mapeador estático vr.MARCA_MAPPER para persistencia de marcas tb.cat_marca
+     * Mapeador estático para persistencia de marcas cat_marca
      */
     private static final RowMapper<CatMarca> MARCA_MAPPER = (rs, rowNum) -> {
         CatMarca m = new CatMarca();
@@ -97,8 +97,8 @@ public class CatalogoRepository {
     };
 
     /**
-     * Mapeador estático vr.SUCURSAL_MAPPER para transformar filas de tb.sucursal
-     * a objetos cl.Sucursal
+     * Mapeador estático para transformar filas de sucursal
+     * a objetos Sucursal
      */
     private static final RowMapper<Sucursal> SUCURSAL_MAPPER = (rs, rowNum) -> {
         Sucursal s = new Sucursal();
@@ -111,9 +111,9 @@ public class CatalogoRepository {
     // --- SECCIÓN: MÉTODOS OPERATIVOS (GRUPOS) ---
 
     /**
-     * Recupera la totalidad de grupos activosfn.findAllGrupos.
+     * Recupera la totalidad de grupos activos.
      * 
-     * @return Lista de objetos cl.CatGrupo ordenados alfabéticamente.
+     * @return Lista de objetos CatGrupo ordenados alfabéticamente.
      */
     public List<CatGrupo> findAllGrupos() {
         return jdbcTemplate.query("SELECT * FROM cat_grupo ORDER BY nombre", GRUPO_MAPPER);
@@ -122,8 +122,7 @@ public class CatalogoRepository {
     // --- SECCIÓN: MÉTODOS OPERATIVOS (FAMILIAS) ---
 
     /**
-     * Obtiene todas las familias con su respectiva información de grupo
-     * fn.findAllFamilias.
+     * Obtiene todas las familias con su respectiva información de grupo.
      * 
      * @return Colección de familias con JOIN al grupo padre.
      */
@@ -135,8 +134,7 @@ public class CatalogoRepository {
     }
 
     /**
-     * Filtra familias por su pertenencia a un grupo específico
-     * fn.findFamiliasByGrupo.
+     * Filtra familias por su pertenencia a un grupo específico.
      * 
      * @param idGrupo Identificador UUID del grupo raíz.
      * @return Familias pertenecientes al clúster solicitado.
@@ -151,7 +149,7 @@ public class CatalogoRepository {
     // --- SECCIÓN: MÉTODOS OPERATIVOS (MARCAS) ---
 
     /**
-     * Recupera el catálogo maestro de marcas fn.findAllMarcas.
+     * Recupera el catálogo maestro de marcas.
      * 
      * @return Listado de marcas comerciales.
      */
@@ -162,8 +160,7 @@ public class CatalogoRepository {
     // --- SECCIÓN: MÉTODOS OPERATIVOS (SUCURSALES) ---
 
     /**
-     * Recupera el catálogo de sucursales fn.findAllSucursales (Critical Path for
-     * Session Context).
+     * Recupera el catálogo de sucursales (Critical Path for Session Context).
      * 
      * @return Listado de sucursales operativas.
      */

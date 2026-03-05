@@ -7,7 +7,7 @@ Tipo              : Backend (Service / Lógica de Negocio)
 Proyecto          : Sistema ERP en la nube para gestión de ópticas OMCGC
 Empresa           : WALOOK MEXICO, S.A. de C.V.
 
-Autor             : Gabriel Amílcar Cruz Canto
+Autor             : Gabriel Amilcar Cruz Canto
 Matrícula         : ES1821003109
 Programa          : Licenciatura en Ingeniería en Desarrollo de Software
 Unidad didáctica  : Proyecto Terminal I / Proyecto Terminal II
@@ -40,59 +40,58 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 /**
- * Servicio cl.CatalogoService encargado de gestionar las peticiones de
+ * Servicio encargado de gestionar las peticiones de
  * catálogos maestros. Implementa desacoplamiento entre persistencia y
  * presentación.
  */
 @Service
 public class CatalogoService {
 
-    /** Repositorio de catálogos inyectado vr.catalogoRepository */
+    /** Repositorio de catálogos inyectado */
     @Autowired
     private CatalogoRepository catalogoRepository;
 
     /**
-     * Recupera el listado completo de grupos raíz fn.getAllGrupos.
+     * Recupera el listado completo de grupos raíz.
      * 
-     * @return Colección de cl.CatGrupo.
+     * @return Colección de objetos de grupo.
      */
     public List<CatGrupo> getAllGrupos() {
         return catalogoRepository.findAllGrupos();
     }
 
     /**
-     * Recupera todas las familias independientemente del grupo fn.getAllFamilias.
+     * Recupera todas las familias independientemente del grupo.
      * 
-     * @return Colección de cl.CatFamilia.
+     * @return Colección de objetos de familia.
      */
     public List<CatFamilia> getAllFamilias() {
         return catalogoRepository.findAllFamilias();
     }
 
     /**
-     * Recupera familias filtradas por la pertenencia a un grupo jerárquico
-     * fn.getFamiliasByGrupo.
+     * Recupera familias filtradas por la pertenencia a un grupo jerárquico.
      * 
      * @param idGrupo Identificador UUID del grupo padre.
-     * @return Colección de cl.CatFamilia vinculada.
+     * @return Colección de objetos de familia vinculada.
      */
     public List<CatFamilia> getFamiliasByGrupo(String idGrupo) {
         return catalogoRepository.findFamiliasByGrupo(idGrupo);
     }
 
     /**
-     * Recupera el catálogo maestro de marcas comerciales fn.getAllMarcas.
+     * Recupera el catálogo maestro de marcas comerciales.
      * 
-     * @return Colección de cl.CatMarca.
+     * @return Colección de objetos de marca.
      */
     public List<CatMarca> getAllMarcas() {
         return catalogoRepository.findAllMarcas();
     }
 
     /**
-     * Recupera el catálogo de sucursales fn.getAllSucursales.
+     * Recupera el catálogo de sucursales.
      * 
-     * @return Colección de cl.Sucursal.
+     * @return Colección de objetos de sucursal.
      */
     public List<Sucursal> getAllSucursales() {
         return catalogoRepository.findAllSucursales();

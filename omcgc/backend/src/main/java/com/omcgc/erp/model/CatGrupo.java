@@ -7,7 +7,7 @@ Tipo              : Backend (Modelo de Dominio / Entidad)
 Proyecto          : Sistema ERP en la nube para gestión de ópticas OMCGC
 Empresa           : WALOOK MEXICO, S.A. de C.V.
 
-Autor             : Gabriel Amílcar Cruz Canto
+Autor             : Gabriel Amilcar Cruz Canto
 Matrícula         : ES1821003109
 Programa          : Licenciatura en Ingeniería en Desarrollo de Software
 Unidad didáctica  : Proyecto Terminal I / Proyecto Terminal II
@@ -17,7 +17,7 @@ Versión           : v1.1
 
 Propósito:
 Definir la entidad de persistencia para los grupos raíz del inventario. 
-Esta clase cl.CatGrupo actúa como el nivel jerárquico superior en la 
+Esta clase actúa como el nivel jerárquico superior en la 
 categorización de productos, permitiendo segregar lógica de negocio 
 crítica como el control de caducidades o la naturaleza del ítem (bien o servicio).
 
@@ -32,38 +32,49 @@ Trazabilidad y Mapeo Funcional:
 
 package com.omcgc.erp.model;
 
-    
 import java.time.LocalDateTime;
 
 /**
- * Entidad de dominio cl.CatGrupo representativa de la tabla tb.cat_grupo.
+ * Entidad de dominio representativa de la tabla cat_grupo.
  * Implementa las propiedades fundamentales para la discriminación de tipos
  * de inventario en el sistema ERP.
  */
 public class CatGrupo {
 
-    /** Identificador único universal (UUID) de la categoría grupo vr.idGrupo */
+    /** Identificador único universal (UUID) de la categoría grupo */
     private String idGrupo;
 
-    /** Nombre descriptivo del grupo (ej: Armazones, Mantenimiento) vr.nombre */
+    /** Nombre descriptivo del grupo (ej: Armazones, Mantenimiento) */
     private String nombre;
 
-    /** Flag booleano que determina si el grupo requiere trazabilidad de fechas de expiración vr.exigeCaducidad */
+    /**
+     * Flag booleano que determina si el grupo requiere trazabilidad de fechas de
+     * expiración vr.exigeCaducidad
+     */
     private boolean exigeCaducidad;
 
-    /** Determina si el grupo representa un servicio (intangible) o un producto físico vr.esServicio */
+    /**
+     * Determina si el grupo representa un servicio (intangible) o un producto
+     * físico vr.esServicio
+     */
     private boolean esServicio;
 
-    /** Estampa de tiempo de la creación del registro en el motor de persistencia vr.creadoEn */
+    /**
+     * Estampa de tiempo de la creación del registro en el motor de persistencia
+     * vr.creadoEn
+     */
     private LocalDateTime creadoEn;
 
     /**
-     * Constructor fn.CatGrupo por defecto requerido por los frameworks de mapeo y serialización.
+     * Constructor fn.CatGrupo por defecto requerido por los frameworks de mapeo y
+     * serialización.
      */
-    public CatGrupo() {}
+    public CatGrupo() {
+    }
 
     /**
      * Obtiene el identificador de la entidad fn.getIdGrupo.
+     * 
      * @return vr.idGrupo en formato String (UUID).
      */
     public String getIdGrupo() {
@@ -72,7 +83,9 @@ public class CatGrupo {
 
     /**
      * Establece el identificador de la entidad fn.setIdGrupo.
-     * @param idGrupo Identificador UUID proporcionado por el generador de persistencia.
+     * 
+     * @param idGrupo Identificador UUID proporcionado por el generador de
+     *                persistencia.
      */
     public void setIdGrupo(String idGrupo) {
         this.idGrupo = idGrupo;
@@ -80,6 +93,7 @@ public class CatGrupo {
 
     /**
      * Obtiene el nombre del grupo fn.getNombre.
+     * 
      * @return vr.nombre descriptivo.
      */
     public String getNombre() {
@@ -88,6 +102,7 @@ public class CatGrupo {
 
     /**
      * Define el nombre del grupo fn.setNombre.
+     * 
      * @param nombre Cadena de texto con el nombre comercial del grupo.
      */
     public void setNombre(String nombre) {
@@ -96,6 +111,7 @@ public class CatGrupo {
 
     /**
      * Consulta el estado de la regla de caducidad fn.isExigeCaducidad.
+     * 
      * @return true si los productos asociados deben validar fecha de vencimiento.
      */
     public boolean isExigeCaducidad() {
@@ -104,6 +120,7 @@ public class CatGrupo {
 
     /**
      * Define si el grupo exige caducidad fn.setExigeCaducidad.
+     * 
      * @param exigeCaducidad Estado lógico del requerimiento de expiración.
      */
     public void setExigeCaducidad(boolean exigeCaducidad) {
@@ -112,6 +129,7 @@ public class CatGrupo {
 
     /**
      * Determina si la entidad representa un servicio fn.isEsServicio.
+     * 
      * @return true si la naturaleza es intangible.
      */
     public boolean isEsServicio() {
@@ -120,6 +138,7 @@ public class CatGrupo {
 
     /**
      * Define la naturaleza intangible del grupo fn.setEsServicio.
+     * 
      * @param esServicio Estado lógico representativo de servicio.
      */
     public void setEsServicio(boolean esServicio) {
@@ -128,6 +147,7 @@ public class CatGrupo {
 
     /**
      * Obtiene la fecha de auditoría de creación fn.getCreadoEn.
+     * 
      * @return vr.creadoEn tipo LocalDateTime.
      */
     public LocalDateTime getCreadoEn() {
@@ -136,6 +156,7 @@ public class CatGrupo {
 
     /**
      * Establece la fecha de creación fn.setCreadoEn.
+     * 
      * @param creadoEn Timestamps del servidor de base de datos.
      */
     public void setCreadoEn(LocalDateTime creadoEn) {

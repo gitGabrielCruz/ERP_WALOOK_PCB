@@ -1,13 +1,13 @@
 /*
 ============================================================
 Nombre del archivo : ProveedorService.java
-Ruta              : backend/src/main/java/com/omcgc/erp/service/ProveedorService.java
+Ruta              : omcgc/backend/src/main/java/com/omcgc/erp/service/ProveedorService.java
 Tipo              : Backend (Service)
 
 Proyecto          : Sistema ERP en la nube para gestión de ópticas OMCGC
 Empresa           : WALOOK MEXICO, S.A. de C.V.
 
-Autor             : Gabriel Amílcar Cruz Canto
+Autor             : Gabriel Amilcar Cruz Canto
 Matrícula         : ES1821003109
 Programa          : Licenciatura en Ingeniería en Desarrollo de Software
 Unidad didáctica  : Proyecto Terminal I / Proyecto Terminal II
@@ -17,7 +17,8 @@ Versión           : v1.0
 
 Propósito:
 Capa de lógica de negocio para Proveedores.
-Maneja las validaciones RNF y reglas de negocio antes de persistir datos.
+Maneja las validaciones RNF y reglas de negocio antes de persistir datos, 
+asegurando la integridad de la cadena de suministro.
 
 Trazabilidad y Mapeo Funcional:
 ------------------------------------------------------------

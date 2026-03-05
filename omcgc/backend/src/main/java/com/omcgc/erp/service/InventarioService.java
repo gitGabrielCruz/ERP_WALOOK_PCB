@@ -7,7 +7,7 @@ Tipo              : Backend (Service / Lógica de Negocio)
 Proyecto          : Sistema ERP en la nube para gestión de ópticas OMCGC
 Empresa           : WALOOK MEXICO, S.A. de C.V.
 
-Autor             : Gabriel Amílcar Cruz Canto
+Autor             : Gabriel Amilcar Cruz Canto
 Matrícula         : ES1821003109
 Programa          : Licenciatura en Ingeniería en Desarrollo de Software
 Unidad didáctica  : Proyecto Terminal I / Proyecto Terminal II
@@ -16,7 +16,7 @@ Periodo académico : PT1 – PT2 (Agosto 2025 – Enero 2026)
 Versión           : v1.0
 
 Propósito:
-Implementar la inteligencia de negocio del módulo de inventarios. Gestiona 
+Implementar la lógica de negocio del módulo de inventarios. Gestiona 
 validaciones de stock, cálculos financieros de precios y la integridad 
 transaccional del Kardex operativo.
 
@@ -45,7 +45,7 @@ import java.math.RoundingMode;
 import java.util.List;
 
 /**
- * Servicio cl.InventarioService encargado de la orquestación operativa del
+ * Servicio encargado de la orquestación operativa del
  * inventario.
  * Aplica reglas estrictas de validación antes de delegar a la persistencia.
  */
@@ -69,9 +69,9 @@ public class InventarioService {
     }
 
     /**
-     * Registra o actualiza un producto aplicando reglas de cálculo fn.saveProduct.
+     * Registra o actualiza un producto aplicando reglas de cálculo.
      * 
-     * @param p  Entidad cl.Producto.
+     * @param p  Entidad de Producto.
      * @param ip IP de origen.
      */
     public void saveProduct(Producto p, String ip) {
@@ -117,9 +117,9 @@ public class InventarioService {
     }
 
     /**
-     * Ejecuta una transacción de inventario bajo integridad fn.registrarMovimiento.
+     * Ejecuta una transacción de inventario bajo integridad.
      * 
-     * @param m Entidad cl.MovimientoInventario.
+     * @param m Entidad de MovimientoInventario.
      */
     @Transactional
     public void registrarMovimiento(MovimientoInventario m, String ip) {
@@ -186,10 +186,6 @@ public class InventarioService {
         }
     }
 
-    /**
-     * Determina si el tipo de movimiento representa una reducción de activos
-     * fn.esSalida.
-     */
     private boolean esSalida(String tipo) {
         return "SALIDA_VENTA".equals(tipo) || "MERMA".equals(tipo) || "TRASPASO_SALIDA".equals(tipo);
     }

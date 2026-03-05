@@ -1,19 +1,19 @@
 /*
 ============================================================
 Nombre del archivo : ProveedorRepository.java
-Ruta              : backend/src/main/java/com/omcgc/erp/repository/ProveedorRepository.java
+Ruta              : omcgc/backend/src/main/java/com/omcgc/erp/repository/ProveedorRepository.java
 Tipo              : Backend (Repository)
 
 Proyecto          : Sistema ERP en la nube para gestión de ópticas OMCGC
 Empresa           : WALOOK MEXICO, S.A. de C.V.
 
-Autor             : Gabriel Amílcar Cruz Canto
+Autor             : Gabriel Amilcar Cruz Canto
 Matrícula         : ES1821003109
 Programa          : Licenciatura en Ingeniería en Desarrollo de Software
 Unidad didáctica  : Proyecto Terminal I / Proyecto Terminal II
 Periodo académico : PT1 – PT2 (Agosto 2025 – Enero 2026)
 
-Versión           : v1.0
+Versión           : v1.1
 
 Propósito:
 Capa de acceso a datos para la entidad Proveedor.
