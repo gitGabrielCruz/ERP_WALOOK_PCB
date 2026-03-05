@@ -1343,4 +1343,18 @@
 **Archivo Creado:** `pantallas_nuevas/menu.svg`.
 **Resultado:** Mockup vectorial listo para revisión visual.
 **REPOSITORIO ERP_WALOOK ACTUALIZADO** ✅.
+**Decisión del Ingeniero:** Sincronización exitosa.
+
+#### Solicitud 4: Creación de Mockup SVG de Menú Principal
+**Tipo:** Diseño / Implementación UI
+**Hora:** 09:56 PM
+**Solicitud del Ingeniero:** "ahaora, con el modulo menu, crea la pantalla, ponle el nombre menu.svg"
+**Acciones realizadas:**
+1.  **Mantenimiento:** Renombre del archivo anterior `menu.svg` (Login) a `login.svg` para coherencia funcional.
+2.  **Análisis:** Se revisó `menu.html` para identificar la estructura del Dashboard (Header Bar, Status Bar, Grid de 12 módulos y Semáforo de estatus).
+3.  **Implementación:** Diseño y escritura de `menu.svg` (1280x900) con representación vectorial de la grilla de módulos, iconos de Material Symbols y barra de estado de usuario.
+**Archivo Creado:** `pantallas_nuevas/menu.svg`.
+**Archivo Renombrado:** `pantallas_nuevas/login.svg`.
+**Resultado:** Mockup del Menú Principal completado y sincronizado.
+**REPOSITORIO ERP_WALOOK ACTUALIZADO** ✅.
 **Decisión del Ingeniero:** Pendiente notificación.
