@@ -1,45 +1,138 @@
-<svg width="1280" height="800" viewBox="0 0 1280 800" xmlns="http://www.w3.org/2000/svg">
+<svg width="1280" height="900" viewBox="0 0 1280 900" xmlns="http://www.w3.org/2000/svg">
   <!-- Fondo Principal -->
-  <rect width="1280" height="800" fill="#F4F6F8" />
+  <rect width="1280" height="900" fill="#F4F6F8" />
   
-  <!-- Contenedor de Login (Efecto de centrado) -->
-  <g transform="translate(440, 100)">
+  <!-- 1. HEADER BAR -->
+  <rect width="1280" height="64" fill="#FFFFFF" stroke="#DADADA" stroke-width="1" />
+  
+  <!-- Logo y Branding -->
+  <g transform="translate(32, 12)">
+    <rect width="40" height="40" rx="4" fill="#1F3A5F" />
+    <path d="M10 20 L30 20 M20 10 L20 30" stroke="white" stroke-width="2" />
+    <text x="50" y="22" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="bold" fill="#1F3A5F">OPTICA ERP</text>
+    <text x="50" y="38" font-family="Inter, Arial, sans-serif" font-size="11" fill="#6B6B6B">04/03/2026</text>
+  </g>
+  
+  <!-- Status Bar (Derecha) -->
+  <g transform="translate(850, 12)">
+    <!-- Usuario -->
+    <text x="0" y="15" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="600" fill="#111827">Ing. Gabriel Cruz</text>
+    <rect x="0" y="22" width="60" height="18" rx="4" fill="#F3F4F6" />
+    <text x="30" y="35" font-family="Inter, Arial, sans-serif" font-size="10" fill="#6B7280" text-anchor="middle">ADMIN</text>
     
-    <!-- Logo (Representación simplificada) -->
-    <rect x="120" y="0" width="160" height="60" rx="8" fill="#FFFFFF" stroke="#DADADA" stroke-width="1" />
-    <text x="200" y="38" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="bold" fill="#1F3A5F" text-anchor="middle">OPTICA ERP</text>
-    <path d="M140 30 L160 30 M150 20 L150 40" stroke="#1F3A5F" stroke-width="2" />
+    <!-- Separador -->
+    <line x1="120" y1="5" x2="120" y2="35" stroke="#DADADA" stroke-width="1" />
     
-    <!-- Card de Login -->
-    <rect x="0" y="80" width="400" height="480" rx="6" fill="#FFFFFF" stroke="#DADADA" stroke-width="1" filter="drop-shadow(0 2px 4px rgba(0,0,0,0.05))" />
+    <!-- Stats de Tiempo -->
+    <g transform="translate(140, 0)">
+      <text x="0" y="10" font-family="Inter, Arial, sans-serif" font-size="9" fill="#9CA3AF" font-weight="bold">INGRESO</text>
+      <text x="0" y="25" font-family="Inter, Arial, sans-serif" font-size="13" fill="#111827">08:05</text>
+      
+      <text x="70" y="10" font-family="Inter, Arial, sans-serif" font-size="9" fill="#9CA3AF" font-weight="bold">ACTUAL</text>
+      <text x="70" y="25" font-family="Inter, Arial, sans-serif" font-size="13" fill="#111827">09:56</text>
+      
+      <text x="140" y="10" font-family="Inter, Arial, sans-serif" font-size="9" fill="#9CA3AF" font-weight="bold">CONEXIÓN</text>
+      <text x="140" y="25" font-family="Inter, Arial, sans-serif" font-size="13" fill="#2E7D32" font-weight="bold">01:51:27</text>
+    </g>
     
-    <!-- Título Login -->
-    <text x="200" y="140" font-family="Inter, Arial, sans-serif" font-size="28" font-weight="600" fill="#1F3A5F" text-anchor="middle">Login</text>
+    <!-- Botón Salir -->
+    <rect x="360" y="0" width="80" height="40" rx="6" fill="#FFFFFF" stroke="#EF4444" stroke-width="1" />
+    <text x="400" y="25" font-family="Inter, Arial, sans-serif" font-size="12" font-weight="bold" fill="#EF4444" text-anchor="middle">SALIR ✕</text>
+  </g>
+  
+  <!-- 2. MAIN CONTENT -->
+  <g transform="translate(140, 100)">
+    <!-- Card Principal -->
+    <rect width="1000" height="740" rx="12" fill="#FFFFFF" filter="drop-shadow(0 10px 40px rgba(0,0,0,0.06))" />
     
-    <!-- Formulario: Usuario -->
-    <text x="40" y="200" font-family="Inter, Arial, sans-serif" font-size="14.4" font-weight="500" fill="#6B6B6B">Usuario</text>
-    <rect x="40" y="210" width="320" height="45" rx="6" fill="#FFFFFF" stroke="#DADADA" stroke-width="1" />
-    <text x="50" y="238" font-family="Inter, Arial, sans-serif" font-size="16" fill="#9E9E9E">usuario@ejemplo.com</text>
+    <!-- Títulos -->
+    <text x="500" y="60" font-family="Inter, Arial, sans-serif" font-size="26" font-weight="600" fill="#111827" text-anchor="middle">Menú principal — Módulos del Sistema</text>
+    <text x="500" y="85" font-family="Inter, Arial, sans-serif" font-size="15" fill="#9CA3AF" text-anchor="middle">Selecciona un módulo para continuar</text>
     
-    <!-- Formulario: Contraseña -->
-    <text x="40" y="290" font-family="Inter, Arial, sans-serif" font-size="14.4" font-weight="500" fill="#6B6B6B">Contraseña</text>
-    <rect x="40" y="300" width="320" height="45" rx="6" fill="#FFFFFF" stroke="#DADADA" stroke-width="1" />
-    <text x="50" y="328" font-family="Inter, Arial, sans-serif" font-size="16" fill="#9E9E9E">••••••••</text>
-    <text x="330" y="330" font-family="Inter, Arial, sans-serif" font-size="18" fill="#2E2E2E">👁️</text>
+    <!-- GRID DE MÓDULOS -->
+    <g transform="translate(40, 120)">
+      
+      <!-- Fila 1 -->
+      <g transform="translate(0, 0)">
+        <!-- LOGIN (Special Blue) -->
+        <rect width="210" height="150" rx="12" fill="#1F3A5F" />
+        <text x="105" y="70" font-family="Material Symbols Outlined" font-size="40" fill="white" text-anchor="middle">vpn_key</text>
+        <text x="105" y="105" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="bold" fill="white" text-anchor="middle">LOGIN</text>
+        <text x="105" y="120" font-family="Inter, Arial, sans-serif" font-size="10" fill="white" fill-opacity="0.7" text-anchor="middle">ACCESO AL SISTEMA</text>
+        
+        <!-- INVENTARIOS -->
+        <rect x="230" y="0" width="210" height="150" rx="12" fill="#F3F4F6" stroke="#10B981" stroke-width="3" />
+        <text x="335" y="70" font-family="Material Symbols Outlined" font-size="40" fill="#1F2937" text-anchor="middle">inventory_2</text>
+        <text x="335" y="110" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="bold" fill="#374151" text-anchor="middle">INVENTARIOS</text>
+        
+        <!-- AGENDA -->
+        <rect x="460" y="0" width="210" height="150" rx="12" fill="#F3F4F6" stroke="#EF4444" stroke-width="3" />
+        <text x="565" y="70" font-family="Material Symbols Outlined" font-size="40" fill="#1F2937" text-anchor="middle">calendar_month</text>
+        <text x="565" y="105" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="bold" fill="#374151" text-anchor="middle">AGENDA</text>
+        <text x="565" y="120" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="bold" fill="#374151" text-anchor="middle">CITAS</text>
+        
+        <!-- PROVEEDORES -->
+        <rect x="690" y="0" width="210" height="150" rx="12" fill="#F3F4F6" stroke="#10B981" stroke-width="3" />
+        <text x="795" y="70" font-family="Material Symbols Outlined" font-size="40" fill="#1F2937" text-anchor="middle">local_shipping</text>
+        <text x="795" y="110" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="bold" fill="#374151" text-anchor="middle">PROVEEDORES</text>
+      </g>
+      
+      <!-- Fila 2 -->
+      <g transform="translate(0, 170)">
+        <!-- EXPEDIENTE -->
+        <rect width="210" height="150" rx="12" fill="#F3F4F6" stroke="#EF4444" stroke-width="3" />
+        <text x="105" y="70" font-family="Material Symbols Outlined" font-size="40" fill="#1F2937" text-anchor="middle">folder_shared</text>
+        <text x="105" y="105" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="bold" fill="#374151" text-anchor="middle">EXPEDIENTE</text>
+        <text x="105" y="120" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="bold" fill="#374151" text-anchor="middle">PACIENTE</text>
+        
+        <!-- CLIENTES -->
+        <rect x="230" y="0" width="210" height="150" rx="12" fill="#F3F4F6" stroke="#10B981" stroke-width="3" />
+        <text x="335" y="70" font-family="Material Symbols Outlined" font-size="40" fill="#1F2937" text-anchor="middle">groups</text>
+        <text x="335" y="110" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="bold" fill="#374151" text-anchor="middle">CLIENTES</text>
+        
+        <!-- VENTAS -->
+        <rect x="460" y="0" width="210" height="150" rx="12" fill="#F3F4F6" stroke="#EF4444" stroke-width="3" />
+        <text x="565" y="70" font-family="Material Symbols Outlined" font-size="40" fill="#1F2937" text-anchor="middle">point_of_sale</text>
+        <text x="565" y="110" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="bold" fill="#374151" text-anchor="middle">VENTAS</text>
+        
+        <!-- COMPRAS -->
+        <rect x="690" y="0" width="210" height="150" rx="12" fill="#F3F4F6" stroke="#EF4444" stroke-width="3" />
+        <text x="795" y="70" font-family="Material Symbols Outlined" font-size="40" fill="#1F2937" text-anchor="middle">shopping_cart</text>
+        <text x="795" y="105" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="bold" fill="#374151" text-anchor="middle">ORDENES</text>
+        <text x="795" y="120" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="bold" fill="#374151" text-anchor="middle">DE COMPRA</text>
+      </g>
+      
+      <!-- Fila 3 -->
+      <g transform="translate(0, 340)">
+        <!-- TALLER -->
+        <rect width="210" height="150" rx="12" fill="#F3F4F6" stroke="#EF4444" stroke-width="3" />
+        <text x="105" y="70" font-family="Material Symbols Outlined" font-size="40" fill="#1F2937" text-anchor="middle">build</text>
+        <text x="105" y="105" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="bold" fill="#374151" text-anchor="middle">TALLER</text>
+        <text x="105" y="120" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="bold" fill="#374151" text-anchor="middle">OT</text>
+        
+        <!-- RECEPCION -->
+        <rect x="230" y="0" width="210" height="150" rx="12" fill="#F3F4F6" stroke="#EF4444" stroke-width="3" />
+        <text x="335" y="70" font-family="Material Symbols Outlined" font-size="40" fill="#1F2937" text-anchor="middle">move_to_inbox</text>
+        <text x="335" y="105" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="bold" fill="#374151" text-anchor="middle">RECEPCION Y</text>
+        <text x="335" y="120" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="bold" fill="#374151" text-anchor="middle">DEVOLUCION</text>
+        
+        <!-- FACTURACION -->
+        <rect x="460" y="0" width="210" height="150" rx="12" fill="#F3F4F6" stroke="#EF4444" stroke-width="3" />
+        <text x="565" y="70" font-family="Material Symbols Outlined" font-size="40" fill="#1F2937" text-anchor="middle">receipt_long</text>
+        <text x="565" y="105" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="bold" fill="#374151" text-anchor="middle">FACTURACION</text>
+        <text x="565" y="120" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="bold" fill="#374151" text-anchor="middle">CFDI</text>
+        
+        <!-- USUARIOS -->
+        <rect x="690" y="0" width="210" height="150" rx="12" fill="#E2E8F0" stroke="#10B981" stroke-width="3" />
+        <text x="795" y="70" font-family="Material Symbols Outlined" font-size="40" fill="#1F2937" text-anchor="middle">manage_accounts</text>
+        <text x="795" y="105" font-family="Inter, Arial, sans-serif" font-size="11" font-weight="bold" fill="#374151" text-anchor="middle">USUARIOS, ROLES</text>
+        <text x="795" y="120" font-family="Inter, Arial, sans-serif" font-size="11" font-weight="bold" fill="#374151" text-anchor="middle">Y PERMISOS</text>
+      </g>
+      
+    </g>
     
-    <!-- Acciones -->
-    <rect x="40" y="370" width="16" height="16" rx="2" fill="#FFFFFF" stroke="#DADADA" stroke-width="1" />
-    <text x="65" y="383" font-family="Inter, Arial, sans-serif" font-size="14" fill="#2E2E2E">Recuérdame</text>
-    
-    <!-- Botón Acceder -->
-    <rect x="230" y="365" width="130" height="45" rx="6" fill="#1F3A5F" />
-    <text x="295" y="393" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="500" fill="#FFFFFF" text-anchor="middle">Acceder</text>
-    
-    <!-- Link Recuperación -->
-    <text x="200" y="450" font-family="Inter, Arial, sans-serif" font-size="14" fill="#1F3A5F" text-anchor="middle" text-decoration="underline">¿Olvidaste tu contraseña?</text>
-    
-    <!-- Pie de Aplicación -->
-    <text x="200" y="540" font-family="Inter, Arial, sans-serif" font-size="12.8" fill="#9E9E9E" text-anchor="middle">WALOOK México • ERP Cloud System</text>
+    <!-- Pie de Card -->
+    <text x="500" y="700" font-family="Inter, Arial, sans-serif" font-size="12" fill="#9CA3AF" text-anchor="middle">OPTICA ERP — WALOOK MEXICO, S.A. de C.V. · Prototipo de maquetado</text>
     
   </g>
 </svg>
