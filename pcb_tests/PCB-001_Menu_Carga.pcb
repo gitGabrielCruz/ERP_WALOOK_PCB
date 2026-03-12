@@ -1,0 +1,56 @@
+PCB_ID_PRUEBA: PCB-001
+PCB_MODULO: Seguridad/Acceso
+PCB_FRAGMENTO: Autenticación de usuario
+PCB_HU: HU-M01-01
+PCB_FUNCION: login()
+PCB_ALCANCE: Análisis de la lógica interna de autenticación en AuthService.login() para identificar nodos de decisión y rutas de ejecución.
+PCB_CODIGO:
+    /**
+     * ESPECIFICACIÓN TÉCNICA: Protocolo de Autenticación Privilegiada y Validación de Infraestructura.
+     * 1. DESCRIPCIÓN ARQUITECTÓNICA: Función crítica de validación de identidad y establecimiento de sesión persistente.
+     * 2. OBJETIVO OPERATIVO: Realizar la verificación criptográfica de credenciales y diagnosticar la disponibilidad de la persistencia.
+     * 3. PROPÓSITO SISTÉMICO: Actuar como Gatekeeper estructural para mitigar riesgos de acceso no autorizado.
+     * 4. TRAZABILIDAD FUNCIONAL: HU-M01-01 (Inicio de Sesión e Identificación) / RNF-01 (Seguridad).
+     * 5. CONTRATO DE INTERFAZ: 
+     *      - Precondiciones: Identificadores (email/password) no nulos en el objeto Data Transfer.
+     *      - Postcondiciones: Retorno de instancia Usuario verificada o interrupción del hilo por RuntimeException.
+     * 6. ESTRATEGIA DEFENSIVA: Implementación de 'Fail-Fast' ante desconexión de DB y validación de estatus de cuenta activa.
+     * 7. IMPACTO EN EL ECOSISTEMA: Generación de logs bajo patrón forense y diagnóstico de salud del pool de conexiones.
+     * 8. GOBERNANZA DE NEGOCIO: Protocolo de "Acceso por Privilegio" (BCrypt) con bypass para operaciones de administración de sistema.
+     */
+    public Usuario login(String email, String password) {
+
+        // PCB-N1: bypass root (Bypass de Autenticación para Entorno de Desarrollo)
+        if ("root".equals(email) && "root".equals(password)) {
+            return createSuperAdminUser();
+        }
+
+        // PCB-N2: estado de base de datos (Diagnóstico de Disponibilidad de Persistencia)
+        if (dbHealthService.isConnected()) {
+            System.out.println("[AUTH-DEBUG] Conexión DB: ACTIVA (" + dbHealthService.getConnectionDetails() + ")");
+        } else {
+            System.err.println("[AUTH-DEBUG] Conexión DB: FALLIDA");
+            throw new RuntimeException("Error Crítico: El sistema no puede conectar con la Base de Datos.");
+        }
+
+        Usuario usuario = usuarioRepository.findByEmail(email);
+
+        // PCB-N3: usuario encontrado (Verificación de Identidad Registrada)
+        if (usuario != null) {
+            
+            // PCB-N4: contraseña válida (Validación Criptográfica BCrypt)
+            boolean passwordMatch = passwordEncoder.matches(password, usuario.getPasswordHash());
+
+            if (passwordMatch) {
+                // PCB-N5: usuario activo (Validación de Estado Operativo de Cuenta)
+                if (!usuario.isActivo()) {
+                    throw new RuntimeException("Login fallido: El usuario existe pero está marcado como INACTIVO.");
+                }
+                return usuario;
+            } else {
+                throw new RuntimeException("Fallo de autenticación: Las credenciales proporcionadas no son válidas.");
+            }
+        }
+
+        throw new RuntimeException("Fallo de autenticación: Identidad no encontrada en el registro de usuarios.");
+    }

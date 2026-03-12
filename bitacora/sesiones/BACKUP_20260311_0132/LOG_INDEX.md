@@ -8,7 +8,6 @@ Este archivo es el registro central de todas las sesiones de trabajo. Sirve como
 | 2026-03-04 | Evolución DevIAn v5.1 | 214fa59c... | [LOG_214f_2026-03-04_1045.md](file:///d:/_sTIC/Documents/_Empresa%20GraxSofT/_CODE_/ERP_WALOOK/bitacora/sesiones/LOG_214f_2026-03-04_1045.md) | `C:\Users\sTIC\.gemini\antigravity\brain\214fa59c-4e3f-4d18-83b5-33fe60cfdcfc` |
 | 2026-03-04 | Restauración Ghost Mode | 214fa59c... | [LOG_214f_2026-03-04_1525.md](file:///d:/_sTIC/Documents/_Empresa%20GraxSofT/_CODE_/ERP_WALOOK/bitacora/sesiones/LOG_214f_2026-03-04_1525.md) | `C:\Users\sTIC\.gemini\antigravity\brain\214fa59c-4e3f-4d18-83b5-33fe60cfdcfc` |
 | 2026-03-06 | Inicio ContruyendoAgente | f1d39181... | [LOG_f1d3_2026-03-06_0643.md](file:///d:/_sTIC/Documents/_Empresa%20GraxSofT/_CODE_/ERP_WALOOK/bitacora/sesiones/LOG_f1d3_2026-03-06_0643.md) | `C:\Users\sTIC\.gemini\antigravity\brain\f1d39181-ac51-4eba-9613-47db7a7a5196` |
-| 2026-03-11 | Reinicio DevIAn - PCB | bd635150... | [LOG_bd63_2026-03-11_2012.md](file:///d:/_sTIC/Documents/_Empresa%20GraxSofT/_CODE_/ERP_WALOOK_PCB/bitacora/sesiones/LOG_bd63_2026-03-11_2012.md) | `C:\Users\sTIC\.gemini\antigravity\brain\bd635150-9390-4571-bb84-da538d13eec1` |
 
 ---
 > [!NOTE]

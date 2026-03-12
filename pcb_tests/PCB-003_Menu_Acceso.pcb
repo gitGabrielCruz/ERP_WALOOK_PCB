@@ -1,0 +1,51 @@
+PCB_ID_PRUEBA: PCB-003
+PCB_MODULO: Seguridad/Acceso
+PCB_FRAGMENTO: Inyección de matriz de permisos en respuesta de sesión
+PCB_HU: HU-M01-01
+PCB_FUNCION: login() (Controller block)
+PCB_ALCANCE: Análisis del bloque de respuesta en AuthController.login() encargado de normalizar metadatos de usuario y adjuntar facultades.
+PCB_CODIGO:
+    /**
+     * ESPECIFICACIÓN TÉCNICA: Orquestación Atómica de Respuesta de Sesión y Payload de Seguridad.
+     * 1. DESCRIPCIÓN ARQUITECTÓNICA: Controlador de salida encargado del empaquetado de la entidad de sesión y su matriz de facultades.
+     * 2. OBJETIVO OPERATIVO: Construir el DTO de respuesta HTTP que habilita el entorno de ejecución del usuario.
+     * 3. PROPÓSITO SISTÉMICO: Centralizar la distribución de metadatos de usuario y permisos en un solo intercambio atómico.
+     * 4. TRAZABILIDAD FUNCIONAL: HU-M01-01 (Inicio de Sesión) / RNF-01 (Seguridad).
+     * 5. CONTRATO DE INTERFAZ: 
+     *      - Precondiciones: Éxito en la fase de autenticación y resolución de permisos.
+     *      - Postcondiciones: Retorno de un ResponseEntity (200 OK) con el mapa de facultades inyectado.
+     * 6. ESTRATEGIA DEFENSIVA: Normalización de campos nulos mediante operadores ternarios para evitar malformaciones en el JSON de salida.
+     * 7. IMPACTO EN EL ECOSISTEMA: Disparo de la bitácora de auditoría forense (AUTH-01) y serialización de la sesión.
+     * 8. GOBERNANZA DE NEGOCIO: Garantizar que ninguna sesión sea establecida sin su correspondiente mapa de permisos síncrono.
+     */
+    try {
+        Usuario usuario = authService.login(email, password);
+
+        // Registro de Auditoría
+        bitacoraService.registrarEvento(usuario.getIdUsuario(), "AUTH-01", ip, usuario.getNombre(), email);
+
+        // Resolución de Facultades
+        List<Map<String, Object>> permisos = usuarioService.getPermissionsByUsuario(usuario.getIdUsuario());
+
+        // PCB-N1: normalización de metadatos (IdRol)
+        String rolId = usuario.getIdRol() != null ? usuario.getIdRol() : "";
+        
+        // PCB-N2: normalización de metadatos (NombreRol)
+        String nombreRol = usuario.getNombreRol() != null ? usuario.getNombreRol() : "";
+        
+        // PCB-N3: normalización de metadatos (IdSucursal)
+        String idSucursal = usuario.getIdSucursal() != null ? usuario.getIdSucursal() : "";
+
+        // Construcción de Respuesta Atómica
+        return ResponseEntity.ok(Map.of(
+                "success", true,
+                "message", "Login exitoso",
+                "userId", usuario.getIdUsuario(),
+                "rolId", rolId,
+                "nombreRol", nombreRol,
+                "nombre", usuario.getNombre(),
+                "idSucursal", idSucursal,
+                "permisos", permisos));
+    } catch (RuntimeException e) {
+        // ... (Capa de manejo de excepciones analizada en PCB-001)
+    }

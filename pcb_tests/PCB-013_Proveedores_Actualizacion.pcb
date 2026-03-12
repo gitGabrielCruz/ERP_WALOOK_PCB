@@ -1,0 +1,42 @@
+PCB_ID_PRUEBA: PCB-013
+PCB_MODULO: Proveedores
+PCB_FRAGMENTO: Validación sintáctica de canales de comunicación
+PCB_HU: RF-08
+PCB_FUNCION: validarProveedor() (Bloque de Formato)
+PCB_ALCANCE: Análisis de la lógica de validación sintáctica (Regex) y normalización telefónica en ProveedorService.
+PCB_CODIGO:
+    /**
+     * ESPECIFICACIÓN TÉCNICA: Validación de Conformidad de Canales de Comunicación y Notificación.
+     * 1. DESCRIPCIÓN ARQUITECTÓNICA: Servicio de verificación sintáctica mediante expresiones regulares y procesos de saneamiento numérico.
+     * 2. OBJETIVO OPERATIVO: Asegurar que los datos de contacto posean formatos compatibles con estándares internacionales.
+     * 3. PROPÓSITO SISTÉMICO: Mitigar el riesgo de interrupción de comunicación logística por fallos en los metadatos de contacto.
+     * 4. TRAZABILIDAD FUNCIONAL: RF-08 (Gestión de Proveedores) / RNF-08 (Canales de Comunicación).
+     * 5. CONTRATO DE INTERFAZ: 
+     *      - Precondiciones: Atributos Email y Teléfono presentes en la entidad del request.
+     *      - Postcondiciones: Validación sintáctica positiva o lanzamiento de error de formato (IllegalArgumentException).
+     * 6. ESTRATEGIA DEFENSIVA: Normalización proactiva mediante saneamiento de caracteres no numéricos previo a la validación de longitud.
+     * 7. IMPACTO EN EL ECOSISTEMA: Aseguramiento de la eficacia en los procesos de notificación y gestión de pedidos.
+     * 8. GOBERNANZA DE NEGOCIO: Todo proveedor operativo debe contar con al menos un medio electrónico y telefónico válido.
+     */
+    
+    // PCB-N1: validación de presencia de medio digital (Email)
+    if (p.getEmail() == null || p.getEmail().trim().isEmpty()) {
+        throw new IllegalArgumentException("Correo Electrónico: El correo electrónico es obligatorio.");
+    }
+    
+    // PCB-N2: validación sintáctica (Regex RFC-5322)
+    String emailPattern = "^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$";
+    if (!p.getEmail().matches(emailPattern)) {
+        throw new IllegalArgumentException("Correo Electrónico: Formato no válido.");
+    }
+
+    // PCB-N3: validación de presencia de medio telefónico
+    if (p.getTelefono() == null || p.getTelefono().trim().isEmpty()) {
+        throw new IllegalArgumentException("Teléfono: El teléfono es obligatorio.");
+    }
+    
+    // PCB-N4: validación de longitud y saneamiento (Normalización 10D)
+    String telefonoLimpio = p.getTelefono().replaceAll("\\D", "");
+    if (telefonoLimpio.length() != 10) {
+        throw new IllegalArgumentException("Teléfono: El teléfono debe contener exactamente 10 dígitos numéricos.");
+    }

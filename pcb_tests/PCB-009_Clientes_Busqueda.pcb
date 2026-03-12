@@ -1,0 +1,24 @@
+PCB_ID_PRUEBA: PCB-009
+PCB_MODULO: Clientes
+PCB_FRAGMENTO: Búsqueda y filtrado dinámico del padrón
+PCB_HU: HU-M06-02
+PCB_FUNCION: buscarClientes()
+PCB_ALCANCE: Análisis de la delegación de filtrado multi-parámetro a la capa de persistencia en ClienteService.
+PCB_CODIGO:
+    /**
+     * ESPECIFICACIÓN TÉCNICA: Motor de Búsqueda Multi-Criterio sobre Padrón de Pacientes.
+     * 1. DESCRIPCIÓN ARQUITECTÓNICA: Servicio de consulta proyectiva con soporte para filtrado dinámico.
+     * 2. OBJETIVO OPERATIVO: Recuperar listados de clientes basados en subconjuntos de datos (ID, RFC, Estatus).
+     * 3. PROPÓSITO SISTÉMICO: Proveer una interfaz de búsqueda eficiente para la gestión comercial y clínica.
+     * 4. TRAZABILIDAD FUNCIONAL: HU-M06-02 (Búsqueda de Clientes).
+     * 5. CONTRATO DE INTERFAZ: 
+     *      - Precondiciones: Parámetros de búsqueda opcionales suministrados desde el controlador.
+     *      - Postcondiciones: Retorno de colección de entidades que satisfacen el predicado de búsqueda SQL.
+     * 6. ESTRATEGIA DEFENSIVA: Delegación al repositorio para optimización de consultas a nivel de motor de base de datos.
+     * 7. IMPACTO EN EL ECOSISTEMA: Lectura de catálogo con impacto controlado en el pool de conexiones.
+     * 8. GOBERNANZA DE NEGOCIO: Transparencia en la localización de pacientes para procesos de atención inmediata.
+     */
+    public List<Paciente> buscarClientes(String busqueda, String rfc, String estatus) {
+        // Ejecución de consulta proyectiva
+        return pacienteRepository.findByFiltros(busqueda, rfc, estatus);
+    }

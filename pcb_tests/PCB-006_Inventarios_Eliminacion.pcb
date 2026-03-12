@@ -1,0 +1,24 @@
+PCB_ID_PRUEBA: PCB-006
+PCB_MODULO: Inventarios
+PCB_FRAGMENTO: Eliminación de atributos de catálogo
+PCB_HU: HU-M01-02
+PCB_FUNCION: deleteProduct()
+PCB_ALCANCE: Análisis de la delegación de remoción física al nivel de persistencia en InventarioService.
+PCB_CODIGO:
+    /**
+     * ESPECIFICACIÓN TÉCNICA: Protocolo de Remoción Definitiva de Atributos de Catálogo.
+     * 1. DESCRIPCIÓN ARQUITECTÓNICA: Servicio de eliminación física de registros en la capa de persistencia.
+     * 2. OBJETIVO OPERATIVO: Purgar la base de datos de productos obsoletos o malformados.
+     * 3. PROPÓSITO SISTÉMICO: Garantizar la higiene de datos en el maestro de inventarios.
+     * 4. TRAZABILIDAD FUNCIONAL: HU-M01-02 (Maestro de Productos).
+     * 5. CONTRATO DE INTERFAZ: 
+     *      - Precondiciones: Identificador GUID de producto existente en el repositorio.
+     *      - Postcondiciones: Remoción atómica del registro en la tabla física de productos.
+     * 6. ESTRATEGIA DEFENSIVA: Delegación directa al repositorio con gestión de integridad referencial dependiente de la BD.
+     * 7. IMPACTO EN EL ECOSISTEMA: Pérdida irreversible de rastro histórico (Se recomienda desactivación lógica en producción).
+     * 8. GOBERNANZA DE NEGOCIO: La eliminación física está restringida a productos sin movimientos de stock previos en el Kardex.
+     */
+    public void deleteProduct(String id) {
+        // Ejecución de purga física
+        inventarioRepository.deleteById(id);
+    }

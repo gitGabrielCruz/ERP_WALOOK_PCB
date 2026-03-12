@@ -1,0 +1,50 @@
+PCB_ID_PRUEBA: PCB-014
+PCB_MODULO: Usuarios
+PCB_FRAGMENTO: Actualización selectiva de perfil y facultades de rol
+PCB_HU: HU-M01-03
+PCB_FUNCION: update()
+PCB_ALCANCE: Análisis de la lógica de actualización atómica de atributos de perfil y roles en UsuarioService.
+PCB_CODIGO:
+    /**
+     * ESPECIFICACIÓN TÉCNICA: Protocolo de Actualización Selectiva de Perfil de Seguridad.
+     * 1. DESCRIPCIÓN ARQUITECTÓNICA: Servicio de modificación granulada de atributos de identidad (metadatos de perfil).
+     * 2. OBJETIVO OPERATIVO: Actualizar atributos de usuario sin comprometer la integridad de la base criptográfica (passwords).
+     * 3. PROPÓSITO SISTÉMICO: Mantener la consistencia del Control de Acceso ante cambios organizacionales o administrativos.
+     * 4. TRAZABILIDAD FUNCIONAL: HU-M01-03 (Ciclo de Vida del Usuario) / RNF-02 (Seguridad de Roles).
+     * 5. CONTRATO DE INTERFAZ: 
+     *      - Precondiciones: Identificador de usuario existente y persistido en el repositorio.
+     *      - Postcondiciones: Sincronización de campos permitidos y retorno de entidad actualizada.
+     * 6. ESTRATEGIA DEFENSIVA: Filtrado estricto de campos mediante checks de nulidad para prevenir sobrescrituras accidentales.
+     * 7. IMPACTO EN EL ECOSISTEMA: Modificación síncrona de las capacidades operativas del usuario afectado.
+     * 8. GOBERNANZA DE NEGOCIO: La modificación de roles está reservada para cuentas con perfiles de supervisión o administración.
+     */
+    public Usuario update(Usuario usuario) {
+        Usuario existente = usuarioRepository.findById(usuario.getId());
+
+        // PCB-N1: validación de existencia (Check de persistencia previa)
+        if (existente == null) {
+            return null;
+        }
+
+        // PCB-N2: evaluación de actualización nominal (Nombre)
+        if (usuario.getNombre() != null) {
+            existente.setNombre(usuario.getNombre());
+        }
+        
+        // PCB-N3: evaluación de actualización de identidad digital (Correo)
+        if (usuario.getCorreo() != null) {
+            existente.setCorreo(usuario.getCorreo());
+        }
+        
+        // PCB-N4: evaluación de cambio de jerarquía (IdRol)
+        if (usuario.getRolId() != null) {
+            existente.setRolId(usuario.getRolId());
+        }
+        
+        // PCB-N5: evaluación de cambio de denominación operativa (NombreRol)
+        if (usuario.getRolNombre() != null) {
+            existente.setRolNombre(usuario.getRolNombre());
+        }
+        
+        return usuarioRepository.update(existente);
+    }

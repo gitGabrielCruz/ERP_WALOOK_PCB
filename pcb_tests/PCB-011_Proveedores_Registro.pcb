@@ -1,0 +1,42 @@
+PCB_ID_PRUEBA: PCB-011
+PCB_MODULO: Proveedores
+PCB_FRAGMENTO: Validación estructural de registro de proveedor
+PCB_HU: HU-M05-01
+PCB_FUNCION: validarProveedor()
+PCB_ALCANCE: Análisis del flujo de validación de completitud para campos mandatorios en ProveedorService.
+PCB_CODIGO:
+    /**
+     * ESPECIFICACIÓN TÉCNICA: Protocolo de Validación Estructural de Entidades Proveedoras.
+     * 1. DESCRIPCIÓN ARQUITECTÓNICA: Fase de verificación de integridad mandatoria previa a la inserción en el maestro de terceros.
+     * 2. OBJETIVO OPERATIVO: Validar la completitud de la ficha del proveedor para asegurar la operatividad de compras y pagos.
+     * 3. PROPÓSITO SISTÉMICO: Garantizar que la cadena de suministro cuente con registros documentados y verificables.
+     * 4. TRAZABILIDAD FUNCIONAL: HU-M05-01 (Registrar Proveedor) / RNF-06 (Validaciones Operativas).
+     * 5. CONTRATO DE INTERFAZ: 
+     *      - Precondiciones: Objeto Proveedor con datos de contacto y condiciones comerciales capturadas.
+     *      - Postcondiciones: Validación exitosa o excepción por interrupción de protocolo de datos.
+     * 6. ESTRATEGIA DEFENSIVA: Implementación de validaciones 'Trim-Aware' para evitar la evasión de campos mediante espacios vacíos.
+     * 7. IMPACTO EN EL ECOSISTEMA: Prevención de registros redundantes o incompletos en el módulo de egresos.
+     * 8. GOBERNANZA DE NEGOCIO: Ningún proveedor puede ser operado sin Razón Social, RFC y Condiciones de Pago válidas.
+     */
+    private void validarProveedor(Proveedor p, boolean esActualizacion) {
+        
+        // PCB-N1: validación de identidad jurídica (Razon Social)
+        if (p.getRazonSocial() == null || p.getRazonSocial().trim().isEmpty()) {
+            throw new IllegalArgumentException("Razón Social: La Razón Social es obligatoria.");
+        }
+        
+        // PCB-N2: validación de identidad tributaria (RFC)
+        if (p.getRfc() == null || p.getRfc().trim().isEmpty()) {
+            throw new IllegalArgumentException("RFC: El RFC es obligatorio.");
+        }
+        
+        // PCB-N3: validación de acuerdo comercial (Condición Pago)
+        if (p.getCondicionPago() == null || p.getCondicionPago().trim().isEmpty()) {
+            throw new IllegalArgumentException("Condición de Pago: Debe seleccionar una Condición de Pago.");
+        }
+
+        // PCB-N4: validación de marca/denominación comercial (Nombre Comercial)
+        if (p.getNombreComercial() == null || p.getNombreComercial().trim().isEmpty()) {
+            throw new IllegalArgumentException("Nombre Comercial: El Nombre Comercial es obligatorio.");
+        }
+    }

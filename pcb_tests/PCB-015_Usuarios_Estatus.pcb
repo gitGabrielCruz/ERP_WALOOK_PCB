@@ -1,0 +1,27 @@
+PCB_ID_PRUEBA: PCB-015
+PCB_MODULO: Usuarios
+PCB_FRAGMENTO: Filtrado de disponibilidad operativa de cuentas
+PCB_HU: HU-M01-03
+PCB_FUNCION: findByEstatus()
+PCB_ALCANCE: Análisis de la lógica de filtrado booleano y normalización textual de estados en UsuarioService.
+PCB_CODIGO:
+    /**
+     * ESPECIFICACIÓN TÉCNICA: Protocolo de Filtrado Proyectivo de Usuarios por Estatus Operativo.
+     * 1. DESCRIPCIÓN ARQUITECTÓNICA: Servicio de consulta discriminatoria basado en el estado binario (activo/inactivo) de la cuenta.
+     * 2. OBJETIVO OPERATIVO: Recuperar colecciones de usuarios filtrados mediante la normalización de la entrada semántica.
+     * 3. PROPÓSITO SISTÉMICO: Facilitar auditorías de estado y gestión de accesos suspendidos en el sistema.
+     * 4. TRAZABILIDAD FUNCIONAL: HU-M01-03 (Gestión de Usuarios) / RNF-01 (Auditoría).
+     * 5. CONTRATO DE INTERFAZ: 
+     *      - Precondiciones: Parámetro string con el valor representativo del estatus esperado.
+     *      - Postcondiciones: Retorno de lista de entidades que coinciden con la proyección booleana.
+     * 6. ESTRATEGIA DEFENSIVA: Normalización mediante comparación insensible (Case-Insensitive) para amortiguar errores de capitalización.
+     * 7. IMPACTO EN EL ECOSISTEMA: Provisión de datos para el control de activación/desactivación de cuentas.
+     * 8. GOBERNANZA DE NEGOCIO: El sistema debe segregar usuarios productivos de los inhabilitados de manera expedita.
+     */
+    public List<Usuario> findByEstatus(String estatus) {
+        
+        // PCB-N1: normalización semántica (Conversión Texto -> Booleano)
+        boolean activo = "activo".equalsIgnoreCase(estatus);
+        
+        return usuarioRepository.findByEstatus(activo);
+    }

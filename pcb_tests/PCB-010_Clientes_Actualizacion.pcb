@@ -1,0 +1,33 @@
+PCB_ID_PRUEBA: PCB-010
+PCB_MODULO: Clientes
+PCB_FRAGMENTO: Normalización de atributos descriptivos y de estado
+PCB_HU: HU-M06-01
+PCB_FUNCION: guardarCliente() (Bloque de Saneamiento)
+PCB_ALCANCE: Análisis de la lógica de normalización de campos opcionales y asignación de estatus por defecto en ClienteService.
+PCB_CODIGO:
+    /**
+     * ESPECIFICACIÓN TÉCNICA: Protocolo de Normalización de Atributos de Persona en Padrón.
+     * 1. DESCRIPCIÓN ARQUITECTÓNICA: Fase de saneamiento de datos post-validación en el flujo de guardado de clientes.
+     * 2. OBJETIVO OPERATIVO: Asegurar que los atributos de apellidos y estatus posean valores por defecto coherentes.
+     * 3. PROPÓSITO SISTÉMICO: Eliminar los valores nulos en campos descriptivos para evitar fallos de renderizado en UI.
+     * 4. TRAZABILIDAD FUNCIONAL: HU-M06-01 (Gestión de Clientes).
+     * 5. CONTRATO DE INTERFAZ: 
+     *      - Precondiciones: Entidad Paciente validada previamente mediante protocolo PCB-008.
+     *      - Postcondiciones: Persistencia de entidad con campos normalizados y activación operativa.
+     * 6. ESTRATEGIA DEFENSIVA: Manejo de nulos preventivo para soportar registros heterogéneos (personas morales/físicas).
+     * 7. IMPACTO EN EL ECOSISTEMA: Aseguramiento de la calidad del rastro histórico en la tabla física de pacientes.
+     * 8. GOBERNANZA DE NEGOCIO: Todo registro de cliente nuevo se inicializa forzosamente con estatus 'ACTIVO'.
+     */
+    
+    // PCB-N1: evaluación de consistencia (Check de Apellidos)
+    if (cliente.getApellidos() == null) {
+        cliente.setApellidos("");
+    }
+
+    // PCB-N2: evaluación de estado operativo (Auto-activación)
+    if (cliente.getEstatus() == null) {
+        cliente.setEstatus("ACTIVO");
+    }
+
+    pacienteRepository.save(cliente);
+    return cliente;

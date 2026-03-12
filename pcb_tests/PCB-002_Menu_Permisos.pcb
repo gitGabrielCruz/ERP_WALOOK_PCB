@@ -1,0 +1,35 @@
+PCB_ID_PRUEBA: PCB-002
+PCB_MODULO: Seguridad/Acceso
+PCB_FRAGMENTO: Validación de privilegios granulares
+PCB_HU: HU-M01-03
+PCB_FUNCION: getPermissionsByUsuario()
+PCB_ALCANCE: Análisis de la lógica de recuperación de permisos específicos o por defecto del rol en UsuarioService para identificar nodos de decisión jerárquica.
+PCB_CODIGO:
+    /**
+     * ESPECIFICACIÓN TÉCNICA: Protocolo de Recuperación y Fallback de Privilegios Granulares.
+     * 1. DESCRIPCIÓN ARQUITECTÓNICA: Servicio de resolución de permisos basado en jerarquía Usuario-Rol.
+     * 2. OBJETIVO OPERATIVO: Proveer la matriz de control de acceso extrayendo configuraciones específicas o heredadas.
+     * 3. PROPÓSITO SISTÉMICO: Garantizar la inmutabilidad de la seguridad mediante una resolución jerárquica de permisos.
+     * 4. TRAZABILIDAD FUNCIONAL: HU-M01-03 (Gestión de Roles y Permisos) / RNF-02 (RBAC).
+     * 5. CONTRATO DE INTERFAZ: 
+     *      - Precondiciones: Identificador de usuario persistido y válido.
+     *      - Postcondiciones: Retorno de estructura Map con flags de operación o lista vacía ante ausencia de mapeo.
+     * 6. ESTRATEGIA DEFENSIVA: Implementación de lógica de redundancia mediante 'Fallback' al rol si la personalización es inexistente.
+     * 7. IMPACTO EN EL ECOSISTEMA: Determinación de la visibilidad de módulos en el Dashboard del Frontend.
+     * 8. GOBERNANZA DE NEGOCIO: Los privilegios individuales anulan a los privilegios grupales para permitir ajustes finos de seguridad.
+     */
+    public List<java.util.Map<String, Object>> getPermissionsByUsuario(String idUsuario) {
+        // 1. Buscar permisos específicos (Personalización)
+        List<java.util.Map<String, Object>> permisos = usuarioRepository.findPermissionsByUsuario(idUsuario);
+
+        // PCB-N1: evaluación de personalización (Detección de permisos específicos)
+        if (permisos.isEmpty()) {
+            Usuario u = findById(idUsuario);
+            
+            // PCB-N2: validación de integridad de cuenta (Existencia y Rol asignado)
+            if (u != null && u.getRolId() != null) {
+                return usuarioRepository.findPermissionsByRol(u.getRolId());
+            }
+        }
+        return permisos;
+    }

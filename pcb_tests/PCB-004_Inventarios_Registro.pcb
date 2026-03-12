@@ -1,0 +1,37 @@
+PCB_ID_PRUEBA: PCB-004
+PCB_MODULO: Inventarios
+PCB_FRAGMENTO: Registro e identidad sistémica de producto
+PCB_HU: HU-M01-02
+PCB_FUNCION: saveProduct()
+PCB_ALCANCE: Análisis de la lógica de asignación de identificadores (UUID/SKU) en InventarioService para la persistencia de artículos nuevos.
+PCB_CODIGO:
+    /**
+     * ESPECIFICACIÓN TÉCNICA: Protocolo de Generación de Identidad Sistémica y Comercial (UUID/SKU).
+     * 1. DESCRIPCIÓN ARQUITECTÓNICA: Servicio de normalización para la inserción de nuevos artículos en el catálogo maestro.
+     * 2. OBJETIVO OPERATIVO: Asegurar la unicidad de la entidad mediante la asignación de GUID y la creación de códigos comerciales EAN-like.
+     * 3. PROPÓSITO SISTÉMICO: Mantener la integridad de referencia en el módulo de Inventarios y facilitar la trazabilidad logística.
+     * 4. TRAZABILIDAD FUNCIONAL: HU-M01-02 (Maestro de Productos) / RNF-04 (Catálogos).
+     * 5. CONTRATO DE INTERFAZ: 
+     *      - Precondiciones: Objeto Producto con atributos mínimos descriptivos.
+     *      - Postcondiciones: Persistencia de la entidad con identidad fija y SKU comercial asignado.
+     * 6. ESTRATEGIA DEFENSIVA: Evaluación de preexistencia mediante validación de nulos en el campo identificador de persistencia.
+     * 7. IMPACTO EN EL ECOSISTEMA: Creación de Baseline de stock y registro en bitácora de auditoría (PRO-01).
+     * 8. GOBERNANZA DE NEGOCIO: Normalización obligatoria de SKU con prefijo corporativo '75' para estandarización de etiquetas.
+     */
+    public void saveProduct(Producto p, String ip) {
+        
+        // PCB-N1: evaluación de persistencia (Check de nueva entidad)
+        boolean isNew = (p.getIdProducto() == null || p.getIdProducto().isEmpty());
+        
+        if (isNew) {
+            p.setIdProducto(java.util.UUID.randomUUID().toString());
+        }
+
+        // PCB-N2: validación de código comercial (Autogeneración de SKU)
+        if (p.getSku() == null || p.getSku().isEmpty() || p.getSku().equalsIgnoreCase("Autogenerado")) {
+            String timestamp = String.valueOf(System.currentTimeMillis());
+            p.setSku("75" + timestamp.substring(timestamp.length() - 8));
+        }
+
+        inventarioRepository.save(p);
+    }

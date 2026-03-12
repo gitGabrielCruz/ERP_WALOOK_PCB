@@ -1,0 +1,37 @@
+PCB_ID_PRUEBA: PCB-007
+PCB_MODULO: Inventarios
+PCB_FRAGMENTO: Validación de integridad de existencias (Stock)
+PCB_HU: HU-M01-05
+PCB_FUNCION: registrarMovimiento()
+PCB_ALCANCE: Análisis de la validación transaccional contra saldo negativo en el Kardex dentro de InventarioService.
+PCB_CODIGO:
+    /**
+     * ESPECIFICACIÓN TÉCNICA: Protocolo de Integridad Transaccional sobre Saldo Operativo.
+     * 1. DESCRIPCIÓN ARQUITECTÓNICA: Implementa la lógica de afectación del inventario mediante un mecanismo de control de concurrencia.
+     * 2. OBJETIVO OPERATIVO: Garantizar la invariante de no-negatividad en el Kardex, asegurando la coherencia entre el stock físico y el registro.
+     * 3. PROPÓSITO SISTÉMICO: Mitigar riesgos de inconsistencia de datos y degradación de la integridad financiera del módulo de almacenes.
+     * 4. TRAZABILIDAD FUNCIONAL: HU-M01-05 (Control de Existencias) / RNF-03 (Consistencia).
+     * 5. CONTRATO DE INTERFAZ: 
+     *      - Precondiciones: DTO de movimiento con identificadores de producto/sucursal verificados.
+     *      - Postcondiciones: Sincronización atómica de existencias y generación de rastro forense.
+     * 6. ESTRATEGIA DEFENSIVA: Implementación de 'Fail-Fast' mediante excepciones runtime ante el incumplimiento de umbrales cuantitativos (Stock < 0).
+     * 7. IMPACTO EN EL ECOSISTEMA: Disparo de disparadores de lógica de bitácora y persistencia atómica bajo anotación @Transactional.
+     * 8. GOBERNANZA DE NEGOCIO: Cumplimiento estricto del protocolo de "No-Venta en Desbalance", impidiendo la ejecución de salidas sin respaldo real.
+     */
+    @Transactional
+    public void registrarMovimiento(MovimientoInventario m, String ip) {
+        Integer stockAnterior = inventarioRepository.getCurrentStock(m.getIdProducto(), m.getIdSucursal());
+        m.setExistenciaAnterior(stockAnterior);
+
+        // PCB-N1: determinación de sentido del flujo (Entrada vs Salida)
+        int factor = esSalida(m.getTipoMovimiento()) ? -1 : 1;
+        Integer nuevoStock = stockAnterior + (m.getCantidad() * factor);
+
+        // PCB-N2: validación de invariante de stock (Check de negatividad)
+        if (nuevoStock < 0) {
+            throw new RuntimeException("Stock insuficiente. Operación denegada. Existencia actual: " + stockAnterior);
+        }
+
+        m.setExistenciaActual(nuevoStock);
+        inventarioRepository.saveMovimiento(m);
+    }

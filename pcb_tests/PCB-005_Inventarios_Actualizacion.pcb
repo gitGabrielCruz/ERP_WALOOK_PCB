@@ -1,0 +1,33 @@
+PCB_ID_PRUEBA: PCB-005
+PCB_MODULO: Inventarios
+PCB_FRAGMENTO: Cálculo dinámico de valor comercial (PVP)
+PCB_HU: HU-M01-02
+PCB_FUNCION: saveProduct() (Bloque Financiero)
+PCB_ALCANCE: Análisis del motor de cálculo de precios basado en coste y margen de utilidad en InventarioService.
+PCB_CODIGO:
+    /**
+     * ESPECIFICACIÓN TÉCNICA: Invariante Financiera de Cálculo de Precio de Venta (PVP).
+     * 1. DESCRIPCIÓN ARQUITECTÓNICA: Motor de cálculo integrado en la capa de servicio para la determinación automática de márgenes.
+     * 2. OBJETIVO OPERATIVO: Sincronizar el valor comercial del producto con los costos de adquisición y la expectativa de utilidad.
+     * 3. PROPÓSITO SISTÉMICO: Eliminar el error humano en la fijación de precios y garantizar la rentabilidad operativa mínima.
+     * 4. TRAZABILIDAD FUNCIONAL: HU-M01-02 (Maestro de Productos) / RNF-03 (Consistencia Financiera).
+     * 5. CONTRATO DE INTERFAZ: 
+     *      - Precondiciones: Disponibilidad de Costo Unitario y Porcentaje de Utilidad en formato numérico válido.
+     *      - Postcondiciones: Actualización del campo precioVenta con redondeo simétrico a 2 decimales.
+     * 6. ESTRATEGIA DEFENSIVA: Implementación de aritmética de precisión mediante BigDecimal para mitigar errores de punto flotante.
+     * 7. IMPACTO EN EL ECOSISTEMA: Actualización de valores en catálogo y registro forense en bitácora (PRO-02).
+     * 8. GOBERNANZA DE NEGOCIO: El sistema impone la fórmula: PVP = Costo * (1 + %Utilidad/100) como norma inamovible.
+     */
+    
+    // PCB-N1: validación de parámetros de cálculo (Check de disponibilidad financiera)
+    if (p.getCostoUnitario() != null && p.getPorcentajeUtilidad() != null) {
+        BigDecimal factor = BigDecimal.ONE
+                .add(p.getPorcentajeUtilidad().divide(new BigDecimal("100"), 4, RoundingMode.HALF_UP));
+        p.setPrecioVenta(p.getCostoUnitario().multiply(factor).setScale(2, RoundingMode.HALF_UP));
+    }
+
+    inventarioRepository.save(p);
+
+    // PCB-N2: determinación de rastro de auditoría (Branching de evento)
+    String idPatron = isNew ? "PRO-01" : "PRO-02";
+    bitacoraService.registrarEvento(p.getIdUsuarioOperacion(), idPatron, ip, p.getSku(), p.getNombre());

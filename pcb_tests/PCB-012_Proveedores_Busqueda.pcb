@@ -1,0 +1,24 @@
+PCB_ID_PRUEBA: PCB-012
+PCB_MODULO: Proveedores
+PCB_FRAGMENTO: Búsqueda predictiva de socios comerciales
+PCB_HU: RF-08
+PCB_FUNCION: search()
+PCB_ALCANCE: Análisis de la delegación de búsqueda por coincidencia textual a la capa de persistencia en ProveedorService.
+PCB_CODIGO:
+    /**
+     * ESPECIFICACIÓN TÉCNICA: Motor de Localización Predictiva de Carteras de Proveeduría.
+     * 1. DESCRIPCIÓN ARQUITECTÓNICA: Servicio de consulta abierta para la identificación de terceros en el ecosistema.
+     * 2. OBJETIVO OPERATIVO: Proveer un mecanismo de filtrado por coincidencia de cadena en campos clave (Razón Social/RFC).
+     * 3. PROPÓSITO SISTÉMICO: Agilizar la selección de proveedores en el flujo operativo de compras y almacén.
+     * 4. TRAZABILIDAD FUNCIONAL: RF-08 (Gestión de Proveedores).
+     * 5. CONTRATO DE INTERFAZ: 
+     *      - Precondiciones: Cadena de búsqueda (query) suministrada desde la interfaz de usuario.
+     *      - Postcondiciones: Retorno de lista de proveedores filtrados por coincidencia parcial.
+     * 6. ESTRATEGIA DEFENSIVA: Delegación directa al repositorio para ejecución de filtros nativos indexados en BD.
+     * 7. IMPACTO EN EL ECOSISTEMA: Consulta de solo lectura sobre el catálogo maestro de proveedores.
+     * 8. GOBERNANZA DE NEGOCIO: Transparencia total en el acceso a la base de datos de socios comerciales registrados.
+     */
+    public List<Proveedor> search(String query) {
+        // Ejecución de filtro predictivo
+        return proveedorRepository.search(query);
+    }

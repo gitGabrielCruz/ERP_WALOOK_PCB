@@ -1,0 +1,40 @@
+PCB_ID_PRUEBA: PCB-008
+PCB_MODULO: Clientes
+PCB_FRAGMENTO: Validación de integridad fiscal y registro de cliente
+PCB_HU: HU-M06-01
+PCB_FUNCION: guardarCliente()
+PCB_ALCANCE: Análisis de las validaciones de identidad obligatoria y unicidad tributaria (RFC) en ClienteService.
+PCB_CODIGO:
+    /**
+     * ESPECIFICACIÓN TÉCNICA: Validación de Integridad Fiscal y Unicidad de Identidad Tributaria.
+     * 1. DESCRIPCIÓN ARQUITECTÓNICA: Módulo de validación previa a la persistencia para la gestión del padrón de clientes.
+     * 2. OBJETIVO OPERATIVO: Asegurar la calidad del dato fiscal mediante la verificación obligatoria de identidad y exclusión de duplicados.
+     * 3. PROPÓSITO SISTÉMICO: Mantener una base de datos de pacientes/clientes íntegra para procesos de facturación electrónica.
+     * 4. TRAZABILIDAD FUNCIONAL: HU-M06-01 (Gestión de Clientes) / RNF-06 (Integridad de Datos).
+     * 5. CONTRATO DE INTERFAZ: 
+     *      - Precondiciones: Entidad Paciente con campos fiscales proporcionados en el request.
+     *      - Postcondiciones: Continuidad del flujo de persistencia o interrupción por violación de integridad tributaria.
+     * 6. ESTRATEGIA DEFENSIVA: Lanzamiento de IllegalArgumentException ante colisión de RFC o ausencia de metadatos mandatorios.
+     * 7. IMPACTO EN EL ECOSISTEMA: Mitigación de redundancia en el catálogo y aseguramiento de trazabilidad comercial futura.
+     * 8. GOBERNANZA DE NEGOCIO: El RFC actúa como identificador fiscal único; su duplicidad en registros distintos se considera error de integridad.
+     */
+    public Paciente guardarCliente(Paciente cliente) {
+        
+        // PCB-N1: validación de obligatoriedad de identidad (Nombre)
+        if (cliente.getNombre() == null || cliente.getNombre().trim().isEmpty()) {
+            throw new IllegalArgumentException("El nombre es obligatorio");
+        }
+
+        // PCB-N2: evaluación de presencia de RFC (Check de campo opcional)
+        if (cliente.getRfc() != null && !cliente.getRfc().isEmpty()) {
+            Paciente existente = pacienteRepository.findByRfc(cliente.getRfc());
+            
+            // PCB-N3: validación de colisión de RFC (Unicidad)
+            if (existente != null && !existente.getIdPaciente().equals(cliente.getIdPaciente())) {
+                throw new IllegalArgumentException("El RFC ya está registrado con otro cliente.");
+            }
+        }
+        
+        pacienteRepository.save(cliente);
+        return cliente;
+    }
