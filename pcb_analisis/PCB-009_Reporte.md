@@ -1,66 +1,59 @@
-# Reporte de Auditoría de Caja Blanca: PCB-009
+# TEST PRUEBAS DE CAJA BLANCA
 
-## A. Identificación del Fragmento
-- **ID**: PCB-009
-- **Módulo**: Clientes
-- **Fragmento**: Búsqueda y filtrado dinámico del padrón
-- **HU**: HU-M06-02
-- **Función**: `ClienteService.buscarClientes()`
-- **Alcance**: Análisis de la delegación de filtrado multi-parámetro a la capa de persistencia bajo el estándar de "Duda Cero".
+| **DATOS DEL ESTUDIANTE** | |
+| :--- | :--- |
+| **NOMBRE:** | Gabriel Amílcar Cruz Canto |
+| **EMPRESA:** | WALOOK MEXICO, S.A. de C.V. |
+| **TITULO DEL PROYECTO:** | Sistema ERP en la nube para gestión de ópticas OMCGC |
+| **URL y Claves de acceso:** | [Configurar en ambiente de entrega] |
 
-## B. Tabla de Nodos
-| Nodo | Descripción | Tipo |
-| :--- | :--- | :--- |
-| 1 | Inicio de la función `buscarClientes()` | Inicio |
-| 2 | Ejecución de consulta dinámica: `pacienteRepository.findByFiltros(...)` | Proceso |
-| 3 | Retorno de colección de resultados y cierre | Fin |
+<br>
 
-## C. Tabla de Aristas
-| Origen | Destino | Condición / Etiqueta |
-| :--- | :--- | :--- |
-| 1 | 2 | Flujo secuencial |
-| 2 | 3 | Flujo secuencial |
+| **PLAN DE PRUEBAS DE CAJA BLANCA: BACKEND** | | | | |
+| :--- | :--- | :--- | :--- | :--- |
+| **Número** | **Nombre de la Prueba Backend** | **Descripción** | **Fecha** | **Responsable** |
+| PCB-009 | Búsqueda de Clientes | Motor de Búsqueda Multi-Criterio sobre Padrón de Pacientes | 17/03/2026 | Gabriel Amílcar Cruz Canto |
 
-## D. Complejidad Ciclomática
-$V(G) = P + 1$
-donde $P = 0$ (Sin nodos predicado internos)
-$V(G) = 0 + 1 = 1$
+---
 
-**Interpretación**: El fragmento presenta la complejidad mínima posible ($V(G)=1$), operando como un puente de delegación pura hacia el motor de base de datos para la gestión del filtrado dinámico.
+# FASE DE PRUEBAS
 
-## E. Caminos Independientes
-1. **Camino 1 (Consulta General Multi-Criterio)**: 1 → 2 → 3
+| **Nombre del Módulo del Sistema + Historia de usuario** |
+| :--- |
+| Módulo Clientes / Pacientes – HU-M06-02 |
 
-## F. Casos de Prueba (Basis Path Testing)
-| Caso | entrada: Filtros (Búsqueda, RFC, Estatus) | Resultado Esperado |
-| :--- | :--- | :--- |
-| CP1 | "García", "GACM80", "ACTIVO" | Colección de entidades que satisfacen el predicado SQL |
+| **Número y nombre de la Prueba** |
+| :--- |
+| PCB-009 / Búsqueda de Clientes – ClienteService.buscarClientes() |
 
-## G. Seudocódigo Estructural del Fragmento
-
-### Fragmento A: Código Puro (Estructura Original)
-**Archivo**: `ClienteService.java`
-**Función**: `buscarClientes(String busqueda, String rfc, String estatus)`
-**Descripción**: Motor de búsqueda multi-criterio sobre el padrón de pacientes. Provee una interfaz de consulta eficiente delegando la lógica de filtrado al repositorio para optimización a nivel de motor de base de datos. Incluye comentarios originales de desarrollo.
+### Paso 0
 
 ```java
-    public List<Paciente> buscarClientes(String busqueda, String rfc, String estatus) {
-        // Ejecución de consulta proyectiva
-        return pacienteRepository.findByFiltros(busqueda, rfc, estatus);
-    }
+    /**
+     * ESPECIFICACIÓN TÉCNICA: Motor de Búsqueda Multi-Criterio sobre Padrón de Pacientes.
+     * OBJETIVO OPERATIVO: Recuperar listados basados en subconjuntos de datos (ID, RFC, Estatus).
+     * IMPACTO: Soporte eficiente para la gestión comercial y clínica inmediata.
+     */
+    public List<Paciente> buscarClientes(String busqueda, String rfc, String estatus) { // [N1: INICIO]
+        // Ejecución de consulta proyectiva multi-parámetro
+        return pacienteRepository.findByFiltros(busqueda, rfc, estatus); // [N2: PROCESO] -> Delegación a motor de persistencia SQL
+    } // [N3: FIN]
 ```
 
-### Fragmento B: Código Anotado (Mapeo de Nodos)
-**Descripción**: Este fragmento identifica la posición exacta de cada nodo del Grafo de Control de Flujo (CFG).
+### Descripción breve del fragmento
 
-```java
-    public List<Paciente> buscarClientes(String busqueda, String rfc, String estatus) { // NODO 1
-        // Ejecución de consulta proyectiva
-        return pacienteRepository.findByFiltros(busqueda, rfc, estatus); // NODO 2
-    } // NODO 3 [FIN]
-```
+El fragmento **PCB-009** representa la interfaz de consulta del padrón de pacientes. Su diseño lineal permite un filtrado dinámico multi-parámetro, delegando la carga computacional al motor de base de datos para optimizar los tiempos de respuesta. Con una complejidad $V(G)=1$, la prueba certifica la correcta orquestación de parámetros entre la capa de servicio y el repositorio de persistencia.
 
-## H. Grafo de Control de Flujo (PlantUML)
+### Identificación de Nodos
+
+| ID del Nodo | Tipo | Descripción |
+| :--- | :--- | :--- |
+| **Nodo 1** | Inicio | Inicio de la función de búsqueda multi-criterio `buscarClientes()` y flujo de entrada de filtros. |
+| **Nodo 2** | Nodo de proceso | Ejecución de `pacienteRepository.findByFiltros()`. Filtrado dinámico multi-parámetro en la base de datos. |
+| **Nodo 3** | Fin | Finalización del protocolo de búsqueda con retorno de la colección de identidades proyectada. |
+
+### Paso 1
+
 ```plantuml
 @startuml
 digraph CFG_PCB009 {
@@ -69,11 +62,9 @@ rankdir=TB
 node [shape=circle]
 
 I [label="Inicio"]
-
 N1 [label="1"]
 N2 [label="2"]
 N3 [label="3"]
-
 F [label="Fin"]
 
 I -> N1
@@ -85,10 +76,20 @@ N3 -> F
 @enduml
 ```
 
-## I. Matriz de Trazabilidad
-| Requisito (HU) | Nodo de Decisión | Camino Independiente | Caso de Prueba |
-| :--- | :--- | :--- | :--- |
-| **HU-M06-02** | No Aplica (Secuencial) | Camino 1 | CP1 |
+### Paso 2
 
-## J. Resumen Académico
-El fragmento **PCB-009** encapsula la capacidad de localización de registros mediante una arquitectura de delegación directa ($V(G)=1$). La auditoría de caja blanca verifica que no existen obstrucciones lógicas en la capa de servicio, lo que garantiza que la eficiencia del filtrado dinámico dependa exclusivamente del tunning del repositorio y los índices de base de datos, cumpliendo con los estándares de "Duda Cero" en la recuperación de información.
+**V(G) = Número de regiones** = (0 internas + 1 externa) = **1**
+**V(G) = Aristas – Nodos + 2** = V(G) = 4 – 5 + 2 = **1**
+**V(G) = Nodos Predicado + 1** = V(G) = 0 + 1 = **1**
+
+### Paso 3
+
+| Total de caminos | Ruta de cada camino |
+| :--- | :--- |
+| **Camino 1** | Inicio → 1 → 2 → 3 → Fin |
+
+### Paso 4
+
+| Número del camino | Caso de Prueba (IN) | Resultado esperado (OUT) |
+| :--- | :--- | :--- |
+| **Camino 1** | busqueda = "GABRIEL", rfc = "CRCG...", estatus = "ACTIVO" | Colección de pacientes filtrada por criterios concurrentes |

@@ -1,66 +1,59 @@
-# Reporte de Auditoría de Caja Blanca: PCB-012
+# TEST PRUEBAS DE CAJA BLANCA
 
-## A. Identificación del Fragmento
-- **ID**: PCB-012
-- **Módulo**: Proveedores
-- **Fragmento**: Búsqueda predictiva de socios comerciales
-- **HU**: RF-08 (Gestión de Proveedores)
-- **Función**: `ProveedorService.search(String query)`
-- **Alcance**: Análisis de la delegación de búsqueda por coincidencia textual a la capa de persistencia bajo el estándar de "Duda Cero".
+| **DATOS DEL ESTUDIANTE** | |
+| :--- | :--- |
+| **NOMBRE:** | Gabriel Amílcar Cruz Canto |
+| **EMPRESA:** | WALOOK MEXICO, S.A. de C.V. |
+| **TITULO DEL PROYECTO:** | Sistema ERP en la nube para gestión de ópticas OMCGC |
+| **URL y Claves de acceso:** | [Configurar en ambiente de entrega] |
 
-## B. Tabla de Nodos
-| Nodo | Descripción | Tipo |
-| :--- | :--- | :--- |
-| 1 | Inicio de la función de búsqueda `search()` | Inicio |
-| 2 | Ejecución de filtro predictivo: `proveedorRepository.search(query)` | Proceso |
-| 3 | Retorno de resultados y finalización | Fin |
+<br>
 
-## C. Tabla de Aristas
-| Origen | Destino | Condición / Etiqueta |
-| :--- | :--- | :--- |
-| 1 | 2 | Flujo secuencial |
-| 2 | 3 | Flujo secuencial |
+| **PLAN DE PRUEBAS DE CAJA BLANCA: BACKEND** | | | | |
+| :--- | :--- | :--- | :--- | :--- |
+| **Número** | **Nombre de la Prueba Backend** | **Descripción** | **Fecha** | **Responsable** |
+| PCB-012 | Búsqueda de Proveedores | Motor de Localización Predictiva de Carteras de Proveeduría | 17/03/2026 | Gabriel Amílcar Cruz Canto |
 
-## D. Complejidad Ciclomática
-$V(G) = P + 1$
-donde $P = 0$ (Sin nodos predicado internos)
-$V(G) = 0 + 1 = 1$
+---
 
-**Interpretación**: El fragmento presenta la máxima simplicidad estructural ($V(G)=1$), operando como un mediador transparente hacia la capa de persistencia para la localización de socios comerciales.
+# FASE DE PRUEBAS
 
-## E. Caminos Independientes
-1. **Camino 1 (Consulta Única Predictiva)**: 1 → 2 → 3
+| **Nombre del Módulo del Sistema + Historia de usuario** |
+| :--- |
+| Módulo Compras / Terceros – RF-08 |
 
-## F. Casos de Prueba (Basis Path Testing)
-| Caso | entrada: query | Resultado Esperado |
-| :--- | :--- | :--- |
-| CP1 | "Global" | Colección de proveedores coincidentes por Razón Social o RFC |
+| **Número y nombre de la Prueba** |
+| :--- |
+| PCB-012 / Búsqueda de Proveedores – ProveedorService.search() |
 
-## G. Seudocódigo Estructural del Fragmento
-
-### Fragmento A: Código Puro (Estructura Original)
-**Archivo**: `ProveedorService.java`
-**Función**: `search(String query)`
-**Descripción**: Motor de localización predictiva de carteras de proveeduría. Provee un mecanismo de filtrado por coincidencia de cadena en campos clave, agilizando la selección de terceros en los flujos de compra. Incluye comentarios originales de desarrollo.
+### Paso 0
 
 ```java
-    public List<Proveedor> search(String query) {
-        // Ejecución de filtro predictivo
-        return proveedorRepository.search(query);
-    }
+    /**
+     * ESPECIFICACIÓN TÉCNICA: Motor de Localización Predictiva de Carteras de Proveeduría.
+     * OBJETIVO OPERATIVO: Proveer mecanismo de filtrado por coincidencia (Razón Social/RFC).
+     * IMPACTO: Agilizar la selección de proveedores en el flujo operativo.
+     */
+    public List<Proveedor> search(String query) { // [N1: INICIO]
+        // Ejecución de filtro predictivo multi-identidad
+        return proveedorRepository.search(query); // [N2: PROCESO] -> Delegación a capa de persistencia indexada
+    } // [N3: FIN]
 ```
 
-### Fragmento B: Código Anotado (Mapeo de Nodos)
-**Descripción**: Este fragmento identifica la posición exacta de cada nodo del Grafo de Control de Flujo (CFG).
+### Descripción breve del fragmento
 
-```java
-    public List<Proveedor> search(String query) { // NODO 1
-        // Ejecución de filtro predictivo
-        return proveedorRepository.search(query); // NODO 2
-    } // NODO 3 [FIN]
-```
+El fragmento **PCB-012** representa la interfaz de consulta del catálogo de proveedores. Su implementación lineal delega la búsqueda predictiva al motor de base de datos para recuperar socios comerciales basados en coincidencia parcial de Razón Social o RFC. Con una complejidad $V(G)=1$, la prueba certifica la correcta orquestación de la cadena de búsqueda hacia el repositorio de persistencia.
 
-## H. Grafo de Control de Flujo (PlantUML)
+### Identificación de Nodos
+
+| ID del Nodo | Tipo | Descripción |
+| :--- | :--- | :--- |
+| **Nodo 1** | Inicio | Inicio de la función de localización predictiva `search(String query)` y flujo de entrada de la cadena de consulta. |
+| **Nodo 2** | Nodo de proceso | Ejecución de `proveedorRepository.search()`. Localización de carteras proveedoras mediante coincidencia indexada. |
+| **Nodo 3** | Fin | Finalización del protocolo de búsqueda con retorno de la colección de socios comerciales proyectada. |
+
+### Paso 1
+
 ```plantuml
 @startuml
 digraph CFG_PCB012 {
@@ -69,11 +62,9 @@ rankdir=TB
 node [shape=circle]
 
 I [label="Inicio"]
-
 N1 [label="1"]
 N2 [label="2"]
 N3 [label="3"]
-
 F [label="Fin"]
 
 I -> N1
@@ -85,10 +76,20 @@ N3 -> F
 @enduml
 ```
 
-## I. Matriz de Trazabilidad
-| Requisito (HU/RF) | Nodo de Decisión | Camino Independiente | Caso de Prueba |
-| :--- | :--- | :--- | :--- |
-| **RF-08** | No Aplica (Secuencial) | Camino 1 | CP1 |
+### Paso 2
 
-## J. Resumen Académico
-El fragmento **PCB-012** implementa la capacidad de búsqueda predictiva mediante una arquitectura de delegación lineal ($V(G)=1$). La auditoría de caja blanca verifica que el servicio mantiene una transparencia total hacia la capa de datos, asegurando que la eficiencia de la recuperación de información dependa exclusivamente de la indexación nativa en el motor de base de datos, cumpliendo con los criterios de "Duda Cero" operativa.
+**V(G) = Número de regiones** = (0 internas + 1 externa) = **1**
+**V(G) = Aristas – Nodos + 2** = V(G) = 4 – 5 + 2 = **1**
+**V(G) = Nodos Predicado + 1** = V(G) = 0 + 1 = **1**
+
+### Paso 3
+
+| Total de caminos | Ruta de cada camino |
+| :--- | :--- |
+| **Camino 1** | Inicio → 1 → 2 → 3 → Fin |
+
+### Paso 4
+
+| Número del camino | Caso de Prueba (IN) | Resultado esperado (OUT) |
+| :--- | :--- | :--- |
+| **Camino 1** | query = "ESSILOR MEXICO", proveedorRepository.isActive() = true | Colección de proveedores con coincidencia textual en Razón Social o RFC |

@@ -1,66 +1,59 @@
-# Reporte de Auditoría de Caja Blanca: PCB-006
+# TEST PRUEBAS DE CAJA BLANCA
 
-## A. Identificación del Fragmento
-- **ID**: PCB-006
-- **Módulo**: Inventarios
-- **Fragmento**: Eliminación de atributos de catálogo
-- **HU**: HU-M01-02
-- **Función**: `InventarioService.deleteProduct(String id)`
-- **Alcance**: Análisis de la delegación de remoción física al nivel de persistencia bajo el estándar de "Duda Cero".
+| **DATOS DEL ESTUDIANTE** | |
+| :--- | :--- |
+| **NOMBRE:** | Gabriel Amílcar Cruz Canto |
+| **EMPRESA:** | WALOOK MEXICO, S.A. de C.V. |
+| **TITULO DEL PROYECTO:** | Sistema ERP en la nube para gestión de ópticas OMCGC |
+| **URL y Claves de acceso:** | [Configurar en ambiente de entrega] |
 
-## B. Tabla de Nodos
-| Nodo | Descripción | Tipo |
-| :--- | :--- | :--- |
-| 1 | Inicio de la función `deleteProduct()` | Inicio |
-| 2 | Ejecución de `inventarioRepository.deleteById(id)` | Proceso |
-| 3 | Finalización de la función | Fin |
+<br>
 
-## C. Tabla de Aristas
-| Origen | Destino | Condición / Etiqueta |
-| :--- | :--- | :--- |
-| 1 | 2 | Flujo secuencial |
-| 2 | 3 | Flujo secuencial |
+| **PLAN DE PRUEBAS DE CAJA BLANCA: BACKEND** | | | | |
+| :--- | :--- | :--- | :--- | :--- |
+| **Número** | **Nombre de la Prueba Backend** | **Descripción** | **Fecha** | **Responsable** |
+| PCB-006 | Eliminación de Productos | Protocolo de Remoción Definitiva de Atributos de Catálogo | 17/03/2026 | Gabriel Amílcar Cruz Canto |
 
-## D. Complejidad Ciclomática
-$V(G) = P + 1$
-donde $P = 0$ (Sin nodos predicado)
-$V(G) = 0 + 1 = 1$
+---
 
-**Interpretación**: El fragmento presenta una estructura lineal atómica, requiriendo un único camino de ejecución para garantizar la cobertura total de su lógica.
+# FASE DE PRUEBAS
 
-## E. Caminos Independientes
-1. **Camino 1 (Purga Única)**: 1 → 2 → 3
+| **Nombre del Módulo del Sistema + Historia de usuario** |
+| :--- |
+| Módulo Inventarios / Catálogos – HU-M01-02 |
 
-## F. Casos de Prueba (Basis Path Testing)
-| Caso | entrada: id | Condición Esperada | Resultado Esperado |
-| :--- | :--- | :--- | :--- |
-| CP1 | "ID-PROD-001" | Ejecución atómica del repositorio | Registro eliminado o No-Op (si no existe) |
+| **Número y nombre de la Prueba** |
+| :--- |
+| PCB-006 / Eliminación de Productos – InventarioService.deleteProduct() |
 
-## G. Seudocódigo Estructural del Fragmento
-
-### Fragmento A: Código Puro (Estructura Original)
-**Archivo**: `InventarioService.java`
-**Función**: `deleteProduct(String id)`
-**Descripción**: Protocolo de remoción definitiva de atributos de catálogo. Realiza la purga física del registro en la capa de persistencia mediante el identificador GUID proporcionado. Incluye comentarios originales de desarrollo.
+### Paso 0
 
 ```java
-    public void deleteProduct(String id) {
-        // Ejecución de purga física
-        inventarioRepository.deleteById(id);
-    }
+    /**
+     * ESPECIFICACIÓN TÉCNICA: Protocolo de Remoción Definitiva de Atributos de Catálogo.
+     * OBJETIVO OPERATIVO: Purgar la base de datos de productos obsoletos.
+     * IMPACTO: Garantizar higiene de datos en el maestro de inventarios.
+     */
+    public void deleteProduct(String id) { // [N1: INICIO]
+        // Ejecución de purga física de identidad sistémica
+        inventarioRepository.deleteById(id); // [N2: PROCESO] -> Remoción atómica por GUID
+    } // [N3: FIN]
 ```
 
-### Fragmento B: Código Anotado (Mapeo de Nodos)
-**Descripción**: Este fragmento identifica la posición exacta de cada nodo del Grafo de Control de Flujo (CFG).
+### Descripción breve del fragmento
 
-```java
-    public void deleteProduct(String id) { // NODO 1
-        // Ejecución de purga física
-        inventarioRepository.deleteById(id); // NODO 2
-    } // NODO 3 [FIN]
-```
+El fragmento **PCB-006** representa el protocolo de limpieza del catálogo. Debido a su naturaleza lineal, el flujo delega la remoción física directamente al repositorio de persistencia. Con una complejidad $V(G)=1$, la prueba certifica la integridad de la operación atómica de eliminación mediante el identificador global único (GUID) del artículo.
 
-## H. Grafo de Control de Flujo (PlantUML)
+### Identificación de Nodos
+
+| ID del Nodo | Tipo | Descripción |
+| :--- | :--- | :--- |
+| **Nodo 1** | Inicio | Inicio de la función `deleteProduct(String id)` y recepción del identificador del artículo. |
+| **Nodo 2** | Nodo de proceso | Ejecución de `inventarioRepository.deleteById(id)`. Purga física del registro en la base de datos. |
+| **Nodo 3** | Fin | Finalización del protocolo de remoción definitiva de atributos del catálogo maestro. |
+
+### Paso 1
+
 ```plantuml
 @startuml
 digraph CFG_PCB006 {
@@ -69,11 +62,9 @@ rankdir=TB
 node [shape=circle]
 
 I [label="Inicio"]
-
 N1 [label="1"]
 N2 [label="2"]
 N3 [label="3"]
-
 F [label="Fin"]
 
 I -> N1
@@ -85,10 +76,20 @@ N3 -> F
 @enduml
 ```
 
-## I. Matriz de Trazabilidad
-| Requisito (HU) | Nodo de Decisión | Camino Independiente | Caso de Prueba |
-| :--- | :--- | :--- | :--- |
-| **HU-M01-02** | No Aplica (Secuencial) | Camino 1 | CP1 |
+### Paso 2
 
-## J. Resumen Académico
-El fragmento **PCB-006** representa la complejidad mínima admisible ($V(G)=1$) para un servicio de persistencia. Se trata de una delegación pura hacia el repositorio, sin ramificaciones lógicas internas. La auditoría confirma que la fiabilidad de la operación depende exclusivamente de la integridad referencial gestionada por el motor de base de datos, garantizando una ejecución limpia y predecible bajo el estándar de "Duda Cero".
+**V(G) = Número de regiones** = (0 internas + 1 externa) = **1**
+**V(G) = Aristas – Nodos + 2** = V(G) = 4 – 5 + 2 = **1**
+**V(G) = Nodos Predicado + 1** = V(G) = 0 + 1 = **1**
+
+### Paso 3
+
+| Total de caminos | Ruta de cada camino |
+| :--- | :--- |
+| **Camino 1** | Inicio → 1 → 2 → 3 → Fin |
+
+### Paso 4
+
+| Número del camino | Caso de Prueba (IN) | Resultado esperado (OUT) |
+| :--- | :--- | :--- |
+| **Camino 1** | p.idProducto = "GUID-123", inventarioRepository.exists(id) = true | Registro eliminado físicamente del catálogo maestro |

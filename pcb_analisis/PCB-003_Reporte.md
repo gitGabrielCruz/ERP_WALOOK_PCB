@@ -1,132 +1,94 @@
-# Reporte de Auditoría de Caja Blanca: PCB-003
+# TEST PRUEBAS DE CAJA BLANCA
 
-## A. Identificación del Fragmento
-- **ID**: PCB-003
-- **Módulo**: Seguridad/Acceso
-- **Fragmento**: Inyección de matriz de permisos en respuesta de sesión
-- **HU**: HU-M01-01
-- **Función**: `AuthController.login()` (Bloque de construcción de respuesta)
-- **Alcance**: Análisis del bloque de respuesta encargado de normalizar metadatos de usuario (Rol/Sucursal) y adjuntar facultades mediante operadores ternarios bajo el estándar de "Duda Cero".
+| **DATOS DEL ESTUDIANTE** | |
+| :--- | :--- |
+| **NOMBRE:** | Gabriel Amílcar Cruz Canto |
+| **EMPRESA:** | WALOOK MEXICO, S.A. de C.V. |
+| **TITULO DEL PROYECTO:** | Sistema ERP en la nube para gestión de ópticas OMCGC |
+| **URL y Claves de acceso:** | [Configurar en ambiente de entrega] |
 
-## B. Tabla de Nodos
-| Nodo | Descripción | Tipo |
-| :--- | :--- | :--- |
-| 1 | Inicio del bloque `try` en `login()` | Inicio |
-| 2 | Ejecución de `authService.login()`, `bitacoraService` y `usuarioService.getPermissions()` | Proceso |
-| 3 | Normalización de `rolId` mediante operador ternario [PCB-N1] | Predicado |
-| 4 | Normalización de `nombreRol` mediante operador ternario [PCB-N2] | Predicado |
-| 5 | Normalización de `idSucursal` mediante operador ternario [PCB-N3] | Predicado |
-| 6 | Retorno de `ResponseEntity.ok()` con el mapa de facultades | Final |
+<br>
 
-## C. Tabla de Aristas
-| Origen | Destino | Condición / Etiqueta |
-| :--- | :--- | :--- |
-| 1 | 2 | Flujo secuencial |
-| 2 | 3 | Flujo secuencial |
-| 3 | 4 | PCB-N1 (Verdadero/Falso) - Operador ternario resuelto |
-| 4 | 5 | PCB-N2 (Verdadero/Falso) - Operador ternario resuelto |
-| 5 | 6 | PCB-N3 (Verdadero/Falso) - Operador ternario resuelto |
+| **PLAN DE PRUEBAS DE CAJA BLANCA: BACKEND** | | | | |
+| :--- | :--- | :--- | :--- | :--- |
+| **Número** | **Nombre de la Prueba Backend** | **Descripción** | **Fecha** | **Responsable** |
+| PCB-003 | Saneamiento de Login | Orquestación de Payload de Seguridad y Sesión | 17/03/2026 | Gabriel Amílcar Cruz Canto |
 
-## D. Complejidad Ciclomática
-$V(G) = P + 1$
-donde $P = 3$ (Nodos predicado: PCB-N1, PCB-N2, PCB-N3)
-$V(G) = 3 + 1 = 4$
+---
 
-**Interpretación**: Existen 4 caminos independientes de ejecución para la normalización de metadatos de la sesión, garantizando que el payload de salida sea consistente ante cualquier nulidad de atributos.
+# FASE DE PRUEBAS
 
-## E. Caminos Independientes
-1. **Camino 1 (Usuario Completo)**: 1 → 2 → 3(Verdadero) → 4(Verdadero) → 5(Verdadero) → 6
-2. **Camino 2 (Rol Inexistente/Nulo)**: 1 → 2 → 3(Falso) → 4(Falso) → 5(Verdadero) → 6
-3. **Camino 3 (Sucursal Inexistente/Nula)**: 1 → 2 → 3(Verdadero) → 4(Verdadero) → 5(Falso) → 6
-4. **Camino 4 (Usuario con Perfil Mínimo)**: 1 → 2 → 3(Falso) → 4(Falso) → 5(Falso) → 6
+| **Nombre del Módulo del Sistema + Historia de usuario** |
+| :--- |
+| Módulo Seguridad / Acceso – HU-M01-01 |
 
-## F. Casos de Prueba (Basis Path Testing)
-| Caso | Entidad Usuario (Atributos) | Resultado Esperado en Payload (JSON) |
-| :--- | :--- | :--- |
-| CP1 | Rol="1", NombreRol="Admin", Sucursal="A" | "rolId":"1", "nombreRol":"Admin", "idSucursal":"A" |
-| CP2 | Rol=Nulo, NombreRol=Nulo, Sucursal="A" | "rolId":"", "nombreRol":"", "idSucursal":"A" |
-| CP3 | Rol="1", NombreRol="Admin", Sucursal=Nulo | "rolId":"1", "nombreRol":"Admin", "idSucursal":"" |
-| CP4 | Atributos Críticos = Nulo | "rolId":"", "nombreRol":"", "idSucursal":"" |
+| **Número y nombre de la Prueba** |
+| :--- |
+| PCB-003 / Saneamiento de Login – AuthController.login() (Block) |
 
-## G. Seudocódigo Estructural del Fragmento
-
-### Fragmento A: Código Puro (Estructura Original)
-**Archivo**: `AuthController.java`
-**Modulo**: `login()` (Capa de Respuesta)
-**Descripción**: Orquestación atómica de la respuesta de sesión. Se encarga de capturar la identidad autenticada y enviarla al frontend junto con su matriz de permisos saneada. Incluye comentarios originales de desarrollo.
+### Paso 0
 
 ```java
-    try {
-        Usuario usuario = authService.login(email, password);
+    /**
+     * ESPECIFICACIÓN TÉCNICA: Orquestación Atómica de Respuesta de Sesión y Payload de Seguridad.
+     * OBJETIVO OPERATIVO: Construir DTO de respuesta HTTP y habilitar entorno de ejecución.
+     * IMPACTO: Distribución centralizada de metadatos y permisos en un solo intercambio.
+     */
+    try { // [N1: INICIO]
+        Usuario usuario = authService.login(email, password); // [N2: PROCESO]
 
         // Registro de Auditoría
-        bitacoraService.registrarEvento(usuario.getIdUsuario(), "AUTH-01", ip, usuario.getNombre(), email);
+        bitacoraService.registrarEvento(usuario.getIdUsuario(), "AUTH-01", ip, usuario.getNombre(), email); // [N3: PROCESO]
 
         // Resolución de Facultades
-        List<Map<String, Object>> permisos = usuarioService.getPermissionsByUsuario(usuario.getIdUsuario());
+        List<Map<String, Object>> permisos = usuarioService.getPermissionsByUsuario(usuario.getIdUsuario()); // [N4: PROCESO]
 
-        // normalización de metadatos (IdRol)
-        String rolId = usuario.getIdRol() != null ? usuario.getIdRol() : "";
+        // [PCB-N1] normalización de metadatos (IdRol)
+        String rolId = usuario.getIdRol() != null ? usuario.getIdRol() : ""; // [N5] [PCB-N1] -> [SI: N7] [NO: N6] : ¿Tiene IdRol?
         
-        // normalización de metadatos (NombreRol)
-        String nombreRol = usuario.getNombreRol() != null ? usuario.getNombreRol() : "";
+        // [PCB-N2] normalización de metadatos (NombreRol)
+        String nombreRol = usuario.getNombreRol() != null ? usuario.getNombreRol() : ""; // [N7] [PCB-N2] -> [SI: N9] [NO: N8] : ¿Tiene NombreRol?
         
-        // normalización de metadatos (IdSucursal)
-        String idSucursal = usuario.getIdSucursal() != null ? usuario.getIdSucursal() : "";
+        // [PCB-N3] normalización de metadatos (IdSucursal)
+        String idSucursal = usuario.getIdSucursal() != null ? usuario.getIdSucursal() : ""; // [N9] [PCB-N3] -> [SI: N11] [NO: N10] : ¿Tiene IdSucursal?
 
-        // Construcción de Respuesta Atómica
+        // [N11: PROCESO] -> Construcción de Respuesta Atómica
         return ResponseEntity.ok(Map.of(
                 "success", true,
-                "message", "Login exitoso",
                 "userId", usuario.getIdUsuario(),
                 "rolId", rolId,
                 "nombreRol", nombreRol,
-                "nombre", usuario.getNombre(),
                 "idSucursal", idSucursal,
-                "permisos", permisos));
-    } catch (RuntimeException e) {
-        // ... (Capa de manejo de excepciones analizada en PCB-001)
+                "permisos", permisos)); // [N12: FIN]
+    } catch (RuntimeException e) { // [N13: FIN (EXC)]
+        // Capa de excepciones analizada en PCB-001
     }
 ```
 
-### Fragmento B: Código Anotado (Mapeo de Nodos)
-**Descripción**: Este fragmento incluye los marcadores de control (`PCB-Nx`) para identificar la posición exacta de cada nodo y arista del Grafo de Control de Flujo (CFG).
+### Descripción breve del fragmento
 
-```java
-    try { // NODO 1
-        Usuario usuario = authService.login(email, password); // NODO 2
+El fragmento **PCB-003** representa el orquestador final del acceso al sistema. Su función es normalizar los metadatos de la identidad (IdRol, NombreRol, IdSucursal) mediante operadores ternarios preventivos para garantizar que el payload JSON entregado al Frontend sea íntegro y carezca de nulos. Con una complejidad $V(G)=4$, asegura que ninguna sesión sea establecida sin su correspondiente matriz de facultades sincronizada.
 
-        // Registro de Auditoría
-        bitacoraService.registrarEvento(usuario.getIdUsuario(), "AUTH-01", ip, usuario.getNombre(), email);
+### Identificación de Nodos
 
-        // Resolución de Facultades
-        List<Map<String, Object>> permisos = usuarioService.getPermissionsByUsuario(usuario.getIdUsuario());
+| ID del Nodo | Tipo | Descripción |
+| :--- | :--- | :--- |
+| **Nodo 1** | Inicio | Inicio del bloque de control `try` en el controlador para la gestión de la sesión. |
+| **Nodo 2** | Nodo predicado | Ejecución de `authService.login()`. Orquestación de autenticación con captura de excepciones. |
+| **Nodo 3** | Nodo de proceso | Ejecución de `bitacoraService.registrarEvento()`. Registro persistente de auditoría forense. |
+| **Nodo 4** | Nodo de proceso | Ejecución de `usuarioService.getPermissionsByUsuario()`. Resolución de la matriz de facultades. |
+| **Nodo 5 [PCB-N1]** | Nodo predicado | Evaluación de la condición `usuario.getIdRol() != null`. Saneamiento de metadatos de Rol. Identificado con la etiqueta **PCB-N1**. |
+| **Nodo 6** | Nodo de proceso | Asignación de cadena vacía como valor de saneamiento para `rolId` ausente. |
+| **Nodo 7 [PCB-N2]** | Nodo predicado | Evaluación de la condición `usuario.getNombreRol() != null`. Saneamiento de denominación operativa. Identificado con la etiqueta **PCB-N2**. |
+| **Nodo 8** | Nodo de proceso | Asignación de cadena vacía como valor de saneamiento para `nombreRol` ausente. |
+| **Nodo 9 [PCB-N3]** | Nodo predicado | Evaluación de la condición `usuario.getIdSucursal() != null`. Saneamiento de ubicación física. Identificado con la etiqueta **PCB-N3**. |
+| **Nodo 10** | Nodo de proceso | Asignación de cadena vacía como valor de saneamiento para `idSucursal` ausente. |
+| **Nodo 11** | Nodo de proceso | Construcción atómica del objeto para la respuesta DTO de éxito. |
+| **Nodo 12** | Nodo de salida | Ejecución de `return ResponseEntity.ok()`. Finalización exitosa y entrega de payload al cliente. |
+| **Nodo 13** | Nodo de salida | Captura de `RuntimeException` en bloque `catch`. Interrupción por fallo de seguridad. |
 
-        // PCB-N1: normalización de metadatos (IdRol)
-        String rolId = usuario.getIdRol() != null ? usuario.getIdRol() : ""; // NODO 3 [PREDICADO]
-        
-        // PCB-N2: normalización de metadatos (NombreRol)
-        String nombreRol = usuario.getNombreRol() != null ? usuario.getNombreRol() : ""; // NODO 4 [PREDICADO]
-        
-        // PCB-N3: normalización de metadatos (IdSucursal)
-        String idSucursal = usuario.getIdSucursal() != null ? usuario.getIdSucursal() : ""; // NODO 5 [PREDICADO]
+### Paso 1
 
-        // Construcción de Respuesta Atómica
-        return ResponseEntity.ok(Map.of(
-                "success", true,
-                "message", "Login exitoso",
-                "userId", usuario.getIdUsuario(),
-                "rolId", rolId,
-                "nombreRol", nombreRol,
-                "nombre", usuario.getNombre(),
-                "idSucursal", idSucursal,
-                "permisos", permisos)); // NODO 6 [FIN]
-    } catch (RuntimeException e) {
-        // ... (Capa de manejo de excepciones analizada en PCB-001)
-    }
-```
-
-## H. Grafo de Control de Flujo (PlantUML)
 ```plantuml
 @startuml
 digraph CFG_PCB003 {
@@ -135,41 +97,64 @@ rankdir=TB
 node [shape=circle]
 
 I [label="Inicio"]
-
 N1 [label="1"]
 N2 [label="2"]
-N3 [label="3\nPCB-N1"]
-N4 [label="4\nPCB-N2"]
-N5 [label="5\nPCB-N3"]
+N3 [label="3"]
+N4 [label="4"]
+N5 [label="5\n[PCB-N1]"]
 N6 [label="6"]
-
+N7 [label="7\n[PCB-N2]"]
+N8 [label="8"]
+N9 [label="9\n[PCB-N3]"]
+N10 [label="10"]
+N11 [label="11"]
+N12 [label="12"]
+N13 [label="13"]
 F [label="Fin"]
 
 I -> N1
 N1 -> N2
 N2 -> N3
-
-N3 -> N4 [label="Verdadero"]
-N3 -> N4 [label="Falso"]
-
-N4 -> N5 [label="Verdadero"]
-N4 -> N5 [label="Falso"]
-
-N5 -> N6 [label="Verdadero"]
+N2 -> N13 [label="Excepción"]
+N3 -> N4
+N4 -> N5
+N5 -> N7 [label="Verdadero"]
 N5 -> N6 [label="Falso"]
-
-N6 -> F
+N6 -> N7
+N7 -> N9 [label="Verdadero"]
+N7 -> N8 [label="Falso"]
+N8 -> N9
+N9 -> N11 [label="Verdadero"]
+N9 -> N10 [label="Falso"]
+N10 -> N11
+N11 -> N12
+N12 -> F
+N13 -> F
 
 }
 @enduml
 ```
 
-## I. Matriz de Trazabilidad
-| Requisito (HU) | Nodo de Decisión | Camino Independiente | Caso de Prueba |
-| :--- | :--- | :--- | :--- |
-| **HU-M01-01** | PCB-N1 | Caminos 1, 2, 3, 4 | CP1, CP2, CP3, CP4 |
-| **HU-M01-01** | PCB-N2 | Caminos 1, 2, 3, 4 | CP1, CP2, CP3, CP4 |
-| **HU-M01-01** | PCB-N3 | Caminos 1, 2, 3, 4 | CP1, CP2, CP3, CP4 |
+### Paso 2
 
-## J. Resumen Académico
-El fragmento **PCB-003** demuestra una implementación robusta del principio de *Data Sanitization* en la capa de salida del ERP. Mediante el uso de operadores ternarios evaluados en los nodos predicado PCB-N1 a PCB-N3, el sistema garantiza que el intercambio de datos con el frontend sea inmutable ante la ausencia de metadatos opcionales. La complejidad estructural $V(G)=4$ confirma una lógica lineal-defensiva que elimina el riesgo de malformaciones en el payload JSON, cumpliendo con los estándares de interoperabilidad requeridos.
+**V(G) = Número de regiones** = (4 internas + 1 externa) = **5**
+**V(G) = Aristas – Nodos + 2** = V(G) = 18 – 15 + 2 = **5**
+**V(G) = Nodos Predicado + 1** = V(G) = 4 + 1 = **5**
+
+### Paso 3
+
+| Total de caminos | Ruta de cada camino |
+| :--- | :--- |
+| **Camino 1** | Inicio → 1 → 2(Exc) → 13 → Fin |
+| **Camino 2** | Inicio → 1 → 2 → 3 → 4 → 5(NO) → 6 → 7(SÍ) → 9(SÍ) → 11 → 12 → Fin |
+| **Camino 3** | Inicio → 1 → 2 → 3 → 4 → 5(SÍ) → 7(NO) → 8 → 9(SÍ) → 11 → 12 → Fin |
+| **Camino 4** | Inicio → 1 → 2 → 3 → 4 → 5(SÍ) → 7(SÍ) → 9(NO) → 10 → 11 → 12 → Fin |
+
+### Paso 4
+
+| Número del camino | Caso de Prueba (IN) | Resultado esperado (OUT) |
+| :--- | :--- | :--- |
+| **Camino 1** | Lanzamiento de RuntimeException en authService.login() | ResponseEntity(4xx/5xx) (Fallo Gatekeeper) |
+| **Camino 2** | usuario.idRol = null, usuario.nombreRol != null, usuario.idSucursal != null | Payload con rolId: "" (PCB-N1: NO, PCB-N2: SI, PCB-N3: SI) |
+| **Camino 3** | usuario.idRol != null, usuario.nombreRol = null, usuario.idSucursal != null | Payload con nombreRol: "" (PCB-N1: SI, PCB-N2: NO, PCB-N3: SI) |
+| **Camino 4** | usuario.idRol != null, usuario.nombreRol != null, usuario.idSucursal = null | Payload con idSucursal: "" (PCB-N1: SI, PCB-N2: SI, PCB-N3: NO) |

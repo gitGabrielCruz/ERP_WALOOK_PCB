@@ -1,107 +1,81 @@
-# Reporte de Auditoría de Caja Blanca: PCB-007
+# TEST PRUEBAS DE CAJA BLANCA
 
-## A. Identificación del Fragmento
-- **ID**: PCB-007
-- **Módulo**: Inventarios
-- **Fragmento**: Validación de integridad de existencias (Stock)
-- **HU**: HU-M01-05
-- **Función**: `InventarioService.registrarMovimiento()`
-- **Alcance**: Análisis de la validación transaccional contra saldo negativo en el Kardex bajo el estándar de "Duda Cero".
+| **DATOS DEL ESTUDIANTE** | |
+| :--- | :--- |
+| **NOMBRE:** | Gabriel Amílcar Cruz Canto |
+| **EMPRESA:** | WALOOK MEXICO, S.A. de C.V. |
+| **TITULO DEL PROYECTO:** | Sistema ERP en la nube para gestión de ópticas OMCGC |
+| **URL y Claves de acceso:** | [Configurar en ambiente de entrega] |
 
-## B. Tabla de Nodos
-| Nodo | Descripción | Tipo |
-| :--- | :--- | :--- |
-| 1 | Inicio de la función `registrarMovimiento()` | Inicio |
-| 2 | Obtención de existencia actual: `inventarioRepository.getCurrentStock(...)` | Proceso |
-| 3 | Cálculo de sentido del flujo (Ternario Entrada/Salida) [PCB-N1] | Predicado |
-| 4 | Determinación de `nuevoStock` (Aritmética de afectación) | Proceso |
-| 5 | Validación de Invariante de Negatividad: `if (nuevoStock < 0)` [PCB-N2] | Predicado |
-| 6 | Interrupción por error: `throw new RuntimeException("Stock insuficiente")` | Final (Excepción) |
-| 7 | Persistencia del movimiento: `inventarioRepository.saveMovimiento(m)` | Proceso |
-| 8 | Finalización de la transacción de inventario | Fin |
+<br>
 
-## C. Tabla de Aristas
-| Origen | Destino | Condición / Etiqueta |
-| :--- | :--- | :--- |
-| 1 | 2 | Flujo secuencial |
-| 2 | 3 | Flujo secuencial |
-| 3 | 4 | PCB-N1 (Verdadero/Falso) - Aplicación del factor de movimiento |
-| 4 | 5 | Flujo secuencial |
-| 5 | 6 | PCB-N2 es Verdadero (La operación resultaría en stock negativo) |
-| 5 | 7 | PCB-N2 es Falso (La operación es financieramente válida) |
-| 7 | 8 | Flujo secuencial |
-
-## D. Complejidad Ciclomática
-$V(G) = P + 1$
-donde $P = 2$ (Nodos predicado: PCB-N1, PCB-N2)
-$V(G) = 2 + 1 = 3$
-
-**Interpretación**: El análisis de McCabe determina que se requieren 3 caminos independientes para validar la integridad del saldo tanto en operaciones de entrada como de salida de mercancía.
-
-## E. Caminos Independientes
-1. **Camino 1 (Ingreso de Mercancía)**: 1 → 2 → 3(Falso) → 4 → 5(Falso) → 7 → 8
-2. **Camino 2 (Egreso de Mercancía Exitoso)**: 1 → 2 → 3(Verdadero) → 4 → 5(Falso) → 7 → 8
-3. **Camino 3 (Egreso de Mercancía Bloqueado por Insuficiencia)**: 1 → 2 → 3(Verdadero) → 4 → 5(Verdadero) → 6
-
-## F. Casos de Prueba (Basis Path Testing)
-| Caso | Existencia Ant. | Cantidad | Tipo Movimiento | Resultado Esperado |
+| **PLAN DE PRUEBAS DE CAJA BLANCA: BACKEND** | | | | |
 | :--- | :--- | :--- | :--- | :--- |
-| CP1 | 10 unidades | 5 unidades | ENTRADA | Nueva Existencia = 15 |
-| CP2 | 10 unidades | 5 unidades | SALIDA | Nueva Existencia = 5 |
-| CP3 | 10 unidades | 11 unidades| SALIDA | Excepción: Stock insuficiente (Transacción Rechazada) |
+| **Número** | **Nombre de la Prueba Backend** | **Descripción** | **Fecha** | **Responsable** |
+| PCB-007 | Kardex de Stock | Protocolo de Integridad Transaccional sobre Saldo Operativo | 17/03/2026 | Gabriel Amílcar Cruz Canto |
 
-## G. Seudocódigo Estructural del Fragmento
+---
 
-### Fragmento A: Código Puro (Estructura Original)
-**Archivo**: `InventarioService.java`
-**Función**: `registrarMovimiento(MovimientoInventario m, String ip)`
-**Descripción**: Implementa el protocolo de integridad transaccional sobre el saldo operativo del Kardex. Utiliza una estrategia 'Fail-Fast' para impedir que existencias físicas lleguen a valores negativos, protegiendo la coherencia del almacén. Incluye comentarios originales de desarrollo.
+# FASE DE PRUEBAS
 
-```java
-    @Transactional
-    public void registrarMovimiento(MovimientoInventario m, String ip) {
-        Integer stockAnterior = inventarioRepository.getCurrentStock(m.getIdProducto(), m.getIdSucursal());
-        m.setExistenciaAnterior(stockAnterior);
+| **Nombre del Módulo del Sistema + Historia de usuario** |
+| :--- |
+| Módulo Inventarios / Control de Existencias – HU-M01-05 |
 
-        // determinación de sentido del flujo (Entrada vs Salida)
-        int factor = esSalida(m.getTipoMovimiento()) ? -1 : 1;
-        Integer nuevoStock = stockAnterior + (m.getCantidad() * factor);
+| **Número y nombre de la Prueba** |
+| :--- |
+| PCB-007 / Kardex de Stock – InventarioService.registrarMovimiento() |
 
-        // validación de invariante de stock (Check de negatividad)
-        if (nuevoStock < 0) {
-            throw new RuntimeException("Stock insuficiente. Operación denegada. Existencia actual: " + stockAnterior);
-        }
-
-        m.setExistenciaActual(nuevoStock);
-        inventarioRepository.saveMovimiento(m);
-    }
-```
-
-### Fragmento B: Código Anotado (Mapeo de Nodos)
-**Descripción**: Este fragmento incluye los marcadores de control (`PCB-Nx`) para identificar la posición exacta de cada nodo y arista del Grafo de Control de Flujo (CFG).
+### Paso 0
 
 ```java
+    /**
+     * ESPECIFICACIÓN TÉCNICA: Protocolo de Integridad Transaccional sobre Saldo Operativo.
+     * OBJETIVO OPERATIVO: Garantizar la invariante de no-negatividad en el Kardex.
+     * IMPACTO: Mitigar riesgos de inconsistencia física y financiera en almacenes.
+     */
     @Transactional
-    public void registrarMovimiento(MovimientoInventario m, String ip) { // NODO 1
-        // Obtención de existencia actual
-        Integer stockAnterior = inventarioRepository.getCurrentStock(m.getIdProducto(), m.getIdSucursal()); // NODO 2
+    public void registrarMovimiento(MovimientoInventario m, String ip) { // [N1: INICIO]
+        Integer stockAnterior = inventarioRepository.getCurrentStock(m.getIdProducto(), m.getIdSucursal()); // [N2: PROCESO]
         m.setExistenciaAnterior(stockAnterior);
 
-        // PCB-N1: determinación de sentido del flujo (Entrada vs Salida)
-        int factor = esSalida(m.getTipoMovimiento()) ? -1 : 1; // NODO 3 [PREDICADO]
-        Integer nuevoStock = stockAnterior + (m.getCantidad() * factor); // NODO 4
+        // [PCB-N1] determinación de sentido del flujo (Entrada vs Salida)
+        // [N3: PREDICADO] [PCB-N1] -> [SI: N4] [NO: N5] : ¿Es una salida de almacén?
+        int factor = esSalida(m.getTipoMovimiento()) ? -1 : 1; // [N4] / [N5] : Aplicación del multiplicador
+        Integer nuevoStock = stockAnterior + (m.getCantidad() * factor); // [N6: PROCESO]
 
-        // PCB-N2: validación de invariante de stock (Check de negatividad)
-        if (nuevoStock < 0) { // NODO 5 [PREDICADO]
-            throw new RuntimeException("Stock insuficiente. Operación denegada. Existencia actual: " + stockAnterior); // NODO 6 [FIN]
+        // [PCB-N2] validación de invariante de stock (Check de negatividad)
+        if (nuevoStock < 0) { // [N7] [PCB-N2] -> [SI: N8] [NO: N9] : ¿El resultado es saldo negativo?
+            throw new RuntimeException("Stock insuficiente"); // [N8: FIN (EXC)]
         }
 
-        m.setExistenciaActual(nuevoStock);
-        inventarioRepository.saveMovimiento(m); // NODO 7
-    } // NODO 8 [FIN]
+        m.setExistenciaActual(nuevoStock); // [N9: PROCESO]
+        inventarioRepository.saveMovimiento(m); // [N10: PROCESO] -> Persistencia de afectación
+    } // [N11: FIN]
 ```
 
-## H. Grafo de Control de Flujo (PlantUML)
+### Descripción breve del fragmento
+
+El fragmento **PCB-007** implementa la lógica transaccional de control de existencias. Su función crítica es proteger la integridad del Kardex mediante la validación de la "Invariante de No-Negatividad", impidiendo que las operaciones de salida generen desbalances físicos. Con una complejidad $V(G)=3$, el código asegura la coherencia operativa y la trazabilidad de cada movimiento en el Ecosistema de Almacenes.
+
+### Identificación de Nodos
+
+| ID del Nodo | Tipo | Descripción |
+| :--- | :--- | :--- |
+| **Nodo 1** | Inicio | Inicio de la función transaccional `registrarMovimiento(MovimientoInventario m, String ip)` y recepción de parámetros operativos. |
+| **Nodo 2** | Nodo de proceso | Ejecución de `inventarioRepository.getCurrentStock()`. Recuperación del saldo histórico desde el repositorio. |
+| **Nodo 3 [PCB-N1]** | Nodo predicado | Evaluación de la condición `esSalida(m.getTipoMovimiento())`. Determinación del sentido del flujo contable (Entrada/Salida). Identificado con la etiqueta **PCB-N1**. |
+| **Nodo 4** | Nodo de proceso | Aplicación de factor de des-acumulación (-1) para operaciones de egreso o retiro de material. |
+| **Nodo 5** | Nodo de proceso | Aplicación de factor de acumulación (+1) para operaciones de ingreso o recepción de material. |
+| **Nodo 6** | Nodo de proceso | Ejecución del cálculo aritmético de la nueva existencia proyectada en el Kardex. |
+| **Nodo 7 [PCB-N2]** | Nodo predicado | Evaluación de la invariante de no-negatividad (`nuevoStock < 0`). Verificación de solvencia física. Identificado con la etiqueta **PCB-N2**. |
+| **Nodo 8** | Nodo de salida | Lanzamiento de `RuntimeException("Stock insuficiente")`. Interrupción del flujo por saldo deudor ilegal. |
+| **Nodo 9** | Nodo de proceso | Inyección del nuevo saldo operativo calculado en el objeto de movimiento de inventario. |
+| **Nodo 10** | Nodo de proceso | Ejecución de `inventarioRepository.saveMovimiento(m)`. Persistencia atómica de la transacción de Kardex. |
+| **Nodo 11** | Fin | Finalización exitosa del protocolo de integridad transaccional sobre el saldo operativo de almacén. |
+
+### Paso 1
+
 ```plantuml
 @startuml
 digraph CFG_PCB007 {
@@ -110,42 +84,56 @@ rankdir=TB
 node [shape=circle]
 
 I [label="Inicio"]
-
 N1 [label="1"]
 N2 [label="2"]
-N3 [label="3\nPCB-N1"]
+N3 [label="3\n[PCB-N1]"]
 N4 [label="4"]
-N5 [label="5\nPCB-N2"]
+N5 [label="5"]
 N6 [label="6"]
-N7 [label="7"]
+N7 [label="7\n[PCB-N2]"]
 N8 [label="8"]
-
+N9 [label="9"]
+N10 [label="10"]
+N11 [label="11"]
 F [label="Fin"]
 
 I -> N1
 N1 -> N2
 N2 -> N3
 N3 -> N4 [label="Verdadero"]
-N3 -> N4 [label="Falso"]
-
-N4 -> N5
-N5 -> N6 [label="Verdadero"]
-N5 -> N7 [label="Falso"]
-
-N6 -> F
-N7 -> N8
+N3 -> N5 [label="Falso"]
+N4 -> N6
+N5 -> N6
+N6 -> N7
+N7 -> N8 [label="Verdadero"]
+N7 -> N9 [label="Falso"]
 N8 -> F
+N9 -> N10
+N10 -> N11
+N11 -> F
 
 }
 @enduml
 ```
 
-## I. Matriz de Trazabilidad
-| Requisito (HU) | Nodo de Decisión | Camino Independiente | Caso de Prueba |
-| :--- | :--- | :--- | :--- |
-| **HU-M01-05** | PCB-N1 | Caminos 1, 2, 3 | CP1, CP2, CP3 |
-| **HU-M01-05** | PCB-N2 | Caminos 1, 2 | CP1, CP2 |
-| **HU-M01-05** | PCB-N2 | Camino 3 | CP3 |
+### Paso 2
 
-## J. Resumen Académico
-El fragmento **PCB-007** es vital para garantizar la estabilidad financiera y operativa del ERP al proteger la invariante de no-negatividad en el Kardex. La auditoría de caja blanca verifica que la lógica transaccional interrumpe cualquier operación de salida (PCB-N2) que ponga en riesgo la consistencia del stock, mientras que el uso de la anotación `@Transactional` asegura la atomicidad de las operaciones válidas. Con una complejidad $V(G)=3$, el código cumple con los estándares de rigor técnico para el control de inventarios de clase empresarial.
+**V(G) = Número de regiones** = (2 internas + 1 externa) = **3**
+**V(G) = Aristas – Nodos + 2** = V(G) = 14 – 13 + 2 = **3**
+**V(G) = Nodos Predicado + 1** = V(G) = 2 + 1 = **3**
+
+### Paso 3
+
+| Total de caminos | Ruta de cada camino |
+| :--- | :--- |
+| **Camino 1** | Inicio → 1 → 2 → 3(NO) → 5 → 6 → 7(NO) → 9 → 10 → 11 → Fin |
+| **Camino 2** | Inicio → 1 → 2 → 3(SÍ) → 4 → 6 → 7(NO) → 9 → 10 → 11 → Fin |
+| **Camino 3** | Inicio → 1 → 2 → 3(SÍ) → 4 → 6 → 7(SÍ) → 8 → Fin |
+
+### Paso 4
+
+| Número del camino | Caso de Prueba (IN) | Resultado esperado (OUT) |
+| :--- | :--- | :--- |
+| **Camino 1** | m.tipo = "ENTRADA", stockAnterior = 50, m.cantidad = 10 | nuevoStock = 60 (PCB-N1: NO, PCB-N2: NO) |
+| **Camino 2** | m.tipo = "SALIDA", stockAnterior = 50, m.cantidad = 10 | nuevoStock = 40 (PCB-N1: SI, PCB-N2: NO) |
+| **Camino 3** | m.tipo = "SALIDA", stockAnterior = 5, m.cantidad = 10 | RuntimeException: Stock insuficiente (PCB-N1: SI, PCB-N2: SI) |

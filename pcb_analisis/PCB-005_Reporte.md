@@ -1,99 +1,77 @@
-# Reporte de Auditoría de Caja Blanca: PCB-005
+# TEST PRUEBAS DE CAJA BLANCA
 
-## A. Identificación del Fragmento
-- **ID**: PCB-005
-- **Módulo**: Inventarios
-- **Fragmento**: Cálculo dinámico de valor comercial (PVP)
-- **HU**: HU-M01-02
-- **Función**: `InventarioService.saveProduct()` (Bloque Financiero)
-- **Alcance**: Análisis del motor de cálculo de precios basado en coste y margen de utilidad bajo el estándar de "Duda Cero".
+| **DATOS DEL ESTUDIANTE** | |
+| :--- | :--- |
+| **NOMBRE:** | Gabriel Amílcar Cruz Canto |
+| **EMPRESA:** | WALOOK MEXICO, S.A. de C.V. |
+| **TITULO DEL PROYECTO:** | Sistema ERP en la nube para gestión de ópticas OMCGC |
+| **URL y Claves de acceso:** | [Configurar en ambiente de entrega] |
 
-## B. Tabla de Nodos
-| Nodo | Descripción | Tipo |
-| :--- | :--- | :--- |
-| 1 | Entrada al bloque de lógica financiera | Inicio |
-| 2 | Validación de parámetros: `p.getCostoUnitario() != null && p.getPorcentajeUtilidad() != null` [PCB-N1] | Predicado |
-| 3 | Cálculo de Factor de Utilidad y asignación de `PrecioVenta` (BigDecimal) | Proceso |
-| 4 | Persistencia de cambios: `inventarioRepository.save(p)` | Proceso |
-| 5 | Determinación de ID de Auditoría `isNew ? "PRO-01" : "PRO-02"` [PCB-N2] | Predicado |
-| 6 | Registro en Bitácora Sistémica: `bitacoraService.registrarEvento(...)` | Proceso |
-| 7 | Finalización del bloque financiero | Fin |
+<br>
 
-## C. Tabla de Aristas
-| Origen | Destino | Condición / Etiqueta |
-| :--- | :--- | :--- |
-| 1 | 2 | Flujo secuencial |
-| 2 | 3 | PCB-N1 es Verdadero (Existen datos de costo y utilidad) |
-| 2 | 4 | PCB-N1 es Falso (Se omite el cálculo por falta de información) |
-| 3 | 4 | Flujo secuencial |
-| 4 | 5 | Flujo secuencial |
-| 5 | 6 | PCB-N2 (Verdadero/Falso) - Selección de rastro de auditoría |
-| 6 | 7 | Flujo secuencial |
-
-## D. Complejidad Ciclomática
-$V(G) = P + 1$
-donde $P = 2$ (Nodos predicado: PCB-N1, PCB-N2)
-$V(G) = 2 + 1 = 3$
-
-**Interpretación**: Existen 3 caminos independientes que validan el motor de cálculo financiero y aseguran el rastro de auditoría según el origen de la transacción.
-
-## E. Caminos Independientes
-1. **Camino 1 (Cálculo Exitoso + Registro de Nuevo Producto)**: 1 → 2(Verdadero) → 3 → 4 → 5(Verdadero) → 6 → 7
-2. **Camino 2 (Omitir Cálculo + Registro de Actualización)**: 1 → 2(Falso) → 4 → 5(Falso) → 6 → 7
-3. **Camino 3 (Actualización con Recálculo de Margen)**: 1 → 2(Verdadero) → 3 → 4 → 5(Falso) → 6 → 7
-
-## F. Casos de Prueba (Basis Path Testing)
-| Caso | entrada: Costo | entrada: % Utilidad | entrada: esNuevo | Resultado Esperado |
+| **PLAN DE PRUEBAS DE CAJA BLANCA: BACKEND** | | | | |
 | :--- | :--- | :--- | :--- | :--- |
-| CP1 | 100.00 | 20.00 | Verdadero | PVP = 120.00 / Log: "PRO-01" (Creación) |
-| CP2 | Nulo | Nulo | Falso | PVP = Sin Cambios / Log: "PRO-02" (Edición) |
-| CP3 | 50.00 | 10.00 | Falso | PVP = 55.00 / Log: "PRO-02" (Edición) |
+| **Número** | **Nombre de la Prueba Backend** | **Descripción** | **Fecha** | **Responsable** |
+| PCB-005 | Cálculo de Precios | Invariante Financiera de Valor Comercial (PVP) | 17/03/2026 | Gabriel Amílcar Cruz Canto |
 
-## G. Seudocódigo Estructural del Fragmento
+---
 
-### Fragmento A: Código Puro (Estructura Original)
-**Archivo**: `InventarioService.java`
-**Bloque**: Financiero / `saveProduct()`
-**Descripción**: Implementa la invariante financiera de cálculo de Precio de Venta al Público (PVP) mediante aritmética de alta precisión. Asegura la coherencia entre costos operativos y márgenes de utilidad corporativos. Incluye comentarios originales de desarrollo.
+# FASE DE PRUEBAS
+
+| **Nombre del Módulo del Sistema + Historia de usuario** |
+| :--- |
+| Módulo Inventarios / Catálogos – HU-M01-02 |
+
+| **Número y nombre de la Prueba** |
+| :--- |
+| PCB-005 / Cálculo de Precios – InventarioService.saveProduct() |
+
+### Paso 0
 
 ```java
-    // validación de parámetros de cálculo (Check de disponibilidad financiera)
+    /**
+     * ESPECIFICACIÓN TÉCNICA: Invariante Financiera de Cálculo de Precio de Venta (PVP).
+     * OBJETIVO OPERATIVO: Sincronizar valor comercial con costos y utilidad.
+     * IMPACTO: Eliminación de error humano y rentabilidad garantizada.
+     */
+     
+    // [PCB-N1] validación de parámetros de cálculo (Check de disponibilidad financiera)
+    // [N1: PREDICADO] [PCB-N1] -> [SI: N2] [NO: N3] : ¿Existen los valores requeridos?
     if (p.getCostoUnitario() != null && p.getPorcentajeUtilidad() != null) {
         BigDecimal factor = BigDecimal.ONE
-                .add(p.getPorcentajeUtilidad().divide(new BigDecimal("100"), 4, RoundingMode.HALF_UP));
+                .add(p.getPorcentajeUtilidad().divide(new BigDecimal("100"), 4, RoundingMode.HALF_UP)); // [N2: PROCESO]
         p.setPrecioVenta(p.getCostoUnitario().multiply(factor).setScale(2, RoundingMode.HALF_UP));
     }
 
-    inventarioRepository.save(p);
+    inventarioRepository.save(p); // [N3: PROCESO] -> Persistir transacción
 
-    // determinación de rastro de auditoría (Branching de evento)
-    String idPatron = isNew ? "PRO-01" : "PRO-02";
-    bitacoraService.registrarEvento(p.getIdUsuarioOperacion(), idPatron, ip, p.getSku(), p.getNombre());
+    // [PCB-N2] determinación de rastro de auditoría (Branching de evento)
+    // [N4: PREDICADO] [PCB-N2] -> [SI: N5] [NO: N6] : ¿Es producto nuevo?
+    String idPatron = isNew ? "PRO-01" : "PRO-02"; // [N5] / [N6] : Selección de etiqueta
+    bitacoraService.registrarEvento(p.getIdUsuarioOperacion(), idPatron, ip, p.getSku(), p.getNombre()); // [N7: PROCESO]
+    
+    // [N8: FIN]
 ```
 
-### Fragmento B: Código Anotado (Mapeo de Nodos)
-**Descripción**: Este fragmento incluye los marcadores de control (`PCB-Nx`) para identificar la posición exacta de cada nodo y arista del Grafo de Control de Flujo (CFG).
+### Descripción breve del fragmento
 
-```java
-    // Inicio del bloque financiero // NODO 1
+El fragmento **PCB-005** implementa la lógica financiera crítica del módulo de inventarios. Asegura que el Precio de Venta al Público (PVP) se calcule de forma precisa mediante `BigDecimal`, aplicando la fórmula corporativa inamovible basada en el costo y el margen de utilidad. Con una complejidad $V(G)=3$, el código garantiza la consistencia de los datos financieros y la auditoría diferenciada entre creaciones y actualizaciones.
 
-    // PCB-N1: validación de parámetros de cálculo (Check de disponibilidad financiera)
-    if (p.getCostoUnitario() != null && p.getPorcentajeUtilidad() != null) { // NODO 2 [PREDICADO]
-        BigDecimal factor = BigDecimal.ONE
-                .add(p.getPorcentajeUtilidad().divide(new BigDecimal("100"), 4, RoundingMode.HALF_UP)); // NODO 3
-        p.setPrecioVenta(p.getCostoUnitario().multiply(factor).setScale(2, RoundingMode.HALF_UP));
-    }
+### Identificación de Nodos
 
-    inventarioRepository.save(p); // NODO 4
+| ID del Nodo | Tipo | Descripción |
+| :--- | :--- | :--- |
+| **Nodo 1 [PCB-N1]** | Nodo predicado | Evaluación de la condición de disponibilidad de Costo y Margen. Determina si procede el cálculo de rentabilidad. Identificado con la etiqueta **PCB-N1**. |
+| **Nodo 2** | Nodo de proceso | Ejecución de aritmética financiera de precisión mediante `BigDecimal`. Cálculo de la Invariante de Precio de Venta (PVP). |
+| **Nodo 3** | Nodo de proceso | Ejecución de `inventarioRepository.save(p)`. Persistencia de la entidad en el catálogo maestro. |
+| **Nodo 4 [PCB-N2]** | Nodo predicado | Evaluación de la condición `isNew` para determinar el patrón de auditoría (Producto Nuevo vs Actualización). Identificado con la etiqueta **PCB-N2**. |
+| **Nodo 5** | Nodo de proceso | Asignación de la etiqueta de auditoría `PRO-01` para identificación de inserciones nuevas. |
+| **Nodo 6** | Nodo de proceso | Asignación de la etiqueta de auditoría `PRO-02` para identificación de ediciones de registro. |
+| **Nodo 7** | Nodo de proceso | Ejecución de `bitacoraService.registrarEvento()`. Inyección de rastro de auditoría en la bitácora forense. |
+| **Nodo 8** | Fin | Finalización del protocolo de cálculo financiero y registro de afectación operativa. |
 
-    // PCB-N2: determinación de rastro de auditoría (Branching de evento)
-    String idPatron = isNew ? "PRO-01" : "PRO-02"; // NODO 5 [PREDICADO]
-    bitacoraService.registrarEvento(p.getIdUsuarioOperacion(), idPatron, ip, p.getSku(), p.getNombre()); // NODO 6
+### Paso 1
 
-    // Fin del bloque // NODO 7 [FIN]
-```
-
-## H. Grafo de Control de Flujo (PlantUML)
 ```plantuml
 @startuml
 digraph CFG_PCB005 {
@@ -102,29 +80,23 @@ rankdir=TB
 node [shape=circle]
 
 I [label="Inicio"]
-
-N1 [label="1"]
-N2 [label="2\nPCB-N1"]
+N1 [label="1\n[PCB-N1]"]
+N2 [label="2"]
 N3 [label="3"]
-N4 [label="4"]
-N5 [label="5\nPCB-N2"]
+N4 [label="4\n[PCB-N2]"]
+N5 [label="5"]
 N6 [label="6"]
 N7 [label="7"]
-
 F [label="Fin"]
 
 I -> N1
-N1 -> N2
-
-N2 -> N3 [label="Verdadero"]
-N2 -> N4 [label="Falso"]
-
+N1 -> N2 [label="Verdadero"]
+N1 -> N3 [label="Falso"]
+N2 -> N3
 N3 -> N4
-N4 -> N5
-
-N5 -> N6 [label="Verdadero"]
-N5 -> N6 [label="Falso"]
-
+N4 -> N5 [label="Verdadero"]
+N4 -> N6 [label="Falso"]
+N5 -> N7
 N6 -> N7
 N7 -> F
 
@@ -132,13 +104,24 @@ N7 -> F
 @enduml
 ```
 
-## I. Matriz de Trazabilidad
-| Requisito (HU) | Nodo de Decisión | Camino Independiente | Caso de Prueba |
-| :--- | :--- | :--- | :--- |
-| **HU-M01-02** | PCB-N1 | Caminos 1, 3 | CP1, CP3 |
-| **HU-M01-02** | PCB-N1 | Camino 2 | CP2 |
-| **HU-M01-02** | PCB-N2 | Camino 1 | CP1 |
-| **HU-M01-02** | PCB-N2 | Caminos 2, 3 | CP2, CP3 |
+### Paso 2
 
-## J. Resumen Académico
-El fragmento **PCB-005** garantiza la rentabilidad sistémica del ERP automatizando el cálculo del Precio de Venta (PVP). La auditoría de caja blanca verifica que el uso de `BigDecimal` mitiga cualquier error de redonodeo en la fijación de precios, cumpliendo con la expectativa de "Duda Cero" financiera. La implementación de un rastro de auditoría bifurcado (PCB-N2) facilita el monitoreo de la evolución de precios en el catálogo de productos durante su ciclo de vida.
+**V(G) = Número de regiones** = (2 internas + 1 externa) = **3**
+**V(G) = Aristas – Nodos + 2** = V(G) = 10 – 9 + 2 = **3**
+**V(G) = Nodos Predicado + 1** = V(G) = 2 + 1 = **3**
+
+### Paso 3
+
+| Total de caminos | Ruta de cada camino |
+| :--- | :--- |
+| **Camino 1** | Inicio → 1(NO) → 3 → 4(SÍ) → 5 → 7 → Fin |
+| **Camino 2** | Inicio → 1(SÍ) → 2 → 3 → 4(SÍ) → 5 → 7 → Fin |
+| **Camino 3** | Inicio → 1(SÍ) → 2 → 3 → 4(NO) → 6 → 7 → Fin |
+
+### Paso 4
+
+| Número del camino | Caso de Prueba (IN) | Resultado esperado (OUT) |
+| :--- | :--- | :--- |
+| **Camino 1** | p.costoUnitario = null, isNew = true | Omite cálculo, registra evento PRO-01 (PCB-N1: NO, PCB-N2: SI) |
+| **Camino 2** | p.costoUnitario = 100.00, p.porcentajeUtilidad = 20.00, isNew = true | p.precioVenta = 120.00, registra PRO-01 (PCB-N1: SI, PCB-N2: SI) |
+| **Camino 3** | p.costoUnitario = 100.00, p.porcentajeUtilidad = 20.00, isNew = false | p.precioVenta = 120.00, registra PRO-02 (PCB-N1: SI, PCB-N2: NO) |

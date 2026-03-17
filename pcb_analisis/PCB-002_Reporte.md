@@ -1,101 +1,75 @@
-# Reporte de Auditoría de Caja Blanca: PCB-002
+# TEST PRUEBAS DE CAJA BLANCA
 
-## A. Identificación del Fragmento
-- **ID**: PCB-002
-- **Módulo**: Seguridad/Acceso
-- **Fragmento**: Validación de privilegios granulares
-- **HU**: HU-M01-03
-- **Función**: `UsuarioService.getPermissionsByUsuario(String idUsuario)`
-- **Alcance**: Análisis de la lógica de recuperación de permisos específicos o por defecto del rol para identificar nodos de decisión jerárquica bajo el estándar de "Duda Cero".
+| **DATOS DEL ESTUDIANTE** | |
+| :--- | :--- |
+| **NOMBRE:** | Gabriel Amílcar Cruz Canto |
+| **EMPRESA:** | WALOOK MEXICO, S.A. de C.V. |
+| **TITULO DEL PROYECTO:** | Sistema ERP en la nube para gestión de ópticas OMCGC |
+| **URL y Claves de acceso:** | [Configurar en ambiente de entrega] |
 
-## B. Tabla de Nodos
-| Nodo | Descripción | Tipo |
-| :--- | :--- | :--- |
-| 1 | Inicio de la función `getPermissionsByUsuario()` | Inicio |
-| 2 | `List<Map<...>> permisos = usuarioRepository.findPermissionsByUsuario(idUsuario)` | Proceso |
-| 3 | `if (permisos.isEmpty())` [PCB-N1] | Predicado |
-| 4 | `Usuario u = findById(idUsuario)` | Proceso |
-| 5 | `if (u != null && u.getRolId() != null)` [PCB-N2] | Predicado |
-| 6 | `return usuarioRepository.findPermissionsByRol(u.getRolId())` | Final (Heredado) |
-| 7 | `return permisos` (Desde N1 o N2 fallido) | Final |
+<br>
 
-## C. Tabla de Aristas
-| Origen | Destino | Condición / Etiqueta |
-| :--- | :--- | :--- |
-| 1 | 2 | Flujo secuencial |
-| 2 | 3 | Flujo secuencial |
-| 3 | 4 | PCB-N1 es Verdadero (No se encontraron permisos personalizados) |
-| 3 | 7 | PCB-N1 es Falso (Se retornan permisos específicos del usuario) |
-| 4 | 5 | Flujo secuencial |
-| 5 | 6 | PCB-N2 es Verdadero (Usuario y Rol válidos para herencia) |
-| 5 | 7 | PCB-N2 es Falso (No es posible aplicar el mecanismo de Fallback) |
-
-## D. Complejidad Ciclomática
-$V(G) = P + 1$
-donde $P = 2$ (Nodos predicado: PCB-N1, PCB-N2)
-$V(G) = 2 + 1 = 3$
-
-**Interpretación**: El análisis estructural determina que existen 3 caminos independientes para cubrir la resolución jerárquica de privilegios en el sistema.
-
-## E. Caminos Independientes
-1. **Camino 1 (Resolución Directa)**: 1 → 2 → 3(Falso) → 7
-2. **Camino 2 (Herencia por Rol)**: 1 → 2 → 3(Verdadero) → 4 → 5(Verdadero) → 6
-3. **Camino 3 (Sin Privilegios/Falla de Perfil)**: 1 → 2 → 3(Verdadero) → 4 → 5(Falso) → 7
-
-## F. Casos de Prueba (Basis Path Testing)
-| Caso | entrada: idUsuario | Repositorio Personalizados | Repositorio Rol | Resultado Esperado |
+| **PLAN DE PRUEBAS DE CAJA BLANCA: BACKEND** | | | | |
 | :--- | :--- | :--- | :--- | :--- |
-| CP1 | "User01" | Lista con 5 permisos registrados | N/D | Retorno de listado personalizado (Prioridad A) |
-| CP2 | "User02" | Lista Vacía | Lista con 3 permisos | Retorno de permisos heredados del Rol (Prioridad B) |
-| CP3 | "User03" (No existe) | Lista Vacía | Lista Vacía | Retorno de lista vacía (Sin privilegios) |
+| **Número** | **Nombre de la Prueba Backend** | **Descripción** | **Fecha** | **Responsable** |
+| PCB-002 | Gestión de Permisos | Protocolo de Recuperación y Fallback de Privilegios | 17/03/2026 | Gabriel Amílcar Cruz Canto |
 
-## G. Seudocódigo Estructural del Fragmento
+---
 
-### Fragmento A: Código Puro (Estructura Original)
-**Archivo**: `UsuarioService.java`
-**Función**: `getPermissionsByUsuario(String idUsuario)`
-**Descripción**: Implementa el protocolo de recuperación y fallback de privilegios granulares del sistema, otorgando prioridad a las personalizaciones individuales sobre las colectivas. Incluye comentarios originales de desarrollo.
+# FASE DE PRUEBAS
+
+| **Nombre del Módulo del Sistema + Historia de usuario** |
+| :--- |
+| Módulo Seguridad / Acceso – HU-M01-03 |
+
+| **Número y nombre de la Prueba** |
+| :--- |
+| PCB-002 / Gestión de Permisos – UsuarioService.getPermissionsByUsuario() |
+
+### Paso 0
 
 ```java
-    public List<java.util.Map<String, Object>> getPermissionsByUsuario(String idUsuario) {
+    /**
+     * ESPECIFICACIÓN TÉCNICA: Protocolo de Recuperación y Fallback de Privilegios Granulares.
+     * OBJETIVO OPERATIVO: Proveer matriz de control de acceso (específicos o heredados).
+     * IMPACTO: Determinación de la visibilidad de módulos en el Dashboard.
+     */
+    public List<java.util.Map<String, Object>> getPermissionsByUsuario(String idUsuario) { // [N1: INICIO]
+        
         // 1. Buscar permisos específicos (Personalización)
-        List<java.util.Map<String, Object>> permisos = usuarioRepository.findPermissionsByUsuario(idUsuario);
+        List<java.util.Map<String, Object>> permisos = usuarioRepository.findPermissionsByUsuario(idUsuario); // [N2: PROCESO]
 
-        // evaluación de personalización (Detección de permisos específicos)
-        if (permisos.isEmpty()) {
-            Usuario u = findById(idUsuario);
+        // [PCB-N1] evaluación de personalización (Detección de permisos específicos)
+        if (permisos.isEmpty()) { // [N3] [PCB-N1] -> [SI: N4] [NO: N7] : ¿Lista de permisos vacía?
+            Usuario u = findById(idUsuario); // [N4: PROCESO]
             
-            // validación de integridad de cuenta (Existencia y Rol asignado)
-            if (u != null && u.getRolId() != null) {
-                return usuarioRepository.findPermissionsByRol(u.getRolId());
+            // [PCB-N2] validación de integridad de cuenta (Existencia y Rol asignado)
+            if (u != null && u.getRolId() != null) { // [N5] [PCB-N2] -> [SI: N6] [NO: N7] : ¿Tiene Rol asignado?
+                return usuarioRepository.findPermissionsByRol(u.getRolId()); // [N6: FIN] -> Retorno de herencia
             }
         }
-        return permisos;
+        return permisos; // [N7: FIN] -> Retorno de lista actual
     }
 ```
 
-### Fragmento B: Código Anotado (Mapeo de Nodos)
-**Descripción**: Este fragmento incluye los marcadores de control (`PCB-Nx`) para identificar la posición exacta de cada nodo y arista del Grafo de Control de Flujo (CFG).
+### Descripción breve del fragmento
 
-```java
-    public List<java.util.Map<String, Object>> getPermissionsByUsuario(String idUsuario) { // NODO 1
-        // 1. Buscar permisos específicos (Personalización)
-        List<java.util.Map<String, Object>> permisos = usuarioRepository.findPermissionsByUsuario(idUsuario); // NODO 2
+El fragmento **PCB-002** implementa el motor de resolución de privilegios del ERP. Su diseño arquitectónico permite una personalización granular de permisos por usuario, con un mecanismo de *fallback* automático hacia los permisos definidos por el Rol en caso de ausencia de configuración específica. Con una complejidad $V(G)=3$, la prueba garantiza que la seguridad sea inmutable y jerárquica.
 
-        // PCB-N1: evaluación de personalización (Detección de permisos específicos)
-        if (permisos.isEmpty()) { // NODO 3 [PREDICADO]
-            Usuario u = findById(idUsuario); // NODO 4
-            
-            // PCB-N2: validación de integridad de cuenta (Existencia y Rol asignado)
-            if (u != null && u.getRolId() != null) { // NODO 5 [PREDICADO]
-                return usuarioRepository.findPermissionsByRol(u.getRolId()); // NODO 6 [FIN]
-            }
-        }
-        return permisos; // NODO 7 [FIN]
-    }
-```
+### Identificación de Nodos
 
-## H. Grafo de Control de Flujo (PlantUML)
+| ID del Nodo | Tipo | Descripción |
+| :--- | :--- | :--- |
+| **Nodo 1** | Inicio | Inicio del método `getPermissionsByUsuario(String idUsuario)` y recepción del identificador de entrada. |
+| **Nodo 2** | Nodo de proceso | Ejecución de `usuarioRepository.findPermissionsByUsuario(idUsuario)`. Consulta de privilegios personalizados en el repositorio. |
+| **Nodo 3 [PCB-N1]** | Nodo predicado | Evaluación de la condición `if (permisos.isEmpty())`. Detección de ausencia de personalización. Identificado con la etiqueta **PCB-N1**. |
+| **Nodo 4** | Nodo de proceso | Ejecución de `findById(idUsuario)` para localizar la entidad de usuario en la capa de persistencia. |
+| **Nodo 5 [PCB-N2]** | Nodo predicado | Evaluación de la condición `if (u != null && u.getRolId() != null)`. Validación de integridad de la cuenta y rol asignado. Identificado con la etiqueta **PCB-N2**. |
+| **Nodo 6** | Nodo de salida | Ejecución de `return usuarioRepository.findPermissionsByRol()`. Retorno de la matriz de permisos heredados del Rol. |
+| **Nodo 7** | Nodo de salida | Ejecución de `return permisos`. Finalización del flujo con retorno de lista personalizada o vacía según descarte. |
+
+### Paso 1
+
 ```plantuml
 @startuml
 digraph CFG_PCB002 {
@@ -104,7 +78,6 @@ rankdir=TB
 node [shape=circle]
 
 I [label="Inicio"]
-
 N1 [label="1"]
 N2 [label="2"]
 N3 [label="3\nPCB-N1"]
@@ -112,20 +85,16 @@ N4 [label="4"]
 N5 [label="5\nPCB-N2"]
 N6 [label="6"]
 N7 [label="7"]
-
 F [label="Fin"]
 
 I -> N1
 N1 -> N2
 N2 -> N3
-
 N3 -> N4 [label="Verdadero"]
 N3 -> N7 [label="Falso"]
-
 N4 -> N5
 N5 -> N6 [label="Verdadero"]
 N5 -> N7 [label="Falso"]
-
 N6 -> F
 N7 -> F
 
@@ -133,13 +102,24 @@ N7 -> F
 @enduml
 ```
 
-## I. Matriz de Trazabilidad
-| Requisito (HU) | Nodo de Decisión | Camino Independiente | Caso de Prueba |
-| :--- | :--- | :--- | :--- |
-| **HU-M01-03** | PCB-N1 | Camino 1 | CP1 |
-| **HU-M01-03** | PCB-N1 | Camino 2, 3 | CP2, CP3 |
-| **HU-M01-03** | PCB-N2 | Camino 2 | CP2 |
-| **HU-M01-03** | PCB-N2 | Camino 3 | CP3 |
+### Paso 2
 
-## J. Resumen Académico
-El fragmento **PCB-002** implementa un patrón de *Cascading Permissions* esencial para la seguridad basada en roles (RBAC) del ERP. La auditoría de caja blanca verifica que el código garantiza la disponibilidad de privilegios mediante un mecanismo de fallback al rol cuando no existen ajustes finos individuales. Con una complejidad ciclomática $V(G)=3$, la estructura es eficiente y previene fallos por referencia nula, asegurando que la interfaz de usuario reciba siempre una matriz de facultades consistente.
+**V(G) = Número de regiones** = (2 internas + 1 externa) = **3**
+**V(G) = Aristas – Nodos + 2** = V(G) = 10 – 9 + 2 = **3**
+**V(G) = Nodos Predicado + 1** = V(G) = 2 + 1 = **3**
+
+### Paso 3
+
+| Total de caminos | Ruta de cada camino |
+| :--- | :--- |
+| **Camino 1** | Inicio → 1 → 2 → 3(NO) → 7 → Fin |
+| **Camino 2** | Inicio → 1 → 2 → 3(SÍ) → 4 → 5(NO) → 7 → Fin |
+| **Camino 3** | Inicio → 1 → 2 → 3(SÍ) → 4 → 5(SÍ) → 6 → Fin |
+
+### Paso 4
+
+| Número del camino | Caso de Prueba (IN) | Resultado esperado (OUT) |
+| :--- | :--- | :--- |
+| **Camino 1** | idUsuario="USR-001", permisos.isEmpty() = false | return permisos (Lista personalizada) |
+| **Camino 2** | idUsuario="USR-999", permisos.isEmpty() = true, u = null | return permisos (Lista vacía / Fallo existencia) |
+| **Camino 3** | idUsuario="USR-002", permisos.isEmpty() = true, u != null, u.getRolId() != null | return usuarioRepository.findPermissionsByRol() (Herencia) |

@@ -1,98 +1,71 @@
-# Reporte de Auditoría de Caja Blanca: PCB-010
+# TEST PRUEBAS DE CAJA BLANCA
 
-## A. Identificación del Fragmento
-- **ID**: PCB-010
-- **Módulo**: Clientes
-- **Fragmento**: Normalización de atributos descriptivos y de estado
-- **HU**: HU-M06-01
-- **Función**: `ClienteService.guardarCliente()` (Bloque de Saneamiento)
-- **Alcance**: Análisis de la lógica de normalización de campos opcionales y asignación de estatus por defecto bajo el estándar de "Duda Cero".
+| **DATOS DEL ESTUDIANTE** | |
+| :--- | :--- |
+| **NOMBRE:** | Gabriel Amílcar Cruz Canto |
+| **EMPRESA:** | WALOOK MEXICO, S.A. de C.V. |
+| **TITULO DEL PROYECTO:** | Sistema ERP en la nube para gestión de ópticas OMCGC |
+| **URL y Claves de acceso:** | [Configurar en ambiente de entrega] |
 
-## B. Tabla de Nodos
-| Nodo | Descripción | Tipo |
-| :--- | :--- | :--- |
-| 1 | Entrada al bloque de saneamiento post-validación | Inicio |
-| 2 | Evaluación de consistencia: `if (cliente.getApellidos() == null)` [PCB-N1] | Predicado |
-| 3 | Saneamiento de campo descriptivo: `cliente.setApellidos("")` | Proceso |
-| 4 | Evaluación de estado operativo: `if (cliente.getEstatus() == null)` [PCB-N2] | Predicado |
-| 5 | Auto-activación de entidad: `cliente.setEstatus("ACTIVO")` | Proceso |
-| 6 | Persistencia final canalizada: `pacienteRepository.save(cliente)` | Proceso |
-| 7 | Finalización del protocolo de saneamiento | Fin |
+<br>
 
-## C. Tabla de Aristas
-| Origen | Destino | Condición / Etiqueta |
-| :--- | :--- | :--- |
-| 1 | 2 | Flujo secuencial |
-| 2 | 3 | PCB-N1 es Verdadero (Se detecta ausencia técnica de apellidos) |
-| 2 | 4 | PCB-N1 es Falso (Los apellidos están presentes en el objeto) |
-| 3 | 4 | Flujo secuencial |
-| 4 | 5 | PCB-N2 es Verdadero (La entidad carece de estatus de activación) |
-| 4 | 6 | PCB-N2 es Falso (El estatus ya ha sido asignado previamente) |
-| 5 | 6 | Flujo secuencial |
-| 6 | 7 | Flujo secuencial |
+| **PLAN DE PRUEBAS DE CAJA BLANCA: BACKEND** | | | | |
+| :--- | :--- | :--- | :--- | :--- |
+| **Número** | **Nombre de la Prueba Backend** | **Descripción** | **Fecha** | **Responsable** |
+| PCB-010 | Saneamiento de Pacientes | Protocolo de Normalización de Atributos de Persona | 17/03/2026 | Gabriel Amílcar Cruz Canto |
 
-## D. Complejidad Ciclomática
-$V(G) = P + 1$
-don de $P = 2$ (Nodos predicado: PCB-N1, PCB-N2)
-$V(G) = 2 + 1 = 3$
+---
 
-**Interpretación**: El análisis estructural identifica 3 caminos independientes necesarios para garantizar la integridad semántica del registro de clientes en la base de datos corporativa.
+# FASE DE PRUEBAS
 
-## E. Caminos Independientes
-1. **Camino 1 (Registro con Atributos Completos)**: 1 → 2(Falso) → 4(Falso) → 6 → 7
-2. **Camino 2 (Saneamiento de Apellidos Ausentes)**: 1 → 2(Verdadero) → 3 → 4(Falso) → 6 → 7
-3. **Camino 3 (Inicialización de Estatus Activo)**: 1 → 2(Falso) → 4(Verdadero) → 5 → 6 → 7
+| **Nombre del Módulo del Sistema + Historia de usuario** |
+| :--- |
+| Módulo Clientes / Pacientes – HU-M06-01 |
 
-## F. Casos de Prueba (Basis Path Testing)
-| Caso | entrada: Apellidos | entrada: Estatus | Resultado Esperado |
-| :--- | :--- | :--- | :--- |
-| CP1 | "Pérez" | "ACTIVO" | Almacena "Pérez" / "ACTIVO" (Sin cambios) |
-| CP2 | Nulo | "ACTIVO" | Almacena "" (Vacío) / "ACTIVO" |
-| CP3 | "Pérez" | Nulo | Almacena "Pérez" / "ACTIVO" (Auto-activación) |
+| **Número y nombre de la Prueba** |
+| :--- |
+| PCB-010 / Saneamiento de Pacientes – ClienteService.guardarCliente() |
 
-## G. Seudocódigo Estructural del Fragmento
-
-### Fragmento A: Código Puro (Estructura Original)
-**Archivo**: `ClienteService.java`
-**Bloque**: Saneamiento / `guardarCliente()`
-**Descripción**: Implementa el protocolo de normalización de atributos descriptivos y de estado. Asegura que los registros de clientes posean valores por defecto coherentes, eliminando nulos técnicos que podrían degradar la experiencia de usuario o la integridad de reportes. Incluye comentarios originales de desarrollo.
+### Paso 0
 
 ```java
-    // evaluación de consistencia (Check de Apellidos)
-    if (cliente.getApellidos() == null) {
-        cliente.setApellidos("");
+    /**
+     * ESPECIFICACIÓN TÉCNICA: Protocolo de Normalización de Atributos de Persona en Padrón.
+     * OBJETIVO OPERATIVO: Asegurar apellidos y estatus con valores por defecto coherentes.
+     * IMPACTO: Eliminar nulos descriptivos y fallos de renderizado en UI.
+     */
+     
+    // [PCB-N1] evaluación de consistencia (Check de Apellidos)
+    if (cliente.getApellidos() == null) { // [N1] [PCB-N1] -> [SI: N2] [NO: N3] : ¿Apellidos nulos?
+        cliente.setApellidos(""); // [N2: PROCESO] -> Normalizar a cadena vacía
     }
 
-    // evaluación de estado operativo (Auto-activación)
-    if (cliente.getEstatus() == null) {
-        cliente.setEstatus("ACTIVO");
+    // [PCB-N2] evaluación de estado operativo (Auto-activación)
+    if (cliente.getEstatus() == null) { // [N3] [PCB-N2] -> [SI: N4] [NO: N5] : ¿Estatus sin definir?
+        cliente.setEstatus("ACTIVO"); // [N4: PROCESO] -> Forzar estado operativo
     }
 
-    pacienteRepository.save(cliente);
-    return cliente;
+    pacienteRepository.save(cliente); // [N5: PROCESO] -> Persistencia de registro saneado
+    return cliente; // [N6: FIN]
 ```
 
-### Fragmento B: Código Anotado (Mapeo de Nodos)
-**Descripción**: Este fragmento incluye los marcadores de control (`PCB-Nx`) para identificar la posición exacta de cada nodo y arista del Grafo de Control de Flujo (CFG).
+### Descripción breve del fragmento
 
-```java
-    // Inicio del bloque de saneamiento // NODO 1
+El fragmento **PCB-010** implementa la fase de saneamiento de datos post-validación. Su función es garantizar que los atributos opcionales (apellidos) y de estado (estatus) posean valores por defecto coherentes para evitar errores de renderizado en la interfaz de usuario. Con una complejidad $V(G)=3$, el código asegura la uniformidad operativa de todo registro nuevo o actualizado en el padrón.
 
-    // PCB-N1: evaluación de consistencia (Check de Apellidos)
-    if (cliente.getApellidos() == null) { // NODO 2 [PREDICADO]
-        cliente.setApellidos(""); // NODO 3
-    }
+### Identificación de Nodos
 
-    // PCB-N2: evaluación de estado operativo (Auto-activación)
-    if (cliente.getEstatus() == null) { // NODO 4 [PREDICADO]
-        cliente.setEstatus("ACTIVO"); // NODO 5
-    }
+| ID del Nodo | Tipo | Descripción |
+| :--- | :--- | :--- |
+| **Nodo 1 [PCB-N1]** | Nodo predicado | Evaluación de la condición `cliente.getApellidos() == null`. Saneamiento de metadatos de identidad opcionales. Identificado con la etiqueta **PCB-N1**. |
+| **Nodo 2** | Nodo de proceso | Ejecución de normalización de atributos opcionales. Asignación de cadena vacía segura para evitar fallos de nulidad. |
+| **Nodo 3 [PCB-N2]** | Nodo predicado | Evaluación de la condición `cliente.getEstatus() == null`. Verificación de definición operativa inicial. Identificado con la etiqueta **PCB-N2**. |
+| **Nodo 4** | Nodo de proceso | Ejecución de activación forzosa mediante la asignación del estatus "ACTIVO" por defecto sistémico. |
+| **Nodo 5** | Nodo de proceso | Ejecución de `pacienteRepository.save(cliente)`. Persistencia atómica de la entidad en el padrón saneado. |
+| **Nodo 6** | Fin | Finalización del protocolo de normalización de atributos y aseguramiento de visibilidad íntegra en UI. |
 
-    pacienteRepository.save(cliente); // NODO 6
-    return cliente; // NODO 7 [FIN]
-```
+### Paso 1
 
-## H. Grafo de Control de Flujo (PlantUML)
 ```plantuml
 @startuml
 digraph CFG_PCB010 {
@@ -101,42 +74,46 @@ rankdir=TB
 node [shape=circle]
 
 I [label="Inicio"]
-
-N1 [label="1"]
-N2 [label="2\nPCB-N1"]
-N3 [label="3"]
-N4 [label="4\nPCB-N2"]
+N1 [label="1\n[PCB-N1]"]
+N2 [label="2"]
+N3 [label="3\n[PCB-N2]"]
+N4 [label="4"]
 N5 [label="5"]
 N6 [label="6"]
-N7 [label="7"]
-
 F [label="Fin"]
 
 I -> N1
-N1 -> N2
-
-N2 -> N3 [label="Verdadero"]
-N2 -> N4 [label="Falso"]
-
-N3 -> N4
-N4 -> N5 [label="Verdadero"]
-N4 -> N6 [label="Falso"]
-
+N1 -> N2 [label="Verdadero"]
+N1 -> N3 [label="Falso"]
+N2 -> N3
+N3 -> N4 [label="Verdadero"]
+N3 -> N5 [label="Falso"]
+N4 -> N5
 N5 -> N6
-N6 -> N7
-N7 -> F
+N6 -> F
 
 }
 @enduml
 ```
 
-## I. Matriz de Trazabilidad
-| Requisito (HU) | Nodo de Decisión | Camino Independiente | Caso de Prueba |
-| :--- | :--- | :--- | :--- |
-| **HU-M06-01** | PCB-N1 | Caminos 1, 3 | CP1, CP3 |
-| **HU-M06-01** | PCB-N1 | Camino 2 | CP2 |
-| **HU-M06-01** | PCB-N2 | Caminos 1, 2 | CP1, CP2 |
-| **HU-M06-01** | PCB-N2 | Camino 3 | CP3 |
+### Paso 2
 
-## J. Resumen Académico
-El fragmento **PCB-010** actúa como una capa robusta de "Higiene de Datos" que garantiza la calidad del padrón de clientes. La auditoría de caja blanca verifica que el diseño preventivo (Duda Cero) mitiga fallos de renderizado en la interfaz al sustituir nulos técnicos por valores semánticos seguros. Con una complejidad ciclomática $V(G)=3$, el código asegura que todo cliente nuevo nazca con un estado operativo activo y atributos descriptivos normalizados para la gestión administrativa del ERP.
+**V(G) = Número de regiones** = (2 internas + 1 externa) = **3**
+**V(G) = Aristas – Nodos + 2** = V(G) = 9 – 8 + 2 = **3**
+**V(G) = Nodos Predicado + 1** = V(G) = 2 + 1 = **3**
+
+### Paso 3
+
+| Total de caminos | Ruta de cada camino |
+| :--- | :--- |
+| **Camino 1** | Inicio → 1(NO) → 3(NO) → 5 → 6 → Fin |
+| **Camino 2** | Inicio → 1(SÍ) → 2 → 3(NO) → 5 → 6 → Fin |
+| **Camino 3** | Inicio → 1(SÍ) → 2 → 3(SÍ) → 4 → 5 → 6 → Fin |
+
+### Paso 4
+
+| Número del camino | Caso de Prueba (IN) | Resultado esperado (OUT) |
+| :--- | :--- | :--- |
+| **Camino 1** | cliente.apellidos = "Cruz", cliente.estatus = "INACTIVO" | Conserva integridad original (PCB-N1: NO, PCB-N2: NO) |
+| **Camino 2** | cliente.apellidos = null, cliente.estatus = "ACTIVO" | cliente.apellidos = "" (PCB-N1: SI, PCB-N2: NO) |
+| **Camino 3** | cliente.apellidos = null, cliente.estatus = null | apellidos = "", estatus = "ACTIVO" (PCB-N1: SI, PCB-N2: SI) |

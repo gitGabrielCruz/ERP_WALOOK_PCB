@@ -1,117 +1,83 @@
-# Reporte de Auditoría de Caja Blanca: PCB-008
+# TEST PRUEBAS DE CAJA BLANCA
 
-## A. Identificación del Fragmento
-- **ID**: PCB-008
-- **Módulo**: Clientes
-- **Fragmento**: Validación de integridad fiscal y registro de cliente
-- **HU**: HU-M06-01
-- **Función**: `ClienteService.guardarCliente()`
-- **Alcance**: Análisis de las validaciones de identidad obligatoria y unicidad tributaria (RFC) bajo el estándar de "Duda Cero".
+| **DATOS DEL ESTUDIANTE** | |
+| :--- | :--- |
+| **NOMBRE:** | Gabriel Amílcar Cruz Canto |
+| **EMPRESA:** | WALOOK MEXICO, S.A. de C.V. |
+| **TITULO DEL PROYECTO:** | Sistema ERP en la nube para gestión de ópticas OMCGC |
+| **URL y Claves de acceso:** | [Configurar en ambiente de entrega] |
 
-## B. Tabla de Nodos
-| Nodo | Descripción | Tipo |
-| :--- | :--- | :--- |
-| 1 | Inicio de la función `guardarCliente()` | Inicio |
-| 2 | Validación de nombre: `if (cliente.getNombre() == null || ...)` [PCB-N1] | Predicado |
-| 3 | Interrupción por nombre ausente: `throw new IllegalArgumentException(...)` | Final (Excepción 1) |
-| 4 | Verificación de presencia de RFC: `if (cliente.getRfc() != null && ...)` [PCB-N2] | Predicado |
-| 5 | Consulta de redundancia fiscal: `pacienteRepository.findByRfc(...)` | Proceso |
-| 6 | Verificación de colisión: `if (existente != null && ...)` [PCB-N3] | Predicado |
-| 7 | Interrupción por duplicidad fiscal: `throw new IllegalArgumentException(...)` | Final (Excepción 2) |
-| 8 | Confirmación y persistencia: `pacienteRepository.save(cliente)` | Proceso |
-| 9 | Finalización exitosa del registro | Fin |
+<br>
 
-## C. Tabla de Aristas
-| Origen | Destino | Condición / Etiqueta |
-| :--- | :--- | :--- |
-| 1 | 2 | Flujo secuencial |
-| 2 | 3 | PCB-N1 es Verdadero (El campo Nombre está vacío o es nulo) |
-| 2 | 4 | PCB-N1 es Falso (La identidad mínima del cliente está presente) |
-| 4 | 5 | PCB-N2 es Verdadero (El cliente proporcionó un RFC para validar) |
-| 4 | 8 | PCB-N2 es Falso (Se omite la validación fiscal por RFC ausente) |
-| 5 | 6 | Flujo secuencial |
-| 6 | 7 | PCB-N3 es Verdadero (El RFC ya pertenece a otro registro en el sistema) |
-| 6 | 8 | PCB-N3 es Falso (El RFC es único o pertenece al mismo cliente) |
-| 8 | 9 | Flujo secuencial |
-
-## D. Complejidad Ciclomática
-$V(G) = P + 1$
-donde $P = 3$ (Nodos predicado: PCB-N1, PCB-N2, PCB-N3)
-$V(G) = 3 + 1 = 4$
-
-**Interpretación**: El análisis de McCabe determina que se requieren 4 caminos independientes para cubrir todas las reglas de negocio vinculadas a la integridad del padrón de clientes.
-
-## E. Caminos Independientes
-1. **Camino 1 (Falla por Identidad Incompleta)**: 1 → 2(Verdadero) → 3
-2. **Camino 2 (Registro Simplificado sin RFC)**: 1 → 2(Falso) → 4(Falso) → 8 → 9
-3. **Camino 3 (Rechazo por Duplicidad Fiscal)**: 1 → 2(Falso) → 4(Verdadero) → 5 → 6(Verdadero) → 7
-4. **Camino 4 (Registro Integral con RFC Válido)**: 1 → 2(Falso) → 4(Verdadero) → 5 → 6(Falso) → 8 → 9
-
-## F. Casos de Prueba (Basis Path Testing)
-| Caso | entrada: Nombre | entrada: RFC | entrada: Redundancia | Resultado Esperado |
+| **PLAN DE PRUEBAS DE CAJA BLANCA: BACKEND** | | | | |
 | :--- | :--- | :--- | :--- | :--- |
-| CP1 | Nulo | "RFC123" | N/A | Excepción: El nombre es obligatorio |
-| CP2 | "Juan Pérez" | "" (Vacío) | N/A | Éxito: Registro persistido sin RFC |
-| CP3 | "Ana López" | "ALOP8001" | Existe (ID distinto) | Excepción: El RFC ya está registrado |
-| CP4 | "Ana López" | "ALOP8001" | No Existe | Éxito: Registro fiscal integral |
+| **Número** | **Nombre de la Prueba Backend** | **Descripción** | **Fecha** | **Responsable** |
+| PCB-008 | Integridad Fiscal | Validación de Identidad Tributaria y Unicidad de RFC | 17/03/2026 | Gabriel Amílcar Cruz Canto |
 
-## G. Seudocódigo Estructural del Fragmento
+---
 
-### Fragmento A: Código Puro (Estructura Original)
-**Archivo**: `ClienteService.java`
-**Función**: `guardarCliente(Paciente cliente)`
-**Descripción**: Implementa la validación de integridad fiscal y unicidad tributaria. Asegura que la base de datos de pacientes/clientes sea íntegra y esté lista para procesos de facturación electrónica. Incluye comentarios originales de desarrollo.
+# FASE DE PRUEBAS
+
+| **Nombre del Módulo del Sistema + Historia de usuario** |
+| :--- |
+| Módulo Clientes / Pacientes – HU-M06-01 |
+
+| **Número y nombre de la Prueba** |
+| :--- |
+| PCB-008 / Integridad Fiscal – ClienteService.guardarCliente() |
+
+### Paso 0
 
 ```java
-    public Paciente guardarCliente(Paciente cliente) {
+    /**
+     * ESPECIFICACIÓN TÉCNICA: Validación de Integridad Fiscal y Unicidad de Identidad Tributaria.
+     * OBJETIVO OPERATIVO: Asegurar calidad del dato fiscal y exclusión de duplicados.
+     * IMPACTO: Soporte íntegro para procesos de facturación electrónica.
+     */
+    public Paciente guardarCliente(Paciente cliente) { // [N1: INICIO]
         
-        // validación de obligatoriedad de identidad (Nombre)
-        if (cliente.getNombre() == null || cliente.getNombre().trim().isEmpty()) {
-            throw new IllegalArgumentException("El nombre es obligatorio");
+        // [PCB-N1] validación de obligatoriedad (Nombre)
+        if (cliente.getNombre() == null || cliente.getNombre().trim().isEmpty()) { // [N2] [PCB-N1] -> [SI: N3] [NO: N4] : ¿Nombre ausente?
+            throw new IllegalArgumentException("Nombre obligatorio"); // [N3: FIN (EXC)]
         }
 
-        // evaluación de presencia de RFC (Check de campo opcional)
-        if (cliente.getRfc() != null && !cliente.getRfc().isEmpty()) {
-            Paciente existente = pacienteRepository.findByRfc(cliente.getRfc());
+        // [PCB-N2] evaluación de presencia de RFC
+        if (cliente.getRfc() != null && !cliente.getRfc().isEmpty()) { // [N4] [PCB-N2] -> [SI: N5] [NO: N9] : ¿Proporcionó RFC?
+            Paciente existente = pacienteRepository.findByRfc(cliente.getRfc()); // [N5: PROCESO]
             
-            // validación de colisión de RFC (Unicidad)
+            // [PCB-N3] validación de colisión de RFC (Unicidad)
+            // [N6: PREDICADO] [PCB-N3] -> [SI: N8] [NO: N7] : ¿RFC detectado en otro registro?
             if (existente != null && !existente.getIdPaciente().equals(cliente.getIdPaciente())) {
-                throw new IllegalArgumentException("El RFC ya está registrado con otro cliente.");
+                throw new IllegalArgumentException("RFC duplicado"); // [N8: FIN (EXC)]
             }
         }
         
-        pacienteRepository.save(cliente);
-        return cliente;
+        pacienteRepository.save(cliente); // [N9: PROCESO] -> Persistir transacción // [N7: PROCESO] (Vía N6)
+        return cliente; // [N10: FIN]
     }
 ```
 
-### Fragmento B: Código Anotado (Mapeo de Nodos)
-**Descripción**: Este fragmento incluye los marcadores de control (`PCB-Nx`) para identificar la posición exacta de cada nodo y arista del Grafo de Control de Flujo (CFG).
+### Descripción breve del fragmento
 
-```java
-    public Paciente guardarCliente(Paciente cliente) { // NODO 1
-        
-        // PCB-N1: validación de obligatoriedad de identidad (Nombre)
-        if (cliente.getNombre() == null || cliente.getNombre().trim().isEmpty()) { // NODO 2 [PREDICADO]
-            throw new IllegalArgumentException("El nombre es obligatorio"); // NODO 3 [FIN]
-        }
+El fragmento **PCB-008** implementa las reglas de negocio para el empadronamiento de pacientes. Su función es garantizar la integridad fiscal mediante la validación obligatoria del nombre y la verificación de unicidad del RFC para evitar registros redundantes que afecten la facturación. Con una complejidad $V(G)=3$, el código asegura que la base de datos de clientes mantenga un estándar de calidad apto para procesos contables.
 
-        // PCB-N2: evaluación de presencia de RFC (Check de campo opcional)
-        if (cliente.getRfc() != null && !cliente.getRfc().isEmpty()) { // NODO 4 [PREDICADO]
-            Paciente existente = pacienteRepository.findByRfc(cliente.getRfc()); // NODO 5
-            
-            // PCB-N3: validación de colisión de RFC (Unicidad)
-            if (existente != null && !existente.getIdPaciente().equals(cliente.getIdPaciente())) { // NODO 6 [PREDICADO]
-                throw new IllegalArgumentException("El RFC ya está registrado con otro cliente."); // NODO 7 [FIN]
-            }
-        }
-        
-        pacienteRepository.save(cliente); // NODO 8
-        return cliente; // NODO 9 [FIN]
-    }
-```
+### Identificación de Nodos
 
-## H. Grafo de Control de Flujo (PlantUML)
+| ID del Nodo | Tipo | Descripción |
+| :--- | :--- | :--- |
+| **Nodo 1** | Inicio | Inicio de la función `guardarCliente(Paciente cliente)` y recepción de la entidad del paciente. |
+| **Nodo 2 [PCB-N1]** | Nodo predicado | Evaluación de la condición `cliente.getNombre() == null || cliente.getNombre().trim().isEmpty()`. Verificación de metadatos de identidad obligatorios. Identificado con la etiqueta **PCB-N1**. |
+| **Nodo 3** | Nodo de salida | Lanzamiento de `IllegalArgumentException("Nombre obligatorio")`. Interrupción por ausencia de metadatos de identidad primarios. |
+| **Nodo 4 [PCB-N2]** | Nodo predicado | Evaluación de la condición `cliente.getRfc() != null && !cliente.getRfc().isEmpty()`. Determinación de necesidad de validación fiscal. Identificado con la etiqueta **PCB-N2**. |
+| **Nodo 5** | Nodo de proceso | Ejecución de `pacienteRepository.findByRfc(cliente.getRfc())`. Consulta de preexistencia fiscal en el repositorio. |
+| **Nodo 6 [PCB-N3]** | Nodo predicado | Evaluación de la condición `existente != null && !existente.getIdPaciente().equals()`. Verificación de colisión tributaria. Identificado con la etiqueta **PCB-N3**. |
+| **Nodo 7** | Nodo de proceso | Continuación del flujo transaccional tras validación de unicidad tributaria exitosa. |
+| **Nodo 8** | Nodo de salida | Lanzamiento de `IllegalArgumentException("RFC duplicado")`. Interrupción del registro por colisión fiscal directa. |
+| **Nodo 9** | Nodo de proceso | Ejecución de `pacienteRepository.save(cliente)`. Persistencia atómica de la transacción de padrón de pacientes. |
+| **Nodo 10** | Fin | Finalización del protocolo de validación de integridad fiscal y registro de identidad tributaria. |
+
+### Paso 1
+
 ```plantuml
 @startuml
 digraph CFG_PCB008 {
@@ -120,48 +86,57 @@ rankdir=TB
 node [shape=circle]
 
 I [label="Inicio"]
-
 N1 [label="1"]
-N2 [label="2\nPCB-N1"]
+N2 [label="2\n[PCB-N1]"]
 N3 [label="3"]
-N4 [label="4\nPCB-N2"]
+N4 [label="4\n[PCB-N2]"]
 N5 [label="5"]
-N6 [label="6\nPCB-N3"]
+N6 [label="6\n[PCB-N3]"]
 N7 [label="7"]
 N8 [label="8"]
 N9 [label="9"]
-
+N10 [label="10"]
 F [label="Fin"]
 
 I -> N1
 N1 -> N2
-
 N2 -> N3 [label="Verdadero"]
 N2 -> N4 [label="Falso"]
-
+N4 -> N9 [label="Falso"]
 N4 -> N5 [label="Verdadero"]
-N4 -> N8 [label="Falso"]
-
 N5 -> N6
-N6 -> N7 [label="Verdadero"]
-N6 -> N8 [label="Falso"]
-
-N8 -> N9
-
+N6 -> N8 [label="Verdadero"]
+N6 -> N7 [label="Falso"]
+N7 -> N9
+N9 -> N10
+N10 -> F
 N3 -> F
-N7 -> F
-N9 -> F
+N8 -> F
 
 }
 @enduml
 ```
 
-## I. Matriz de Trazabilidad
-| Requisito (HU) | Nodo de Decisión | Camino Independiente | Caso de Prueba |
-| :--- | :--- | :--- | :--- |
-| **HU-M06-01** | PCB-N1 | Caminos 1, 2, 3, 4 | CP1, CP2, CP3, CP4 |
-| **HU-M06-01** | PCB-N2 | Caminos 2, 3, 4 | CP2, CP3, CP4 |
-| **HU-M06-01** | PCB-N3 | Caminos 3, 4 | CP3, CP4 |
+### Paso 2
 
-## J. Resumen Académico
-El fragmento **PCB-008** implementa la validación de "Unicidad Tributaria", esencial para los procesos de facturación del ERP. La auditoría de caja blanca confirma que el código previene la redundancia de identidades mediante un doble chequeo de existencia fiscal (PCB-N3), permitiendo la coexistencia de registros opcionales. Con una complejidad ciclomática $V(G)=4$, la estructura garantiza un padrón de clientes limpio y predecible, facilitando la transparencia administrativa requerida para el Proyecto Terminal.
+**V(G) = Número de regiones** = (3 internas + 1 externa) = **4**
+**V(G) = Aristas – Nodos + 2** = V(G) = 14 – 12 + 2 = **4**
+**V(G) = Nodos Predicado + 1** = V(G) = 3 + 1 = **4**
+
+### Paso 3
+
+| Total de caminos | Ruta de cada camino |
+| :--- | :--- |
+| **Camino 1** | Inicio → 1 → 2(SÍ) → 3 → Fin |
+| **Camino 2** | Inicio → 1 → 2(NO) → 4(NO) → 9 → 10 → Fin |
+| **Camino 3** | Inicio → 1 → 2(NO) → 4(SÍ) → 5 → 6(SÍ) → 8 → Fin |
+| **Camino 4** | Inicio → 1 → 2(NO) → 4(SÍ) → 5 → 6(NO) → 7 → 9 → 10 → Fin |
+
+### Paso 4
+
+| Número del camino | Caso de Prueba (IN) | Resultado esperado (OUT) |
+| :--- | :--- | :--- |
+| **Camino 1** | cliente.nombre = null | IllegalArgumentException: Nombre obligatorio (PCB-N1: SI) |
+| **Camino 2** | cliente.nombre = "Juan Perez", cliente.rfc = null | Registro exitoso (PCB-N1: NO, PCB-N2: NO) |
+| **Camino 3** | cliente.nombre = "Juan Perez", cliente.rfc = "XAXX010101000" (Existente) | IllegalArgumentException: RFC duplicado (PCB-N1: NO, PCB-N2: SI, PCB-N3: SI) |
+| **Camino 4** | cliente.nombre = "Juan Perez", cliente.rfc = "XAXX010101000" (Nuevo) | Registro exitoso tras validación (PCB-N1: NO, PCB-N2: SI, PCB-N3: NO) |

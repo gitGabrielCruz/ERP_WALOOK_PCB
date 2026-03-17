@@ -1,162 +1,103 @@
-# Reporte de Auditoría de Caja Blanca: PCB-001
+# TEST PRUEBAS DE CAJA BLANCA
 
-## A. Identificación del Fragmento
-- **ID**: PCB-001
-- **Módulo**: Seguridad/Acceso
-- **Fragmento**: Autenticación de usuario
-- **HU**: HU-M01-01
-- **Función**: `AuthService.login(String email, String password)`
-- **Alcance**: Análisis de la lógica interna de autenticación para identificar nodos de decisión y rutas de ejecución bajo el estándar de "Duda Cero".
+| **DATOS DEL ESTUDIANTE** | |
+| :--- | :--- |
+| **NOMBRE:** | Gabriel Amílcar Cruz Canto |
+| **EMPRESA:** | WALOOK MEXICO, S.A. de C.V. |
+| **TITULO DEL PROYECTO:** | Sistema ERP en la nube para gestión de ópticas OMCGC |
+| **URL y Claves de acceso:** | [Configurar en ambiente de entrega] |
 
-## B. Tabla de Nodos
-| Nodo | Descripción | Tipo |
-| :--- | :--- | :--- |
-| 1 | Inicio de la función `login()` | Inicio |
-| 2 | `if ("root".equals(email) && "root".equals(password))` [PCB-N1] | Predicado |
-| 3 | `return createSuperAdminUser()` | Final (Salida 1) |
-| 4 | `if (dbHealthService.isConnected())` [PCB-N2] | Predicado |
-| 5 | `throw new RuntimeException("Error Crítico: DB")` | Final (Excepción 1) |
-| 6 | `Usuario usuario = usuarioRepository.findByEmail(email)` | Proceso |
-| 7 | `if (usuario != null)` [PCB-N3] | Predicado |
-| 8 | `boolean passwordMatch = passwordEncoder.matches(...)` | Proceso |
-| 9 | `if (passwordMatch)` [PCB-N4] | Predicado |
-| 10 | `if (!usuario.isActivo())` [PCB-N5] | Predicado |
-| 11 | `throw new RuntimeException("Usuario INACTIVO")` | Final (Excepción 2) |
-| 12 | `return usuario` | Final (Salida 2) |
-| 13 | `throw new RuntimeException("Credenciales no válidas")` | Final (Excepción 3) |
-| 14 | `throw new RuntimeException("Identidad no encontrada")` | Final (Excepción 4) |
+<br>
 
-## C. Tabla de Aristas
-| Origen | Destino | Condición / Etiqueta |
-| :--- | :--- | :--- |
-| 1 | 2 | Flujo secuencial |
-| 2 | 3 | PCB-N1 es Verdadero (Bypass de root) |
-| 2 | 4 | PCB-N1 es Falso |
-| 4 | 6 | PCB-N2 es Verdadero (Base de Datos Conectada) |
-| 4 | 5 | PCB-N2 es Falso (Base de Datos Desconectada) |
-| 6 | 7 | Flujo secuencial |
-| 7 | 8 | PCB-N3 es Verdadero (Existe el registro de usuario) |
-| 7 | 14 | PCB-N3 es Falso (Registro no encontrado) |
-| 8 | 9 | Flujo secuencial |
-| 9 | 10 | PCB-N4 es Verdadero (La contraseña coincide) |
-| 9 | 13 | PCB-N4 es Falso (La contraseña es incorrecta) |
-| 10 | 11 | PCB-N5 es Verdadero (El usuario está marcado como Inactivo) |
-| 10 | 12 | PCB-N5 es Falso (El usuario está marcado como Activo) |
-
-## D. Complejidad Ciclomática
-$V(G) = P + 1$
-donde $P = 5$ (Nodos predicado: PCB-N1, PCB-N2, PCB-N3, PCB-N4, PCB-N5)
-$V(G) = 5 + 1 = 6$
-
-**Interpretación**: El análisis de McCabe determina que se requieren 6 caminos independientes para garantizar la cobertura total de la lógica de autenticación.
-
-## E. Caminos Independientes
-1. **Camino 1 (Bypass Adm)**: 1 → 2(Verdadero) → 3
-2. **Camino 2 (Falla Infraestructura)**: 1 → 2(Falso) → 4(Falso) → 5
-3. **Camino 3 (Identidad No Registrada)**: 1 → 2(Falso) → 4(Verdadero) → 6 → 7(Falso) → 14
-4. **Camino 4 (Credencial Criptográfica Errónea)**: 1 → 2(Falso) → 4(Verdadero) → 6 → 7(Verdadero) → 8 → 9(Falso) → 13
-5. **Camino 5 (Restricción de Estado Operativo)**: 1 → 2(Falso) → 4(Verdadero) → 6 → 7(Verdadero) → 8 → 9(Verdadero) → 10(Verdadero) → 11
-6. **Camino 6 (Acceso Exitoso)**: 1 → 2(Falso) → 4(Verdadero) → 6 → 7(Verdadero) → 8 → 9(Verdadero) → 10(Falso) → 12
-
-## F. Casos de Prueba (Basis Path Testing)
-| Caso | Entrada: Correo | Entrada: Contraseña | Condición de Control | Resultado Esperado |
+| **PLAN DE PRUEBAS DE CAJA BLANCA: BACKEND** | | | | |
 | :--- | :--- | :--- | :--- | :--- |
-| CP1 | "root" | "root" | PCB-N1 = Verdadero | Usuario SuperAdmin (Bypass) |
-| CP2 | "usuario@x.com" | "cualquiera" | PCB-N2 = Falso | Excepción: Error Crítico de DB |
-| CP3 | "no_existe@x.com" | "123456" | PCB-N3 = Falso | Excepción: Identidad no encontrada |
-| CP4 | "activo@x.com" | "incorrecta" | PCB-N4 = Falso | Excepción: Credenciales no válidas |
-| CP5 | "inactivo@x.com" | "correcta" | PCB-N5 = Verdadero | Excepción: Usuario INACTIVO |
-| CP6 | "activo@x.com" | "correcta" | PCB-N5 = Falso | Objeto Usuario (Éxito) |
+| **Número** | **Nombre de la Prueba Backend** | **Descripción** | **Fecha** | **Responsable** |
+| PCB-001 | Autenticación de usuario | Protocolo de Acceso y Validación de Infraestructura | 17/03/2026 | Gabriel Amílcar Cruz Canto |
 
-## G. Seudocódigo Estructural del Fragmento
+---
 
-### Fragmento A: Código Puro (Estructura Original)
-**Archivo**: `AuthService.java`
-**Función**: `login(String email, String password)`
-**Descripción**: Gestiona la autenticación biométrica y/o por credenciales, validando la salud de la infraestructura de persistencia antes de proceder con el cotejo criptográfico. Incluye comentarios originales de desarrollo.
+# FASE DE PRUEBAS
+
+| **Nombre del Módulo del Sistema + Historia de usuario** |
+| :--- |
+| Módulo Seguridad / Acceso – HU-M01-01 |
+
+| **Número y nombre de la Prueba** |
+| :--- |
+| PCB-001 / Autenticación de usuario – AuthService.login() |
+
+### Paso 0
 
 ```java
-    public Usuario login(String email, String password) {
-
-        // bypass root (Bypass de Autenticación para Entorno de Desarrollo)
-        if ("root".equals(email) && "root".equals(password)) {
-            return createSuperAdminUser();
+    /**
+     * ESPECIFICACIÓN TÉCNICA: Protocolo de Autenticación Privilegiada y Validación de Infraestructura.
+     * OBJETIVO OPERATIVO: Verificación criptográfica de credenciales y disponibilidad de persistencia.
+     * IMPACTO: Gatekeeper estructural para mitigar riesgos de acceso no autorizado.
+     */
+    public Usuario login(String email, String password) { // [N1: INICIO]
+1
+        // [PCB-N1] bypass root (Bypass de Autenticación para Entorno de Desarrollo)
+        if ("root".equals(email) && "root".equals(password)) { // [N2] [PCB-N1] -> [SI: N3] [NO: N4] : ¿Es acceso maestro?
+            return createSuperAdminUser(); // [N3: FIN] -> Retorno privilegiado
         }
 
-        // estado de base de datos (Diagnóstico de Disponibilidad de Persistencia)
-        if (dbHealthService.isConnected()) {
-            System.out.println("[AUTH-DEBUG] Conexión DB: ACTIVA (" + dbHealthService.getConnectionDetails() + ")");
+        // [PCB-N2] estado de base de datos (Diagnóstico de Disponibilidad de Persistencia)
+        if (dbHealthService.isConnected()) { // [N4] [PCB-N2] -> [SI: N6] [NO: N5] : ¿Hay conexión DB?
+            System.out.println("[AUTH-DEBUG] Conexión DB: ACTIVA"); // [N6: PROCESO]
         } else {
-            System.err.println("[AUTH-DEBUG] Conexión DB: FALLIDA");
-            throw new RuntimeException("Error Crítico: El sistema no puede conectar con la Base de Datos.");
+            System.err.println("[AUTH-DEBUG] Conexión DB: FALLIDA"); // [N5: PROCESO]
+            throw new RuntimeException("Error DB"); // [N5.1: FIN (EXC)]
         }
 
-        Usuario usuario = usuarioRepository.findByEmail(email);
+        Usuario usuario = usuarioRepository.findByEmail(email); // [N6: PROCESO]
 
-        // usuario encontrado (Verificación de Identidad Registrada)
-        if (usuario != null) {
+        // [PCB-N3] usuario encontrado (Verificación de Identidad Registrada)
+        if (usuario != null) { // [N7] [PCB-N3] -> [SI: N8] [NO: N14] : ¿Existe el registro?
             
-            // contraseña válida (Validación Criptográfica BCrypt)
-            boolean passwordMatch = passwordEncoder.matches(password, usuario.getPasswordHash());
+            // [PCB-N4] contraseña válida (Validación Criptográfica BCrypt)
+            boolean passwordMatch = passwordEncoder.matches(password, usuario.getPasswordHash()); // [N8: PROCESO]
 
-            if (passwordMatch) {
-                // usuario activo (Validación de Estado Operativo de Cuenta)
-                if (!usuario.isActivo()) {
-                    throw new RuntimeException("Login fallido: El usuario existe pero está marcado como INACTIVO.");
+            if (passwordMatch) { // [N9] [PCB-N4] -> [SI: N10] [NO: N13] : ¿Contraseña válida?
+                // [PCB-N5] usuario activo (Validación de Estado Operativo de Cuenta)
+                if (!usuario.isActivo()) { // [N10] [PCB-N5] -> [SI: N11] [NO: N12] : ¿Cuenta suspendida?
+                    throw new RuntimeException("Usuario INACTIVO"); // [N11: FIN (EXC)]
                 }
-                return usuario;
+                return usuario; // [N12: FIN] -> Acceso concedido
             } else {
-                throw new RuntimeException("Fallo de autenticación: Las credenciales proporcionadas no son válidas.");
+                throw new RuntimeException("Credenciales no válidas"); // [N13: FIN (EXC)]
             }
         }
 
-        throw new RuntimeException("Fallo de autenticación: Identidad no encontrada en el registro de usuarios.");
+        throw new RuntimeException("Identidad No Encontrada"); // [N14: FIN (EXC)]
     }
 ```
 
-### Fragmento B: Código Anotado (Mapeo de Nodos)
-**Descripción**: Este fragmento incluye los marcadores de control (`PCB-Nx`) para identificar la posición exacta de cada nodo y arista del Grafo de Control de Flujo (CFG).
+### Descripción breve del fragmento
 
-```java
-    public Usuario login(String email, String password) { // NODO 1
+El fragmento **PCB-001** representa el núcleo de la seguridad del sistema ERP. La auditoría estructural confirma que el flujo de autenticación implementa defensas escalonadas: Bypass administrativo, Salud de Infraestructura, Integridad de Registro y Cotejo Criptográfico. Con una complejidad ciclomática $V(G)=6$, el diseño garantiza la detección proactiva de fallos antes de conceder privilegios de sesión.
 
-        // PCB-N1: bypass root (Bypass de Autenticación para Entorno de Desarrollo)
-        if ("root".equals(email) && "root".equals(password)) { // NODO 2 [PREDICADO]
-            return createSuperAdminUser(); // NODO 3 [FIN]
-        }
+### Identificación de Nodos
 
-        // PCB-N2: estado de base de datos (Diagnóstico de Disponibilidad de Persistencia)
-        if (dbHealthService.isConnected()) { // NODO 4 [PREDICADO]
-            System.out.println("[AUTH-DEBUG] Conexión DB: ACTIVA (" + dbHealthService.getConnectionDetails() + ")");
-        } else {
-            System.err.println("[AUTH-DEBUG] Conexión DB: FALLIDA"); // NODO 5
-            throw new RuntimeException("Error Crítico: El sistema no puede conectar con la Base de Datos."); // [FIN]
-        }
+| ID del Nodo | Tipo | Descripción |
+| :--- | :--- | :--- |
+| **Nodo 1** | Inicio | Inicio del método `login(String email, String password)` y recepción de parámetros de entrada. |
+| **Nodo 2 [PCB-N1]** | Nodo predicado | Evaluación de la condición `if ("root".equals(email) && "root".equals(password))`. Identificado con la etiqueta **PCB-N1**. |
+| **Nodo 3** | Nodo de salida | Ejecución de `return createSuperAdminUser()`. Finaliza el flujo cuando se detectan credenciales de superadministrador. |
+| **Nodo 4 [PCB-N2]** | Nodo predicado | Evaluación de `if (dbHealthService.isConnected())` para verificar diagnóstico de salud de base de datos. Identificado con la etiqueta **PCB-N2**. |
+| **Nodo 5** | Nodo de proceso | Ejecución de registro de fallo en consola ante inaccesibilidad de infraestructura. |
+| **Nodo 5.1** | Nodo de salida | Lanzamiento de `RuntimeException("Error DB")`. Interrupción del flujo por fallo de persistencia. |
+| **Nodo 6** | Nodo de proceso | Ejecución de `usuarioRepository.findByEmail(email)`. Consulta de identidad en el repositorio. |
+| **Nodo 7 [PCB-N3]** | Nodo predicado | Evaluación de `if (usuario != null)`. Verificación de existencia del registro de identidad. Identificado con la etiqueta **PCB-N3**. |
+| **Nodo 8** | Nodo de proceso | Ejecución de `passwordEncoder.matches()`. Validación criptográfica de contraseña mediante BCrypt. |
+| **Nodo 9 [PCB-N4]** | Nodo predicado | Evaluación de `if (passwordMatch)`. Verificación de coincidencia de seguridad. Identificado con la etiqueta **PCB-N4**. |
+| **Nodo 10 [PCB-N5]** | Nodo predicado | Evaluación de `if (!usuario.isActivo())`. Validación de estado operativo de la cuenta. Identificado con la etiqueta **PCB-N5**. |
+| **Nodo 11** | Nodo de salida | Lanzamiento de `RuntimeException("Usuario INACTIVO")`. Interrupción por cuenta suspendida. |
+| **Nodo 12** | Nodo de salida | Ejecución de `return usuario`. Finalización exitosa del flujo y retorno de objeto autenticado. |
+| **Nodo 13** | Nodo de salida | Lanzamiento de `RuntimeException("Credenciales no válidas")`. Interrupción por fallo de contraseña. |
+| **Nodo 14** | Nodo de salida | Lanzamiento de `RuntimeException("Identidad No Encontrada")`. Interrupción por registro inexistente. |
 
-        Usuario usuario = usuarioRepository.findByEmail(email); // NODO 6
+### Paso 1
 
-        // PCB-N3: usuario encontrado (Verificación de Identidad Registrada)
-        if (usuario != null) { // NODO 7 [PREDICADO]
-            
-            // PCB-N4: contraseña válida (Validación Criptográfica BCrypt)
-            boolean passwordMatch = passwordEncoder.matches(password, usuario.getPasswordHash()); // NODO 8
-
-            if (passwordMatch) { // NODO 9 [PREDICADO]
-                // PCB-N5: usuario activo (Validación de Estado Operativo de Cuenta)
-                if (!usuario.isActivo()) { // NODO 10 [PREDICADO]
-                    throw new RuntimeException("Login fallido: El usuario existe pero está marcado como INACTIVO."); // NODO 11 [FIN]
-                }
-                return usuario; // NODO 12 [FIN]
-            } else {
-                throw new RuntimeException("Fallo de autenticación: Las credenciales proporcionadas no son válidas."); // NODO 13 [FIN]
-            }
-        }
-
-        throw new RuntimeException("Fallo de autenticación: Identidad no encontrada en el registro de usuarios."); // NODO 14 [FIN]
-    }
-```
-
-## H. Grafo de Control de Flujo (PlantUML)
 ```plantuml
 @startuml
 digraph CFG_PCB001 {
@@ -167,15 +108,15 @@ node [shape=circle]
 I [label="Inicio"]
 
 N1 [label="1"]
-N2 [label="2\nPCB-N1"]
+N2 [label="2\n[PCB-N1]"]
 N3 [label="3"]
-N4 [label="4\nPCB-N2"]
+N4 [label="4\n[PCB-N2]"]
 N5 [label="5"]
 N6 [label="6"]
-N7 [label="7\nPCB-N3"]
+N7 [label="7\n[PCB-N3]"]
 N8 [label="8"]
-N9 [label="9\nPCB-N4"]
-N10 [label="10\nPCB-N5"]
+N9 [label="9\n[PCB-N4]"]
+N10 [label="10\n[PCB-N5]"]
 N11 [label="11"]
 N12 [label="12"]
 N13 [label="13"]
@@ -214,14 +155,30 @@ N14 -> F
 @enduml
 ```
 
-## I. Matriz de Trazabilidad
-| Requisito (HU) | Nodo de Decisión | Camino Independiente | Caso de Prueba |
-| :--- | :--- | :--- | :--- |
-| **HU-M01-01** | PCB-N1 | Camino 1 | CP1 |
-| **HU-M01-01** | PCB-N2 | Camino 2 | CP2 |
-| **HU-M01-01** | PCB-N3 | Camino 3 | CP3 |
-| **HU-M01-01** | PCB-N4 | Camino 4 | CP4 |
-| **HU-M01-01** | PCB-N5 | Camino 5, 6 | CP5, CP6 |
+### Paso 2
 
-## J. Resumen Académico
-El fragmento **PCB-001** representa el núcleo de la seguridad del sistema ERP. La auditoría estructural de caja blanca confirma que el flujo de autenticación implementa defensas escalonadas (Bypass administrativo, Salud de Infraestructura, Integridad de Registro y Cotejo Criptográfico). Con una complejidad $V(G)=6$, el código es robusto y permite una cobertura total mediante 6 escenarios de prueba definidos bajo el rigor de la metodología McCabe, garantizando el cumplimiento de los estándares de calidad para el Proyecto Terminal de Ingeniería.
+**V(G) = Número de regiones** = (5 internas + 1 externa) = **6**
+**V(G) = Aristas – Nodos + 2** = V(G) = 18 – 14 + 2 = **6**
+**V(G) = Nodos Predicado + 1** = V(G) = 5 + 1 = **6**
+
+### Paso 3
+
+| Total de caminos | Ruta de cada camino |
+| :--- | :--- |
+| **Camino 1** | Inicio → 1 → 2(SÍ) → 3 → Fin |
+| **Camino 2** | Inicio → 1 → 2(NO) → 4(NO) → 5 → 5.1 → Fin |
+| **Camino 3** | Inicio → 1 → 2(NO) → 4(SÍ) → 6 → 7(NO) → 14 → Fin |
+| **Camino 4** | Inicio → 1 → 2(NO) → 4(SÍ) → 6 → 7(SÍ) → 8 → 9(NO) → 13 → Fin |
+| **Camino 5** | Inicio → 1 → 2(NO) → 4(SÍ) → 6 → 7(SÍ) → 8 → 9(SÍ) → 10(SÍ) → 11 → Fin |
+| **Camino 6** | Inicio → 1 → 2(NO) → 4(SÍ) → 6 → 7(SÍ) → 8 → 9(SÍ) → 10(NO) → 12 → Fin |
+
+### Paso 4
+
+| Número del camino | Caso de Prueba (IN) | Resultado esperado (OUT) |
+| :--- | :--- | :--- |
+| **Camino 1** | email="root", password="root" | createSuperAdminUser() → Usuario SuperAdmin (Bypass) |
+| **Camino 2** | email="vendedor@test.com", password="cualquiera", dbHealthService.isConnected() = false | RuntimeException("Error Crítico: DB") |
+| **Camino 3** | email="noexiste@dominio.com", password="123456", dbHealthService.isConnected() = true, usuario = null | RuntimeException("Identidad no encontrada") |
+| **Camino 4** | email="opto@test.com", password="incorrecta", usuario != null, passwordMatch = false | RuntimeException("Credenciales no válidas") |
+| **Camino 5** | email="caja@test.com", password="correcta", usuario != null, passwordMatch = true, usuario.isActivo() = false | RuntimeException("Usuario INACTIVO") |
+| **Camino 6** | email="almacen@test.com", password="correcta", usuario != null, passwordMatch = true, usuario.isActivo() = true | return usuario (Objeto Usuario) |

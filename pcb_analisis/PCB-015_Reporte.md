@@ -1,74 +1,66 @@
-# Reporte de Auditoría de Caja Blanca: PCB-015
+# TEST PRUEBAS DE CAJA BLANCA
 
-## A. Identificación del Fragmento
-- **ID**: PCB-015
-- **Módulo**: Usuarios
-- **Fragmento**: Filtrado de disponibilidad operativa de cuentas
-- **HU**: HU-M01-03 (Gestión de Usuarios)
-- **Función**: `UsuarioService.findByEstatus(String estatus)`
-- **Alcance**: Análisis de la lógica de filtrado booleano y normalización textual bajo el estándar de "Duda Cero".
+| **DATOS DEL ESTUDIANTE** | |
+| :--- | :--- |
+| **NOMBRE:** | Gabriel Amílcar Cruz Canto |
+| **EMPRESA:** | WALOOK MEXICO, S.A. de C.V. |
+| **TITULO DEL PROYECTO:** | Sistema ERP en la nube para gestión de ópticas OMCGC |
+| **URL y Claves de acceso:** | [Configurar en ambiente de entrega] |
 
-## B. Tabla de Nodos
-| Nodo | Descripción | Tipo |
-| :--- | :--- | :--- |
-| 1 | Inicio de la función de filtrado `findByEstatus()` | Inicio |
-| 2 | Normalización semántica: `boolean activo = "activo".equalsIgnoreCase(...)` [PCB-N1] | Predicado |
-| 3 | Ejecución de consulta proyectiva y retorno | Fin |
+<br>
 
-## C. Tabla de Aristas
-| Origen | Destino | Condición / Etiqueta |
-| :--- | :--- | :--- |
-| 1 | 2 | Flujo secuencial |
-| 2 | 3 | Flujo determinado por la interpretación del estatus (True/False) |
+| **PLAN DE PRUEBAS DE CAJA BLANCA: BACKEND** | | | | |
+| :--- | :--- | :--- | :--- | :--- |
+| **Número** | **Nombre de la Prueba Backend** | **Descripción** | **Fecha** | **Responsable** |
+| PCB-015 | Sincronización de Identidad | Protocolo de Filtrado Proyectivo de Usuarios por Estatus | 17/03/2026 | Gabriel Amílcar Cruz Canto |
 
-## D. Complejidad Ciclomática
-$V(G) = P + 1$
-donde $P = 1$ (Nodo predicado: PCB-N1)
-$V(G) = 1 + 1 = 2$
+---
 
-**Interpretación**: Existen 2 caminos independientes basados en la interpretación binaria de la entrada textual, garantizando una respuesta predecible del sistema ante variaciones de capitalización.
+# FASE DE PRUEBAS
 
-## E. Caminos Independientes
-1. **Camino 1 (Proyección de Usuarios Activos)**: 1 → 2(Verdadero) → 3
-2. **Camino 2 (Proyección de Usuarios Inactivos / Resto)**: 1 → 2(Falso) → 3
+| **Nombre del Módulo del Sistema + Historia de usuario** |
+| :--- |
+| Módulo Usuarios / Seguridad – HU-M01-03 |
 
-## F. Casos de Prueba (Basis Path Testing)
-| Caso | entrada: estatus | Valor Booleano (Interno) | Resultado Esperado |
-| :--- | :--- | :--- | :--- |
-| CP1 | "Activo" | Verdadero | Colección de usuarios con disponibilidad operativa |
-| CP2 | "Inactivo" | Falso | Colección de usuarios con cuenta suspendida |
+| **Número y nombre de la Prueba** |
+| :--- |
+| PCB-015 / Sincronización de Identidad – UsuarioService.findByEstatus() |
 
-## G. Seudocódigo Estructural del Fragmento
-
-### Fragmento A: Código Puro (Estructura Original)
-**Archivo**: `UsuarioService.java`
-**Función**: `findByEstatus(String estatus)`
-**Descripción**: Protocolo de filtrado proyectivo de usuarios por estatus operativo. Utiliza una estrategia de normalización insensible a mayúsculas (Case-Insensitive) para amortiguar errores de captura y asegurar una segregación expedita de cuentas. Incluye comentarios originales de desarrollo.
+### Paso 0
 
 ```java
-    public List<Usuario> findByEstatus(String estatus) {
+    /**
+     * ESPECIFICACIÓN TÉCNICA: Protocolo de Filtrado Proyectivo de Usuarios por Estatus Operativo.
+     * OBJETIVO OPERATIVO: Recuperar colecciones de usuarios por estado binario.
+     * IMPACTO: Facilitar auditorías de estado y gestión de accesos suspendidos.
+     */
+    public List<Usuario> findByEstatus(String estatus) { // [N1: INICIO]
         
-        // normalización semántica (Conversión Texto -> Booleano)
-        boolean activo = "activo".equalsIgnoreCase(estatus);
+        // [PCB-N1] normalización semántica (Conversión Texto -> Booleano)
+        // [N2: PREDICADO] [PCB-N1] -> [SI: N3] [NO: N4] : ¿El estatus solicitado es "ACTIVO"?
+        boolean activo = "activo".equalsIgnoreCase(estatus); // [N3] / [N4] : Mapeo booleano
         
-        return usuarioRepository.findByEstatus(activo);
-    }
+        return usuarioRepository.findByEstatus(activo); // [N5: PROCESO] -> Proyección de resultados filtrados
+    } // [N6: FIN]
 ```
 
-### Fragmento B: Código Anotado (Mapeo de Nodos)
-**Descripción**: Este fragmento incluye los marcadores de control (`PCB-Nx`) para identificar la posición exacta de cada nodo y arista del Grafo de Control de Flujo (CFG).
+### Descripción breve del fragmento
 
-```java
-    public List<Usuario> findByEstatus(String estatus) { // NODO 1
-        
-        // PCB-N1: normalización semántica (Conversión Texto -> Booleano)
-        boolean activo = "activo".equalsIgnoreCase(estatus); // NODO 2 [PREDICADO]
-        
-        return usuarioRepository.findByEstatus(activo); // NODO 3 [FIN]
-    }
-```
+El fragmento **PCB-015** implementa el motor de búsqueda por estatus del módulo de seguridad. Su diseño se basa en una normalización semántica "Case-Insensitive" que amortigua errores de capitalización del usuario, proyectando el estado textual a un filtro booleano nativo en la base de datos. Con una complejidad $V(G)=2$, la prueba certifica la segregación expedita entre identidades operativas y suspendidas para fines de auditoría.
 
-## H. Grafo de Control de Flujo (PlantUML)
+### Identificación de Nodos
+
+| ID del Nodo | Tipo | Descripción |
+| :--- | :--- | :--- |
+| **Nodo 1** | Inicio | Inicio de la función de consulta por estado `findByEstatus(String estatus)` y recepción del parámetro de filtrado. |
+| **Nodo 2 [PCB-N1]** | Nodo predicado | Evaluación semántica de la cadena de estatus mediante `equalsIgnoreCase("activo")`. Identificado con la etiqueta **PCB-N1**. |
+| **Nodo 3** | Nodo de proceso | Asignación del valor de verdad booleano `true` para representar el estado operativo ACTIVO en el motor de persistencia. |
+| **Nodo 4** | Nodo de proceso | Asignación del valor de verdad booleano `false` para representar el estado operativo SUSPENDIDO o INACTIVO. |
+| **Nodo 5** | Nodo de proceso | Ejecución de `usuarioRepository.findByEstatus(activo)`. Proyección de resultados filtrados desde la base de datos. |
+| **Nodo 6** | Fin | Finalización del protocolo de filtrado y retorno de la colección de identidades proyectada por estatus operativo. |
+
+### Paso 1
+
 ```plantuml
 @startuml
 digraph CFG_PCB015 {
@@ -77,29 +69,43 @@ rankdir=TB
 node [shape=circle]
 
 I [label="Inicio"]
-
 N1 [label="1"]
-N2 [label="2\nPCB-N1"]
+N2 [label="2\n[PCB-N1]"]
 N3 [label="3"]
-
+N4 [label="4"]
+N5 [label="5"]
+N6 [label="6"]
 F [label="Fin"]
 
 I -> N1
 N1 -> N2
-
 N2 -> N3 [label="Verdadero"]
-N2 -> N3 [label="Falso"]
-
-N3 -> F
+N2 -> N4 [label="Falso"]
+N3 -> N5
+N4 -> N5
+N5 -> N6
+N6 -> F
 
 }
 @enduml
 ```
 
-## I. Matriz de Trazabilidad
-| Requisito (HU) | Nodo de Decisión | Camino Independiente | Caso de Prueba |
-| :--- | :--- | :--- | :--- |
-| **HU-M01-03** | PCB-N1 | Caminos 1, 2 | CP1, CP2 |
+### Paso 2
 
-## J. Resumen Académico
-El fragmento **PCB-015** resuelve la discrepancia entre la entrada semántica divergente (String) y la persistencia booleana rígida. La auditoría de caja blanca verifica que el diseño preventivo garantiza que cualquier entrada diferente a la cadena "activo" sea tratada de forma segura como "inactivo" ($V(G)=2$), mitigando riesgos de acceso no autorizado por ambigüedad en los parámetros de consulta, bajo el estándar institucional de "Duda Cero".
+**V(G) = Número de regiones** = (1 interna + 1 externa) = **2**
+**V(G) = Aristas – Nodos + 2** = V(G) = 8 – 8 + 2 = **2**
+**V(G) = Nodos Predicado + 1** = V(G) = 1 + 1 = **2**
+
+### Paso 3
+
+| Total de caminos | Ruta de cada camino |
+| :--- | :--- |
+| **Camino 1** | Inicio → 1 → 2(SÍ) → 3 → 5 → 6 → Fin |
+| **Camino 2** | Inicio → 1 → 2(NO) → 4 → 5 → 6 → Fin |
+
+### Paso 4
+
+| Número del camino | Caso de Prueba (IN) | Resultado esperado (OUT) |
+| :--- | :--- | :--- |
+| **Camino 1** | estatus = "ACTIVO" | Colección de usuarios con activo = true (PCB-N1: SI) |
+| **Camino 2** | estatus = "SUSPENDIDO" | Colección de usuarios con activo = false (PCB-N1: NO) |
