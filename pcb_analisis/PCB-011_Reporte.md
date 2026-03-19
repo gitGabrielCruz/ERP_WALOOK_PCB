@@ -287,9 +287,11 @@ N30 -> F
 | **C14** | I -> N2(F) -> N4(F) -> N6(F) -> N8(F) -> N10(F) -> N12(F) -> N14(F) -> N16(F) -> N18(F) -> N20(F) -> N22(F) -> N24 -> N25(T) -> N26(T) -> N27(F) -> N30 -> F |
 | **C15 (Éxito)** | I -> N2(F) -> N4(F) -> N6(F) -> N8(F) -> N10(F) -> N12(F) -> N14(F) -> N16(F) -> N18(F) -> N20(F) -> N22(F) -> N24 -> N25(F) -> N30 -> F |
 
-### Paso 4: Matriz de Automatización (Log| **PCB-011 (C15)** | `rfc="LACC010101ABC"`, `razonSocial="Lentes AC"`, `email="test@test.com"`, `esActualizacion=false` | **SUCCESS** (Objeto Proveedor) | Líneas 116-181 iluminadas en VERDE |
 
-<br>
-representar Dead Code (Código Muerto — Segmentos que nunca se ejecutan), una zona de riesgo técnico o, simplemente, código fuera del alcance del reporte actual.
+### Paso 4: Matriz de Automatización (Log de Pruebas)
+
+| ID / Camino | Caso de Prueba (IN) | Resultado (OUT) | Evidencia JaCoCo |
+| :--- | :--- | :--- | :--- |
+| **PCB-011 (C15)** | `rfc="LACC010101ABC"`, `razonSocial="Lentes AC"`, `email="test@test.com"`, `esActualizacion=false` | **SUCCESS** (Objeto Proveedor) | Líneas 116-181 iluminadas en VERDE |
 
 <br>
