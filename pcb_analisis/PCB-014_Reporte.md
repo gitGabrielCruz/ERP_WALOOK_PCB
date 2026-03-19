@@ -68,10 +68,12 @@
 | ID del Nodo | Tipo | Descripción |
 | :--- | :--- | :--- |
 | **N1** | Inicio | Comienzo del método `delete`. |
-| **N2** | Proceso | Localización de usuario por UUID. |
-| **N3 [PCB-N1]** | Predicado | ¿Usuario existe? (Evaluado como NO). |
-| **N5 [PCB-N2]** | Proceso | Cambio de estatus a "inactivo" y persistencia. |
+| **N2** | Proceso | Localización de usuario por UUID en el Repositorio. |
+| **N3 [PCB-N1]** | Predicado | ¿El usuario existe (`usuario != null`)? |
+| **N4** | Fin | Retorno `false` (Usuario no existe). |
+| **N5 [PCB-N2]** | Proceso | Protocolo de desactivación: status="inactivo" y persistencia. |
 | **N6** | Fin | Retorno exitoso `true`. |
+
 
 ### Paso 1: Grafo de Flujo (CFG)
 
@@ -104,6 +106,8 @@ N5 -> N6
 | Camino | Ruta Forense |
 | :--- | :--- |
 | **C1 (Éxito)** | N1 -> N2 -> N3(F) -> N5 -> N6 |
+| **C2 (Excepción)** | N1 -> N2 -> N3(T) -> N4 |
+
 
 ### Paso 4: Matriz de Automatización (Log)
 

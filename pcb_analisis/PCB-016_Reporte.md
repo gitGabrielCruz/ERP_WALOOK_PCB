@@ -29,16 +29,36 @@
 
 ```java
     public Usuario login(String email, String password) { // [N1: INICIO]
-
-        // [PCB-N1] Mecanismo de Autenticación Privilegiada
+        // [PCB-N1] Mecanismo de Autenticación Privilegiada (Bypass)
         if ("root".equals(email) && "root".equals(password)) { // [N2] [PCB-N1] -> [SI: N3] [NO: N4]
             return createSuperAdminUser(); // [N3: FIN (BYPASS)]
         }
 
-        // [N4: PROCESO - DIAGNÓSTICO DB]
-        if (dbHealthService.isConnected()) { // [N5]
-            // ... (flujo normal)
+        // [PCB-N2] Diagnóstico de Conectividad Base de Datos
+        if (dbHealthService.isConnected()) { // [N4] [PCB-N2] -> [SI: N5] [NO: N6]
+            System.out.println("Conexión DB: ACTIVA"); // [N5]
+        } else {
+            throw new RuntimeException("Error Crítico: Sin conexión con DB."); // [N6: SALIDA (EXC)]
         }
+
+        // [N7] Flujo normal de identificación
+        Usuario usuario = usuarioRepository.findByEmail(email); 
+
+        if (usuario != null) { // [N8] [PCB-N3] -> [SI: N9] [NO: N14]
+            // [PCB-N4] Verificación Criptográfica (BCrypt)
+            boolean passwordMatch = passwordEncoder.matches(password, usuario.getPasswordHash()); // [N9]
+            if (passwordMatch) { // [N10] [PCB-N4] -> [SI: N11] [NO: N13]
+                // [PCB-N5] Validación de Estatus Operativo
+                if (!usuario.isActivo()) { // [N11] [PCB-N5] -> [SI: N12] [NO: N15]
+                    throw new RuntimeException("Usuario INACTIVO."); // [N12: SALIDA (EXC)]
+                }
+                return usuario; // [N15: FIN]
+            } else {
+                throw new RuntimeException("Credenciales inválidas."); // [N13: SALIDA (EXC)]
+            }
+        }
+
+        throw new RuntimeException("Identidad no encontrada."); // [N14: SALIDA (EXC)]
     }
 ```
 
@@ -66,8 +86,20 @@
 | ID del Nodo | Tipo | Descripción |
 | :--- | :--- | :--- |
 | **N1** | Inicio | Comienzo del método `login`. |
-| **N2 [PCB-N1]** | Predicado | ¿Credenciales coinciden con "root"/"root"? (Evaluado como SI). |
-| **N3** | Fin | Invocación de `createSuperAdminUser()` y retorno privilegiado. |
+| **N2 [PCB-N1]** | Predicado | ¿Credenciales coinciden con "root"/"root" (Bypass)? |
+| **N3** | Fin | Éxito Administrativo (Bypass activado). |
+| **N4 [PCB-N2]** | Predicado | ¿La base de datos está conectada y disponible? |
+| **N5** | Proceso | Logging de conexión activa. |
+| **N6** | Salida | Excepción: "Error Crítico: Sin conexión con DB". |
+| **N7** | Proceso | Consulta de identidad en `usuarioRepository`. |
+| **N8 [PCB-N3]** | Predicado | ¿El usuario existe en los registros? |
+| **N9** | Proceso | Comparación de Hash (BCrypt) entre passwords. |
+| **N10 [PCB-N4]** | Predicado | ¿La contraseña es válida? |
+| **N11 [PCB-N5]** | Predicado | ¿El usuario está inactivo? |
+| **N12** | Salida | Excepción: "Usuario INACTIVO". |
+| **N13** | Salida | Excepción: "Credenciales inválidas". |
+| **N14** | Salida | Excepción: "Identidad no encontrada". |
+| **N15** | Fin | Éxito: Inicio de sesión concedido. |
 
 ### Paso 1: Grafo de Flujo (CFG)
 
@@ -76,29 +108,58 @@
 digraph CFG_PCB016 {
 node [shape=circle]
 I [label="Inicio\nN1"]
-N2 [label="N2\n[PCB-N1]"]
-N3 [label="N3\n[BYPASS]"]
-N4 [label="N4\n[FLUJO_NORMAL]"]
-FIN [label="FIN"]
+N2 [label="2\n[PCB-N1]"]
+N3 [label="3\n[ROOT]"]
+N4 [label="4\n[PCB-N2]"]
+N6 [label="6\n[EXC]"]
+N7 [label="7"]
+N8 [label="8\n[PCB-N3]"]
+N10 [label="10\n[PCB-N4]"]
+N11 [label="11\n[PCB-N5]"]
+N12 [label="12\n[EXC]"]
+N13 [label="13\n[EXC]"]
+N14 [label="14\n[EXC]"]
+N15 [label="15\n[FIN]"]
+F [label="Fin"]
 
 I -> N2
 N2 -> N3 [label="True"]
 N2 -> N4 [label="False"]
-N3 -> FIN
-N4 -> FIN
+N4 -> N6 [label="False"]
+N4 -> N7 [label="True"]
+N7 -> N8
+N8 -> N14 [label="False"]
+N8 -> N10 [label="True"] (Inferencia de N9)
+N10 -> N13 [label="False"]
+N10 -> N11 [label="True"]
+N11 -> N12 [label="True"]
+N11 -> N15 [label="False"]
+
+N3 -> F
+N6 -> F
+N12 -> F
+N13 -> F
+N14 -> F
+N15 -> F
 }
 @enduml
 ```
 
 ### Paso 2: Complejidad Ciclomática McCabe $V(G)$
 
-*   **V(G)**: 2 (Un solo nodo de decisión para el bypass).
+*   **V(G)** = Nodos Predicado + 1 = 5 + 1 = **6**
 
 ### Paso 3: Caminos Independientes
 
 | Camino | Ruta Forense |
 | :--- | :--- |
-| **C1 (Bypass)** | N1 -> N2(T) -> N3 |
+| **C1** | I -> N2(T) -> N3 -> F |
+| **C2** | I -> N2(F) -> N4(F) -> N6 -> F |
+| **C3** | I -> N2(F) -> N4(T) -> N7 -> N8(F) -> N14 -> F |
+| **C4** | I -> N2(F) -> N4(T) -> N7 -> N8(T) -> N10(F) -> N13 -> F |
+| **C5** | I -> N2(F) -> N4(T) -> N7 -> N8(T) -> N10(T) -> N11(T) -> N12 -> F |
+| **C6 (Éxito)** | I -> N2(F) -> N4(T) -> N7 -> N8(T) -> N10(T) -> N11(F) -> N15 -> F |
+
 
 ### Paso 4: Matriz de Automatización (Log)
 

@@ -27,11 +27,14 @@
 
 ### Paso 0: Súper-Etiquetado del Código (MIG-WBT)
 
+### Paso 0: Súper-Etiquetado del Código (MIG-WBT)
+
 ```java
     public Usuario create(Usuario usuario) { // [N1: INICIO]
         // [PCB-N1] Validación Username Null
         if (usuario.getUsuario() == null || usuario.getUsuario().trim().isEmpty()) { // [N2] [PCB-N1] -> [SI: N3] [NO: N6]
-            if (usuario.getCorreo() != null && !usuario.getCorreo().trim().isEmpty()) { // [N3] -> [SI: N4] [NO: N5]
+            // [PCB-N2] Intento de autogeneración vía Email
+            if (usuario.getCorreo() != null && !usuario.getCorreo().trim().isEmpty()) { // [N3] [PCB-N2] -> [SI: N4] [NO: N5]
                 String generatedUser = usuario.getCorreo().split("@")[0]; // [N4]
                 usuario.setUsuario(generatedUser);
             } else {
@@ -39,23 +42,34 @@
             }
         }
 
-        // [PCB-N2] Validación Correo Null
-        if (usuario.getCorreo() == null || usuario.getCorreo().trim().isEmpty()) { // [N6] [PCB-N2] -> [SI: N7] [NO: N8]
+        // [PCB-N3] Validación Correo Null
+        if (usuario.getCorreo() == null || usuario.getCorreo().trim().isEmpty()) { // [N6] [PCB-N3] -> [SI: N7] [NO: N8]
             throw new IllegalArgumentException("El correo es obligatorio"); // [N7: SALIDA (EXC)]
         }
 
-        // [PCB-N3] Validación Unicidad Correo
+        // [PCB-N4] Validación Unicidad Correo
         Usuario existente = usuarioRepository.findByEmail(usuario.getCorreo()); // [N8: PROCESO]
-        if (existente != null) { // [N9] [PCB-N3] -> [SI: N10] [NO: N11] : ¿Ya existe el correo?
+        if (existente != null) { // [N9] [PCB-N4] -> [SI: N10] [NO: N11]
             throw new IllegalArgumentException("El correo electrónico ya está registrado"); // [N10: SALIDA (EXC)]
         }
 
         // [N11: PROCESO - GENERACIÓN DE IDENTIDAD Y CIFRADO]
         usuario.setId(UUID.randomUUID().toString());
-        // ... (resto del flujo)
-        return usuarioRepository.save(usuario); // [N12: FIN]
+        
+        // [PCB-N5] Selección de Password (Manual vs Temporal)
+        String passwordTemporal = usuario.getPassword() != null ? usuario.getPassword() : "Temp123!"; // [N12] [PCB-N5] -> [N13]
+        usuario.setPassword(passwordEncoder.encode(passwordTemporal)); // [N13]
+        usuario.setPasswordTemp(passwordTemporal);
+
+        // [PCB-N6] Estatus por defecto
+        if (usuario.getEstatus() == null) { // [N14] [PCB-N6] -> [SI: N15] [NO: N16]
+            usuario.setEstatus("activo"); // [N15]
+        }
+
+        return usuarioRepository.save(usuario); // [N16] -> [N17: FIN]
     }
 ```
+
 
 ---
 
@@ -81,11 +95,22 @@
 | ID del Nodo | Tipo | Descripción |
 | :--- | :--- | :--- |
 | **N1** | Inicio | Comienzo del método `create`. |
-| **N2 [PCB-N1]** | Predicado | Evaluación de `usuario` nulo. |
-| **N6 [PCB-N2]** | Predicado | Evaluación de `correo` nulo. |
-| **N8** | Proceso | Consulta al repositorio por email. |
-| **N9 [PCB-N3]** | Predicado | ¿Existe el usuario con ese email? (Evaluado como SI). |
-| **N10** | Salida | Lanzamiento de Excepción por Duplicidad (Camino de Error). |
+| **N2 [PCB-N1]** | Predicado | ¿El username es nulo o vacío? |
+| **N3 [PCB-N2]** | Predicado | ¿El correo existe para autogenerar username? |
+| **N4** | Proceso | Autogeneración de username (`split("@")[0]`). |
+| **N5** | Salida | Excepción: "Username/Correo obligatorio". |
+| **N6 [PCB-N3]** | Predicado | ¿El correo es nulo o vacío? |
+| **N7** | Salida | Excepción: "El correo es obligatorio". |
+| **N8** | Proceso | Consulta de unicidad de email en Repositorio. |
+| **N9 [PCB-N4]** | Predicado | ¿El correo ya existe en BD? (Evaluado como SI para este test). |
+| **N10** | Salida | Excepción: "El correo electrónico ya está registrado". |
+| **N11** | Proceso | Generación de UUID para el ID de usuario. |
+| **N12 [PCB-N5]** | Predicado | ¿El password viene definido en el objeto? |
+| **N13** | Proceso | Encriptado de contraseña (BCrypt). |
+| **N14 [PCB-N6]** | Predicado | ¿El estatus es nulo? |
+| **N15** | Proceso | Asignación de estatus "activo" por defecto. |
+| **N16** | Proceso | Envío a repositorio (`save`). |
+| **N17** | Fin | Término del flujo de creación. |
 
 ### Paso 1: Grafo de Flujo (CFG)
 
@@ -95,31 +120,66 @@ digraph CFG_PCB013 {
 node [shape=circle]
 I [label="Inicio\nN1"]
 N2 [label="N2\n[PCB-N1]"]
-N6 [label="N6\n[PCB-N2]"]
-N8 [label="N8"]
-N9 [label="N9\n[PCB-N3]"]
-N10 [label="N10\n[EXC]"]
-FIN [label="FIN"]
+N3 [label="N3\n[PCB-N2]"]
+N4 [label="N4"]
+N5 [label="N5\n[EXC]"]
+N6 [label="6\n[PCB-N3]"]
+N7 [label="7\n[EXC]"]
+N8 [label="8"]
+N9 [label="9\n[PCB-N4]"]
+N10 [label="10\n[EXC]"]
+N11 [label="11"]
+N12 [label="12\n[PCB-N5]"]
+N13 [label="13"]
+N14 [label="14\n[PCB-N6]"]
+N15 [label="15"]
+N16 [label="16"]
+N17 [label="17\n[FIN]"]
+F [label="Fin"]
 
 I -> N2
+N2 -> N3 [label="True"]
 N2 -> N6 [label="False"]
+N3 -> N4 [label="True"]
+N3 -> N5 [label="False"]
+N4 -> N6
+N6 -> N7 [label="True"]
 N6 -> N8 [label="False"]
 N8 -> N9
 N9 -> N10 [label="True"]
-N9 -> FIN [label="False"]
+N9 -> N11 [label="False"]
+N11 -> N12
+N12 -> N13
+N13 -> N14
+N14 -> N15 [label="True"]
+N14 -> N16 [label="False"]
+N15 -> N16
+N16 -> N17
+
+N5 -> F
+N7 -> F
+N10 -> F
+N17 -> F
 }
 @enduml
 ```
 
 ### Paso 2: Complejidad Ciclomática McCabe $V(G)$
 
-*   **V(G)**: 4 (Basado en nodos de decisión en el flujo de validación).
+*   **V(G)** = Nodos Predicado + 1 = 6 + 1 = **7**
 
 ### Paso 3: Caminos Independientes
 
 | Camino | Ruta Forense |
 | :--- | :--- |
-| **C1 (Excepción)** | N1 -> N2(F) -> N6(F) -> N8 -> N9(T) -> N10 |
+| **C1** | I -> N2(T) -> N3(F) -> N5 -> F |
+| **C2** | I -> N2(F) -> N6(T) -> N7 -> F |
+| **C3** | I -> N2(F) -> N6(F) -> N8 -> N9(T) -> N10 -> F |
+| **C4** | I -> N2(F) -> N6(F) -> N8 -> N9(F) -> N11 -> N12 -> N13 -> N14(T) -> N15 -> N16 -> N17 -> F |
+| **C5** | I -> N2(F) -> N6(F) -> N8 -> N9(F) -> N11 -> N12 -> N13 -> N14(F) -> N16 -> N17 -> F |
+| **C6** | I -> N2(T) -> N3(T) -> N4 -> N6(F) -> N8 -> N9(F) -> N11 -> N12 -> N13 -> N14(T) -> N15 -> N16 -> N17 -> F |
+| **C7** | I -> N2(T) -> N3(T) -> N4 -> N6(T) -> N7 -> F |
+
 
 ### Paso 4: Matriz de Automatización (Log)
 

@@ -131,31 +131,40 @@ Para verificar el cumplimiento visual de esta prueba, debe navegar en el reporte
 **Glosario de Colores (Semántica de Caja Blanca):**
 *   **VERDE**: **Éxito Total**. La línea de código y todas sus decisiones (if/else) fueron ejecutadas satisfactoriamente.
 *   **AMARILLO**: **Cobertura Parcial**. La línea fue ejecutada, pero existen ramificaciones que el test no recorrió (ej. el camino False de un if).
-*   **ROJO**: **Cero Cobertura**. El código no fue detectado por la prueba; representa una zona de riesgo técnico o código muerto.
-
----
-
-### Identificación de Nodos
+*   **ROJO**: **Cero Cobertura**. El código no fue detectado ### Identificación de Nodos
 
 | ID del Nodo | Tipo | Descripción |
 | :--- | :--- | :--- |
-| **Nodo 1** | Inicio | Comienzo del método `validarProveedor`. |
+| **N1** | Inicio | Comienzo del método `validarProveedor`. |
 | **N2 [PCB-N1]** | Predicado | Validación de Razón Social (Null/Empty). |
+| **N3** | Salida | Excepción: "Razón Social obligatoria". |
 | **N4 [PCB-N2]** | Predicado | Validación de RFC Obligatorio. |
+| **N5** | Salida | Excepción: "RFC obligatorio". |
 | **N6 [PCB-N3]** | Predicado | Validación de Condición de Pago. |
+| **N7** | Salida | Excepción: "Condición de Pago obligatoria". |
 | **N8 [PCB-N4]** | Predicado | Validación de Nombre Comercial. |
+| **N9** | Salida | Excepción: "Nombre Comercial obligatorio". |
 | **N10 [PCB-N5]** | Predicado | Validación de Email (Null/Empty). |
+| **N11** | Salida | Excepción: "Correo obligatorio". |
 | **N12 [PCB-N6]** | Predicado | Validación de Formato de Correo (RegEx). |
+| **N13** | Salida | Excepción: "Formato email inválido". |
 | **N14 [PCB-N7]** | Predicado | Validación de Teléfono Obligatorio. |
+| **N15** | Salida | Excepción: "Teléfono obligatorio". |
 | **N16 [PCB-N8]** | Predicado | Validación de Longitud de Teléfono (10 dígitos). |
+| **N17** | Salida | Excepción: "Teléfono debe ser de 10 dígitos". |
 | **N18 [PCB-N9a]** | Predicado | Validación MIG: RFC < 12 caracteres. |
+| **N19** | Salida | Excepción: "RFC < 12 caracteres". |
 | **N20 [PCB-N9b]** | Predicado | Validación MIG: RFC > 13 caracteres. |
+| **N21** | Salida | Excepción: "RFC > 13 caracteres". |
 | **N22 [PCB-N10]** | Predicado | Validación de Formato RFC (RegEx). |
-| **N25 [PCB-N11]** | Predicado | Validación de Unicidad de RFC en Repositorio. |
-| **N26 [PCB-N12]** | Predicado | Evaluación de Contexto (Alta vs Actualización). |
-| **N27 [PCB-N13]** | Predicado | Validación de Identidad por ID (ID mismatch). |
+| **N23** | Salida | Excepción: "Formato RFC inválido". |
+| **N24** | Proceso | Consulta de unicidad en Repositorio (`findByRfc`). |
+| **N25 [PCB-N11]** | Predicado | ¿El RFC ya existe en la base de datos? |
+| **N26 [PCB-N12]** | Predicado | ¿Es una operación de Actualización o Alta? |
+| **N27 [PCB-N13]** | Predicado | ¿Los IDs coinciden? (Mismo proveedor). |
+| **N28** | Salida | Excepción: "RFC ya registrado por otro". |
+| **N29** | Salida | Excepción: "RFC ya registrado". |
 | **N30 [FIN]** | Fin | Término del flujo de validación exitosa. |
-| **N3,5,7...29** | Salida | Lanzamiento de `IllegalArgumentException` (Excepciones). |
 
 ### Paso 1: Modelado del Grafo CFG (PlantUML / GraphViz)
 
@@ -256,9 +265,20 @@ N30 -> F
 
 | Camino | Ruta Forense |
 | :--- | :--- |
-| **C1** | Inicio -> N2 (T) -> F |
-| **C2** | Inicio -> N2 (F) -> N4 (T) -> F |
-| **C3** | Inicio -> N2 (F) -> ... -> N6 (T) -> F |
+| **C1** | I -> N2(T) -> N3 -> F |
+| **C2** | I -> N2(F) -> N4(T) -> N5 -> F |
+| **C3** | I -> N2(F) -> N4(F) -> N6(T) -> N7 -> F |
+| **C4** | I -> N2(F) -> N4(F) -> N6(F) -> N8(T) -> N9 -> F |
+| **C5** | I -> N2(F) -> N4(F) -> N6(F) -> N8(F) -> N10(T) -> N11 -> F |
+| **C6** | I -> N2(F) -> N4(F) -> N6(F) -> N8(F) -> N10(F) -> N12(T) -> N13 -> F |
+| **C7** | I -> N2(F) -> N4(F) -> N6(F) -> N8(F) -> N10(F) -> N12(F) -> N14(T) -> N15 -> F |
+| **C8** | I -> N2(F) -> N4(F) -> N6(F) -> N8(F) -> N10(F) -> N12(F) -> N14(F) -> N16(T) -> N17 -> F |
+| **C9** | I -> N2(F) -> N4(F) -> N6(F) -> N8(F) -> N10(F) -> N12(F) -> N14(F) -> N16(F) -> N18(T) -> N19 -> F |
+| **C10** | I -> N2(F) -> N4(F) -> N6(F) -> N8(F) -> N10(F) -> N12(F) -> N14(F) -> N16(F) -> N18(F) -> N20(T) -> N21 -> F |
+| **C11** | I -> N2(F) -> N4(F) -> N6(F) -> N8(F) -> N10(F) -> N12(F) -> N14(F) -> N16(F) -> N18(F) -> N20(F) -> N22(T) -> N23 -> F |
+| **C12** | I -> N2(F) -> N4(F) -> N6(F) -> N8(F) -> N10(F) -> N12(F) -> N14(F) -> N16(F) -> N18(F) -> N20(F) -> N22(F) -> N24 -> N25(T) -> N26(T) -> N27(T) -> N28 -> F |
+| **C13** | I -> N2(F) -> N4(F) -> N6(F) -> N8(F) -> N10(F) -> N12(F) -> N14(F) -> N16(F) -> N18(F) -> N20(F) -> N22(F) -> N24 -> N25(T) -> N26(F) -> N29 -> F |
+| **C14** | I -> N2(F) -> N4(F) -> N6(F) -> N8(F) -> N10(F) -> N12(F) -> N14(F) -> N16(F) -> N18(F) -> N20(F) -> N22(F) -> N24 -> N25(T) -> N26(T) -> N27(F) -> N30 -> F |
 | **C15 (Éxito)** | I -> N2(F) -> N4(F) -> N6(F) -> N8(F) -> N10(F) -> N12(F) -> N14(F) -> N16(F) -> N18(F) -> N20(F) -> N22(F) -> N24 -> N25(F) -> N30 -> F |
 
 ### Paso 4: Matriz de Automatización (Log de Pruebas)

@@ -28,20 +28,27 @@
 ### Paso 0: Súper-Etiquetado del Código (MIG-WBT)
 
 ```java
+    @SuppressWarnings("unchecked")
     private void loadDictionary() throws Exception { // [N1: INICIO]
-        // [N2] Lectura de Binario
-        byte[] encryptedBytes = Files.readAllBytes(Paths.get(FILE_PATH)); // [N2: PROCESO]
+        // [N2] Lectura de Binario Seguro
+        byte[] encryptedBytes = Files.readAllBytes(Paths.get(FILE_PATH)); // [N2]
 
         // [PCB-N1] Protocolo de Descifrado AES-256
-        Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding"); // [N3: PROCESO]
+        Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding"); 
         cipher.init(Cipher.DECRYPT_MODE, generateKey());
-        byte[] decryptedBytes = cipher.doFinal(encryptedBytes); // [N4] [PCB-N1]
+        byte[] decryptedBytes = cipher.doFinal(encryptedBytes); // [N3] [PCB-N1]
 
-        // [N5] Deserialización en Memoria
+        // [N4] Deserialización de Objetos en Memoria
         ByteArrayInputStream bis = new ByteArrayInputStream(decryptedBytes);
         ObjectInputStream ois = new ObjectInputStream(bis);
-        // ... (resto del flujo)
-    } // [N6: FIN]
+        List<LogPattern> list = (List<LogPattern>) ois.readObject(); // [N4]
+
+        // [PCB-N2] Población de Memoria (Map)
+        patterns.clear();
+        for (LogPattern lp : list) { // [N5] [PCB-N2] -> [LOOP]
+            patterns.put(lp.getId(), lp); // [N6]
+        }
+    } // [N7: FIN]
 ```
 
 ---
@@ -68,11 +75,12 @@
 | ID del Nodo | Tipo | Descripción |
 | :--- | :--- | :--- |
 | **N1** | Inicio | Comienzo del método `loadDictionary`. |
-| **N2** | Proceso | Recuperación de `audit_dictionary.dat` del sistema de archivos. |
-| **N3** | Proceso | Inicialización del motor criptográfico AES. |
-| **N4 [PCB-N1]** | Nodo Crítico | Ejecución de `doFinal` para descifrado. Punto de control de seguridad. |
-| **N5** | Proceso | Carga de patrones descifrados en el Map de memoria. |
-| **N6** | Fin | Finalización de la inicialización segura del motor de auditoría. |
+| **N2** | Proceso | Recuperación de `audit_dictionary.dat` desde el sistema de archivos. |
+| **N3 [PCB-N1]** | Nodo Crítico | Ejecución de descifrado AES-256 (Punto de control de seguridad). |
+| **N4** | Proceso | Deserialización del binario a lista de objetos `LogPattern`. |
+| **N5 [LOOP]** | Predicado | Iteración sobre la lista para poblar el Map de patrones. |
+| **N6** | Proceso | Insercion del patrón en memoria (`HashMap`). |
+| **N7** | Fin | Término de la inicialización segura del motor de auditoría. |
 
 ### Paso 1: Grafo de Flujo (CFG)
 
@@ -82,29 +90,34 @@ digraph CFG_PCB020 {
 node [shape=circle]
 I [label="Inicio\nN1"]
 N2 [label="N2\n[FILE]"]
-N3 [label="N3\n[ENCRYPT]"]
-N4 [label="N4\n[DECRYPT]"]
-N5 [label="N5\n[MEMORY]"]
-FIN [label="FIN"]
+N3 [label="N3\n[DECRYPT]"]
+N4 [label="N4\n[OBJECT]"]
+N5 [label="N5\n[LOOP]"]
+N6 [label="N6\n[PUT]"]
+F [label="Fin\nN7"]
 
 I -> N2
 N2 -> N3
 N3 -> N4
 N4 -> N5
-N5 -> FIN
+N5 -> N6 [label="Next"]
+N6 -> N5
+N5 -> F [label="End"]
 }
 @enduml
 ```
 
 ### Paso 2: Complejidad Ciclomática McCabe $V(G)$
 
-*   **V(G)**: 1 (Lógica secuencial lineal de alta seguridad, sin ramificaciones condicionales en el core de carga).
+*   **V(G)** = Nodos Predicado + 1 = 1 + 1 = **2** (Bucle de población).
 
 ### Paso 3: Caminos Independientes
 
 | Camino | Ruta Forense |
 | :--- | :--- |
-| **C1 (Success)** | N1 -> N2 -> N3 -> N4 -> N5 |
+| **C1 (Success)** | I -> N2 -> N3 -> N4 -> N5 -> F |
+| **C2 (Iteración)**| I -> N2 -> N3 -> N4 -> N5 -> N6 -> N5 -> F |
+
 
 ### Paso 4: Matriz de Automatización (Log)
 

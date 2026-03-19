@@ -27,11 +27,23 @@
 
 ### Paso 0: Súper-Etiquetado del Código (MIG-WBT)
 
-*(Se omiten validaciones iniciales por brevedad, foco en bloque de unicidad)*
-
 ```java
+    private void validarProveedor(Proveedor p, boolean esActualizacion) { // [N1: INICIO]
+        // [N2] a [N23] Validaciones de campos obligatorios (Omitidas en grafo por foco, pero presentes en código)
+        if (p.getRazonSocial() == null || p.getRazonSocial().trim().isEmpty()) { throw new IllegalArgumentException("Razón Social obligatoria."); }
+        if (p.getRfc() == null || p.getRfc().trim().isEmpty()) { throw new IllegalArgumentException("RFC obligatorio."); }
+        if (p.getCondicionPago() == null || p.getCondicionPago().trim().isEmpty()) { throw new IllegalArgumentException("Condición de Pago obligatoria."); }
+        if (p.getNombreComercial() == null || p.getNombreComercial().trim().isEmpty()) { throw new IllegalArgumentException("Nombre Comercial obligatorio."); }
+        if (p.getEmail() == null || p.getEmail().trim().isEmpty()) { throw new IllegalArgumentException("Correo obligatorio."); }
+        if (!p.getEmail().matches("^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$")) { throw new IllegalArgumentException("Formato email inválido."); }
+        if (p.getTelefono() == null || p.getTelefono().trim().isEmpty()) { throw new IllegalArgumentException("Teléfono obligatorio."); }
+        if (p.getTelefono().replaceAll("\\D", "").length() != 10) { throw new IllegalArgumentException("Teléfono debe ser de 10 dígitos."); }
+        if (p.getRfc().trim().length() < 12) { throw new IllegalArgumentException("RFC < 12 caracteres."); }
+        if (p.getRfc().trim().length() > 13) { throw new IllegalArgumentException("RFC > 13 caracteres."); }
+        if (!p.getRfc().trim().matches("^[A-ZÑ&]{3,4}\\d{6}[A-Z0-9]{3}$")) { throw new IllegalArgumentException("Formato RFC inválido."); }
+
         // [PCB-N11] Validación Unicidad RFC
-        Proveedor existente = proveedorRepository.findByRfc(rfcLimpio); // [N24]
+        Proveedor existente = proveedorRepository.findByRfc(p.getRfc().trim().toUpperCase()); // [N24]
         if (existente != null) { // [N25] [PCB-N11] -> [SI: N26] [NO: N30]
             // [PCB-N12] Evaluación Contexto (esActualizacion = true)
             if (esActualizacion) { // [N26] [PCB-N12] -> [SI: N27] [NO: N29]
@@ -41,7 +53,9 @@
                 }
             }
         }
+    } // [N30: FIN]
 ```
+
 
 ---
 
@@ -104,7 +118,8 @@ N27 -> FIN [label="False"]
 
 | Camino | Ruta Forense |
 | :--- | :--- |
-| **C1 (Excepción)** | N24 -> N25(T) -> N26(T) -> N27(T) -> N28 |
+| **C1 (Excepción)** | I -> N2(F) -> N4(F) -> N6(F) -> N8(F) -> N10(F) -> N12(F) -> N14(F) -> N16(F) -> N18(F) -> N20(F) -> N22(F) -> N24 -> N25(T) -> N26(T) -> N27(T) -> N28 |
+
 
 ### Paso 4: Matriz de Automatización (Log)
 

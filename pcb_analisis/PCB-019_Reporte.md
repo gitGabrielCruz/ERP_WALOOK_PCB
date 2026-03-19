@@ -29,23 +29,31 @@
 
 ```java
     public void registrarEvento(String idUsuario, String idPatron, String ip, String paramX, String paramS) { // [N1: INICIO]
-        try {
-            // [N2] Construcción de Log
-            String logCompleto = auditPatternService.buildLog(idPatron, paramX, paramS); // [N2: PROCESO]
-            // ... (fragmentación de parts)
+        try { // [N2: INICIO TRY]
+            // [N3] Construcción de Log y Fragmentación
+            String logCompleto = auditPatternService.buildLog(idPatron, paramX, paramS); // [N3]
+            String[] parts = logCompleto.split("\\|"); // [N4]
+            int n = parts.length;
 
-            Bitacora b = new Bitacora(); // [N3: PROCESO]
+            // [N5] Reconstrucción de Análisis Técnico (Bucle)
+            StringBuilder sbAnalisis = new StringBuilder();
+            for (int i = 3; i < n - 1; i++) { // [N5] [LOOP]
+                sbAnalisis.append(parts[i].trim());
+            }
+
+            Bitacora b = new Bitacora(); // [N6]
             b.setIdUsuario(idUsuario);
 
-            // [PCB-N1] Normalización de IP Nula
-            b.setIpOrigen(encrypt(ip != null ? ip : "0.0.0.0")); // [N4] [PCB-N1] -> [SI: N5] [NO: N6]
+            // [PCB-N1] Normalización de IP Nula y Cifrado AES
+            b.setIpOrigen(encrypt(ip != null ? ip : "0.0.0.0")); // [N7] [PCB-N1] -> [SI: N8] [NO: N9]
 
-            b.setDetalles(encrypt(msjHumano + " | " + analisis)); // [N7]
-            bitacoraRepository.save(b); // [N8]
-        } catch (Exception e) { // [N9: EXC]
+            // [N10] Persistencia con Capa de Privacidad
+            b.setDetalles(encrypt(parts[2] + " | " + sbAnalisis.toString())); 
+            bitacoraRepository.save(b); // [N11]
+        } catch (Exception e) { // [N12: SALIDA (EXC)]
             System.err.println("Error: " + e.getMessage());
         }
-    } // [N10: FIN]
+    } // [N13: FIN]
 ```
 
 ---
@@ -71,11 +79,15 @@
 
 | ID del Nodo | Tipo | Descripción |
 | :--- | :--- | :--- |
-| **N1** | Inicio | Comienzo del método `registrarEvento`. |
-| **N4 [PCB-N1]** | Predicado | ¿La IP recibida es nula? (Evaluado como SI). |
-| **N5** | Proceso | Asignación de IP por defecto `0.0.0.0` y cifrado AES. |
-| **N8** | Proceso | Persistencia del registro de auditoría en BD. |
-| **N10** | Fin | Finalización del protocolo de auditoría robusta. |
+| **N1** | Inicio | Comienzo del protocolo de auditoría. |
+| **N2** | Inicio Try | Apertura del bloque robusto de captura de eventos. |
+| **N3/N4** | Proceso | Obtención del patrón maestro y tokenización mediante divisor pipe (`|`). |
+| **N5 [LOOP]** | Predicado | Iteración para reconstruir el análisis técnico del log. |
+| **N7 [PCB-N1]** | Predicado | ¿La IP de origen es nula? (Evaluado como SI para este test). |
+| **N8** | Proceso | Normalización a `0.0.0.0` y cifrado AES-256. |
+| **N11** | Proceso | Persistencia cifrada en `bitacoraRepository`. |
+| **N12** | Excepción | Captura de falla en el sistema de auditoría (Excepción controlada). |
+| **N13** | Fin | Finalización del registro documental de privacidad. |
 
 ### Paso 1: Grafo de Flujo (CFG)
 
@@ -84,31 +96,46 @@
 digraph CFG_PCB019 {
 node [shape=circle]
 I [label="Inicio\nN1"]
-N4 [label="N4\n[PCB-N1]"]
-N5 [label="N5\n[0.0.0.0]"]
-N6 [label="N6\n[IP_REAL]"]
-N8 [label="N8\n[SAVE]"]
-FIN [label="FIN"]
+N2 [label="2\n[TRY]"]
+N3 [label="3/4"]
+N5 [label="5\n[LOOP]"]
+N7 [label="7\n[PCB-N1]"]
+N8 [label="8\n[0.0.0.0]"]
+N9 [label="9\n[IP_REAL]"]
+N11 [label="11\n[SAVE]"]
+N12 [label="12\n[EXC]"]
+N13 [label="13\n[FIN]"]
+F [label="Fin"]
 
-I -> N4
-N4 -> N5 [label="True (Null)"]
-N4 -> N6 [label="False (Not Null)"]
-N5 -> N8
-N6 -> N8
-N8 -> FIN
+I -> N2
+N2 -> N3
+N3 -> N5
+N5 -> N5 [label="Next"]
+N5 -> N7 [label="End"]
+N7 -> N8 [label="True (Null)"]
+N7 -> N9 [label="False (Not Null)"]
+N8 -> N11
+N9 -> N11
+N11 -> N13
+N2 -> N12 [style=dotted, label="Exception"]
+N12 -> N13
+N13 -> F
 }
 @enduml
 ```
 
 ### Paso 2: Complejidad Ciclomática McCabe $V(G)$
 
-*   **V(G)**: 2 (Un solo nodo de decisión para la normalización de IP).
+*   **V(G)** = Nodos Predicado + 1 = 3 + 1 = **4** (Loop, Null Check, Try-Catch).
 
 ### Paso 3: Caminos Independientes
 
 | Camino | Ruta Forense |
 | :--- | :--- |
-| **C1 (Normalización)** | N1 -> N4(T) -> N5 -> N8 |
+| **C1 (Normalización)** | I -> N2 -> N3 -> N5(E) -> N7(T) -> N8 -> N11 -> N13 -> F |
+| **C2 (IP Real)** | I -> N2 -> N3 -> N5(E) -> N7(F) -> N9 -> N11 -> N13 -> F |
+| **C3 (Fallo Auditoría)** | I -> N2 -> N12 -> N13 -> F |
+
 
 ### Paso 4: Matriz de Automatización (Log)
 
