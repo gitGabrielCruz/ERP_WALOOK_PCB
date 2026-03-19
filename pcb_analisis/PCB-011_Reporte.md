@@ -108,24 +108,16 @@
     } // [N30: FIN / RETORNO CONTROLADO]
 ```
 
-### Descripción breve del fragmento
-
-El fragmento **PCB-011** es la primera línea de defensa del módulo de proveedores. Su importancia radica en la validación exhaustiva de la integridad de los datos (RFC, Email, Teléfono) y la unicidad fiscal en la base de datos. Mediante esta auditoría automatizada, se garantiza que no existan colisiones de registros y que la información cumpla con los estándares de formato RNF-06.
-
 ---
 
 ### Auditoría de Evidencia Digital (JaCoCo)
-
-Para verificar el cumplimiento visual de esta prueba, debe navegar en el reporte original generado por JaCoCo siguiendo esta ruta:
 
 **Ruta del Reporte Maestro:**
 `d:\_sTIC\Documents\_Empresa GraxSofT\_CODE_\ERP_WALOOK_PCB\omcgc\backend\target\site\jacoco\index.html`
 
 **Estructura de Navegación (Tree View):**
 ```text
-[index.html] (Reporte General de Proyecto)
- └── [com.omcgc.erp.service] (Paquete de Lógica de Negocio)
-      └── [ProveedorService] (Clase bajo Auditoría) <-- ABRIR ESTE ARCHIVO
+[index.html] -> [com.omcgc.erp.service] -> [ProveedorService]
 ```
 
 Glosario de Semántica de Cobertura (White Box Analysis — Análisis de Caja Blanca)
@@ -133,7 +125,6 @@ Glosario de Semántica de Cobertura (White Box Analysis — Análisis de Caja Bl
 •	AMARILLO — Cobertura Parcial (Partial Coverage): La línea fue alcanzada y ejecutada por el Unit Test (Prueba Unitaria — Verificación de la unidad mínima de código), pero existen ramificaciones que el plan de prueba no recorrió. Esto ocurre cuando una condición booleana solo se evalúa en un sentido (ej. solo true), dejando caminos lógicos sin explorar.
 •	ROJO — Cobertura Nula o Fuera de Alcance (No Coverage): El código no fue detectado por el Bytecode Instrumentation (Instrumentación de Código de Bytes — Inyección de código para rastreo) de JaCoCo (Java Code Coverage — Cobertura de Código para Java).
 Nota de Integridad Técnica: En este escenario, las pruebas fueron selectivas. Si el algoritmo de JaCoCo detecta código que no estaba considerado en el plan de ejecución or que fue omitido por los criterios de filtrado, lo reporta como "no detectado". Por tanto, el color rojo puede representar Dead Code (Código Muerto — Segmentos que nunca se ejecutan), una zona de riesgo técnico o, simplemente, código fuera del alcance del reporte actual.
-
 
 ---
 
@@ -172,8 +163,7 @@ Nota de Integridad Técnica: En este escenario, las pruebas fueron selectivas. S
 | **N29** | Salida | Excepción: "RFC ya registrado". |
 | **N30 [FIN]** | Fin | Término del flujo de validación exitosa. |
 
-### Paso 1: Modelado del Grafo CFG (PlantUML / GraphViz)
-
+### Paso 1: Grafo de Flujo (CFG)
 
 ```plantuml
 @startuml
@@ -234,7 +224,7 @@ N18 -> N19 [label="True"]
 N18 -> N20 [label="False"]
 N20 -> N21 [label="True"]
 N20 -> N22 [label="False"]
-22 -> N23 [label="True"]
+N22 -> N23 [label="True"]
 N22 -> N24 [label="False"]
 N24 -> N25
 N25 -> N26 [label="True"]
@@ -265,7 +255,6 @@ N30 -> F
 ### Paso 2: Complejidad Ciclomática McCabe $V(G)$
 
 *   **V(G) = Nodos Predicado + 1** = 14 + 1 = **15**
-*   **V(G) = Aristas - Nodos + 2** = 43 - 30 + 2 = **15**
 
 ### Paso 3: Caminos Independientes (Basis Paths)
 
@@ -287,7 +276,7 @@ N30 -> F
 | **C14** | I -> N2(F) -> N4(F) -> N6(F) -> N8(F) -> N10(F) -> N12(F) -> N14(F) -> N16(F) -> N18(F) -> N20(F) -> N22(F) -> N24 -> N25(T) -> N26(T) -> N27(F) -> N30 -> F |
 | **C15 (Éxito)** | I -> N2(F) -> N4(F) -> N6(F) -> N8(F) -> N10(F) -> N12(F) -> N14(F) -> N16(F) -> N18(F) -> N20(F) -> N22(F) -> N24 -> N25(F) -> N30 -> F |
 
-
+### Paso 4: Matriz de Automatización (Log de Pruebas)
 
 | ID / Camino | Escenario de Prueba | Entradas (Inputs) | Resultado Esperado (OUT) | Evidencia JaCoCo |
 | :--- | :--- | :--- | :--- | :--- |
@@ -296,15 +285,15 @@ N30 -> F
 | **C3** | Condición Pago Nula | `condicionPago = null` | `IllegalArgumentException: Condición de Pago obligatoria.` | Rama N6(T) -> N7 |
 | **C4** | Nombre Comercial Nulo | `nombreComercial = null` | `IllegalArgumentException: Nombre Comercial obligatorio.` | Rama N8(T) -> N9 |
 | **C5** | Email Nulo | `email = null` | `IllegalArgumentException: Correo obligatorio.` | Rama N10(T) -> N11 |
-| **C6** | Formato Email Inválido | `email = "test@invalid"` | `IllegalArgumentException: Formato email inválido.` | Rama N12(T) -> N13 |
+| **C6** | Formato Email Inválido | `email = "test.error@omcgc"` | `IllegalArgumentException: Formato email inválido.` | Rama N12(T) -> N13 |
 | **C7** | Teléfono Nulo | `telefono = null` | `IllegalArgumentException: Teléfono obligatorio.` | Rama N14(T) -> N15 |
 | **C8** | Teléfono Corto | `telefono = "123"` | `IllegalArgumentException: Teléfono debe ser de 10 dígitos.` | Rama N16(T) -> N17 |
-| **C9** | RFC Longitud < 12 | `rfc = "ABC"` | `IllegalArgumentException: RFC < 12 caracteres.` | Rama N18(T) -> N19 |
+| **C9** | RFC Longitud < 12 | `rfc = "ABC1234"` | `IllegalArgumentException: RFC < 12 caracteres.` | Rama N18(T) -> N19 |
 | **C10** | RFC Longitud > 13 | `rfc = "ABC1234567890123"` | `IllegalArgumentException: RFC > 13 caracteres.` | Rama N20(T) -> N21 |
-| **C11** | Formato RFC Inválido | `rfc = "123456789012"` | `IllegalArgumentException: Formato RFC inválido.` | Rama N22(T) -> N23 |
+| **C11** | Formato RFC Inválido | `rfc = "ABCD-123456-XYZ"` | `IllegalArgumentException: Formato RFC inválido.` | Rama N22(T) -> N23 |
 | **C12** | RFC Duplicado (Otro) | `esActualizacion = true`, `idMismatch = true` | `IllegalArgumentException: RFC ya registrado por otro.` | Rama N27(T) -> N28 |
 | **C13** | RFC Duplicado (Alta) | `esActualizacion = false` | `IllegalArgumentException: RFC ya registrado.` | Rama N26(F) -> N29 |
 | **C14** | Éxito (Actualización) | `esActualizacion = true`, `idMatch = true` | **SUCCESS** (Proveedor Actualizado) | Rama N27(F) -> N30 |
-| **C15** | **Éxito (Alta Nueva)** | `rfc = "VAL-123..."`, `esActualizacion = false`| **SUCCESS** (Proveedor Registrado) | Líneas 116-181 (VERDE) |
+| **C15** | **Éxito (Alta Nueva)** | `rfc = "VAL1234567890"`, `esActualizacion = false`| **SUCCESS** (Proveedor Registrado) | Líneas 116-181 (VERDE) |
 
 <br>
