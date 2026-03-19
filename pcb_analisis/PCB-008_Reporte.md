@@ -52,8 +52,8 @@
             }
         }
         
-        pacienteRepository.save(cliente); // [N9: PROCESO] -> Persistir transacción // [N7: PROCESO] (Vía N6)
-        return cliente; // [N10: FIN]
+        pacienteRepository.save(cliente); // [N7: PROCESO] -> Persistir transacción
+        return cliente; // [N8: FIN]
     }
 ```
 
@@ -71,10 +71,8 @@ El fragmento **PCB-008** implementa las reglas de negocio para el empadronamient
 | **Nodo 4 [PCB-N2]** | Nodo predicado | Evaluación de la condición `cliente.getRfc() != null && !cliente.getRfc().isEmpty()`. Determinación de necesidad de validación fiscal. Identificado con la etiqueta **PCB-N2**. |
 | **Nodo 5** | Nodo de proceso | Ejecución de `pacienteRepository.findByRfc(cliente.getRfc())`. Consulta de preexistencia fiscal en el repositorio. |
 | **Nodo 6 [PCB-N3]** | Nodo predicado | Evaluación de la condición `existente != null && !existente.getIdPaciente().equals()`. Verificación de colisión tributaria. Identificado con la etiqueta **PCB-N3**. |
-| **Nodo 7** | Nodo de proceso | Continuación del flujo transaccional tras validación de unicidad tributaria exitosa. |
-| **Nodo 8** | Nodo de salida | Lanzamiento de `IllegalArgumentException("RFC duplicado")`. Interrupción del registro por colisión fiscal directa. |
-| **Nodo 9** | Nodo de proceso | Ejecución de `pacienteRepository.save(cliente)`. Persistencia atómica de la transacción de padrón de pacientes. |
-| **Nodo 10** | Fin | Finalización del protocolo de validación de integridad fiscal y registro de identidad tributaria. |
+| **Nodo 7** | Nodo de proceso | Ejecución de `pacienteRepository.save(cliente)`. Persistencia atómica de la transacción de padrón de pacientes. |
+| **Nodo 8** | Fin | Finalización del protocolo de validación de integridad fiscal y registro de identidad tributaria. |
 
 ### Paso 1
 
@@ -94,22 +92,18 @@ N5 [label="5"]
 N6 [label="6\n[PCB-N3]"]
 N7 [label="7"]
 N8 [label="8"]
-N9 [label="9"]
-N10 [label="10"]
 F [label="Fin"]
 
 I -> N1
 N1 -> N2
 N2 -> N3 [label="Verdadero"]
 N2 -> N4 [label="Falso"]
-N4 -> N9 [label="Falso"]
+N4 -> N7 [label="Falso"]
 N4 -> N5 [label="Verdadero"]
 N5 -> N6
 N6 -> N8 [label="Verdadero"]
 N6 -> N7 [label="Falso"]
-N7 -> N9
-N9 -> N10
-N10 -> F
+N7 -> F
 N3 -> F
 N8 -> F
 
@@ -128,9 +122,9 @@ N8 -> F
 | Total de caminos | Ruta de cada camino |
 | :--- | :--- |
 | **Camino 1** | Inicio → 1 → 2(SÍ) → 3 → Fin |
-| **Camino 2** | Inicio → 1 → 2(NO) → 4(NO) → 9 → 10 → Fin |
+| **Camino 2** | Inicio → 1 → 2(NO) → 4(NO) → 7 → 8 → Fin |
 | **Camino 3** | Inicio → 1 → 2(NO) → 4(SÍ) → 5 → 6(SÍ) → 8 → Fin |
-| **Camino 4** | Inicio → 1 → 2(NO) → 4(SÍ) → 5 → 6(NO) → 7 → 9 → 10 → Fin |
+| **Camino 4** | Inicio → 1 → 2(NO) → 4(SÍ) → 5 → 6(NO) → 7 → 8 → Fin |
 
 ### Paso 4
 

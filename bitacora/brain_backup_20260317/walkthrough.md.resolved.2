@@ -1,0 +1,38 @@
+# Walkthrough: Estandarización Académica PCB v12.0 (Academic Pro)
+
+Este documento certifica la finalización de la misión de re-reestructuración de los 15 reportes de Caja Blanca al estándar académico solicitado por el Ingeniero (v12.0), alineado con los protocolos de la UNADM.
+
+## Objetivos Alcanzados
+
+- **Recuperación de Detalle Técnico:** Se eliminó la estética minimalista previa en favor de una verbosidad técnica superior en las tablas de identificación de nodos.
+- **Rigor Formal en Fórmulas:** Se implementó el formato de fórmulas de McCabe alineadas y explícitas para las tres metodologías de cálculo (Regiones, Aristas/Nodos, Nodos Predicado).
+- **Consistencia de Tipos de Nodo:** Se adoptó la nomenclatura "Nodo predicado", "Nodo de proceso", "Inicio", "Fin" y "Nodo de salida" de forma sistemática.
+- **Trazabilidad PCB-N#:** Se mantuvieron y validaron las etiquetas de trazabilidad en el código y las tablas.
+
+## Resumen de Cambios por Reporte
+
+| ID PCB | Módulo | Cambio Principal v12.0 | Estado |
+| :--- | :--- | :--- | :--- |
+| PCB-001 | Seguridad | Restauración de tablas de nodos extendidas y fórmulas McCabe. | [x] OK |
+| PCB-002 | Seguridad | Corrección de métricas McCabe y verbosidad en descripción. | [x] OK |
+| PCB-003 | Seguridad | Ajuste de complejidad por ruta de excepción (Complexity=4). | [x] OK |
+| PCB-004 | Inventario | Estandarización de tablas de caminos y casos de prueba. | [x] OK |
+| PCB-005 | Inventario | Refinamiento de lógica de cálculo financiero en la descripción. | [x] OK |
+| PCB-006 | Inventario | Simplificación formal de McCabe para flujo lineal (Comp=1). | [x] OK |
+| PCB-007 | Inventario | Integración de invariante de no-negatividad en nodos. | [x] OK |
+| PCB-008 | Pacientes | Corrección de complejidad McCabe (3 predicados = Comp 4). | [x] OK |
+| PCB-009 | Pacientes | Detalle técnico de motor de búsqueda multi-criterio. | [x] OK |
+| PCB-010 | Pacientes | Formalización de nodos de saneamiento operativo. | [x] OK |
+| PCB-011 | Compras | Protocolo gatekeeper con 4 predicados (Comp=5). | [x] OK |
+| PCB-012 | Compras | Verbosidad en descripción de localización predictiva. | [x] OK |
+| PCB-013 | Compras | Detalle en normalización 10D y Regex RFC-5322. | [x] OK |
+| PCB-014 | Seguridad | Actualización granulada con 5 predicados (Comp=6). | [x] OK |
+| PCB-015 | Seguridad | Normalización semántica de estatus en nodos. | [x] OK |
+
+## Validación Final
+
+- **Verbosidad:** Las descripciones de los nodos ahora explican el "cómo" y el "por qué" funcional, no solo el "qué".
+- **Fórmulas:** El Paso 2 de cada reporte es ahora una sección de referencia rápida con cálculos legibles y alineados.
+- **Tablas:** Se recuperaron los encabezados formales solicitados.
+
+Misión completada. Los 15 reportes en `pcb_analisis/` están listos para revisión académica.

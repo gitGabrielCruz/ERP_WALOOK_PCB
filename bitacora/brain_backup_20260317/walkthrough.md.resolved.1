@@ -1,0 +1,56 @@
+# Walkthrough: Estandarización Visual PCB v11.0 (G-Style)
+
+Misión cumplida. Se han reestructurado los 15 reportes de Caja Blanca (**PCB-001** a **PCB-015**) para cumplir rigurosamente con la estética minimalista solicitada por el Ingeniero.
+
+## 🎯 Resultados de la Misión
+
+### 1. Evolución del Diagramado (G-Style)
+Se abandonó el "Theming" complejo en favor de una sintaxis `digraph` pura que maximiza la legibilidad académica:
+- **Nodos:** Circulares (`node [shape=circle]`), eliminando rellenos de color distractores.
+- **Flujo:** Jerarquía vertical (`rankdir=TB`).
+- **Semántica:** Etiquetas explícitas en español (`Verdadero` / `Falso`).
+- **Traceabilidad:** Nodos `Inicio` y `Fin` claramente definidos.
+
+### 2. Cobertura de Reportes
+Se procesaron secuencialmente los 15 reportes en `ERP_WALOOK_PCB\pcb_analisis\`:
+
+| Módulo | Reportes Procesados | Impacto |
+| :--- | :--- | :--- |
+| **Seguridad** | PCB-001, 002, 003, 014, 015 | Control de acceso y trazabilidad de identidad íntegra. |
+| **Inventario** | PCB-004, 005, 006, 007 | Integridad de Kardex y reglas de negocio de almacén. |
+| **Pacientes** | PCB-008, 009, 010 | Calidad del dato fiscal y saneamiento de padrón. |
+| **Compras** | PCB-011, 012, 013 | Validación estructural de proveedores y canales. |
+
+### 3. Validación de Métricas
+Se mantuvo la integridad de los Cálculos de McCabe ($V(G)$) y las Rutas Básicas en cada reporte, asegurando que la simplificación visual no comprometiera la precisión técnica requerida por la **UNADM**.
+
+---
+
+## 📸 Evidencia Visual (Ejemplo PCB-014)
+
+```mermaid
+graph TD
+    I((Inicio)) --> N1[1]
+    N1 --> N2[2]
+    N2 --> N3{3: Existe?}
+    N3 -- Verdadero --> N5{5: Nombre?}
+    N3 -- Falso --> N4[4: null]
+    N5 -- Verdadero --> N6[6: Set]
+    N5 -- Falso --> N7{7: Correo?}
+    N6 --> N7
+    N7 -- Verdadero --> N8[8: Set]
+    N7 -- Falso --> N9{9: Rol?}
+    N8 --> N9
+    N4 --> F((Fin))
+    N14 --> F
+```
+*(Nota: El diagrama real en los archivos .md utiliza PlantUML G-Style con la sintaxis visual solicitada).*
+
+---
+
+## 🚀 Estatus Final
+- **Estandar v10.0 (Texto/Código):** 100% Aplicado.
+- **Estandar v11.0 (Diagramas G-Style):** 100% Aplicado.
+- **Traceabilidad HU/PCB:** Garantizada.
+
+**¿Ingeniero, cuál es la siguiente instrucción?**

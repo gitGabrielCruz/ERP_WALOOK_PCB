@@ -1,0 +1,30 @@
+# Plan de Implementación: Estándar UNADM v8.0 (Narrativa de Trazabilidad)
+
+Este plan desglosa la transición al estándar de documentación definitivo para los 15 reportes PCB. El objetivo es que cualquier auditor pueda entender el flujo lógico del código y su correspondencia con el grafo de flujo de control (CFG) a primera vista, utilizando lenguaje descriptivo y visual.
+
+## User Review Required
+
+> [!IMPORTANT]
+> Se redefine la instrumentación del **Paso 0** (Código Fuente) bajo los siguientes criterios:
+> 1.  **Narrativa Lógica:** Los comentarios ya no solo etiquetan nodos, sino que explican la intención del flujo.
+> 2.  **Visualización de Ramas:** Se utilizarán flechas visuales y lenguaje gramatical claro: `[--SI--> NODO X]` / `[--NO--> NODO Y]`.
+> 3.  **Identificadores UNADM:** Se mantiene la referencia `[PCB-NX]` para asegurar la trazabilidad con los requerimientos.
+
+## Proposed Changes
+
+### [Instrumentación del Paso 0: Estándar v8.0]
+Se aplicará una re-estructuración de comentarios en los 15 archivos de la carpeta `pcb_analisis/`.
+
+**Ejemplo de Narrativa (PCB-002):**
+```java
+if (permisos.isEmpty()) { // [NODO 3: EVALUACIÓN DE VACÍO (PCB-N1)] --SI--> [HACIA NODO 4] | --NO--> [HACIA NODO 7]
+```
+
+### [Consistencia en Tablas]
+- La tabla de **Identificación de Nodos** servirá como glosario detallado de la narrativa del Paso 0.
+
+## Verification Plan
+
+### Manual Verification
+1.  **Paso 0 de Prototipo:** El Ingeniero validará la nueva "Narrativa" en este chat.
+2.  **Comando /CODIFICA:** Una vez que el Ingeniero confirme "Duda Cero", se procederá con la serie completa.

@@ -1,0 +1,6 @@
+{
+  "artifactType": "ARTIFACT_TYPE_IMPLEMENTATION_PLAN",
+  "summary": "Evolución definitiva al Estándar UNADM v11.0: 'G-Style Diagramming'. Se reemplaza el estilo visual complejo de PlantUML por una sintaxis 'digraph' (GraphViz) minimalista, con nodos circulares y etiquetas 'Verdadero'/'Falso' en las aristas. Mantiene la trazabilidad v10.0 en el Paso 0.",
+  "updatedAt": "2026-03-17T08:00:09.766227500Z",
+  "version": "5"
+}

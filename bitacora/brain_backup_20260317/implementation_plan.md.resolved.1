@@ -1,0 +1,30 @@
+# Plan de Implementación: Estándar UNADM v7.0 (Trazabilidad Explícita y Natural)
+
+Este plan redefine la instrumentación de los 15 reportes PCB, eliminando siglas técnicas ambiguas y sustituyéndolas por lenguaje natural descriptivo para garantizar la "Duda Cero" solicitada por el Ingeniero.
+
+## User Review Required
+
+> [!IMPORTANT]
+> Se establece una nueva sintaxis para los comentarios del **Paso 0** (Código Fuente):
+> 1.  **Nodos de Control:** `// [NODO X: COMIENZO DEL MÉTODO / FUNCIÓN]`
+> 2.  **Toma de Decisiones:** `// [NODO X: ¿SE CUMPLE LA CONDICIÓN? (PCB-N#)] -> [SI: IR AL NODO Y] [NO: IR AL NODO Z]`
+> 3.  **Puntos de Salida:** `// [NODO X: FIN DEL PROCESO (MOTIVO DE LA SALIDA)]`
+> 4.  **Flujo Lineal:** `// [NODO X: PROCESAMIENTO O CONSULTA]`
+
+## Proposed Changes
+
+### [Instrumentación del Paso 0]
+Se actualizarán los 15 archivos en `pcb_analisis/` para aplicar esta descripción gramatical.
+
+**Ejemplo Real (PCB-001):**
+`if (usuario != null) { // [NODO 7: ¿EXISTE EL USUARIO EN LA DB? (PCB-N3)] -> [SI: IR AL N8] [NO: IR AL N14]`
+
+### [Actualización de Tablas y Grafos]
+- La **Tabla de Identificación de Nodos** reflejará exactamente estas descripciones.
+- El **Grafo PlantUML** se mantiene con la paleta oficial, pero las etiquetas de las aristas serán coherentes con el nuevo lenguaje (SI/NO en lugar de solo T/F).
+
+## Verification Plan
+
+### Manual Verification
+1.  **Revisión de Prototipo:** El Ingeniero validará el bloque de código de PCB-001 presentado en el chat.
+2.  **Ejecución Masiva:** Tras el `/CODIFICA`, se procesarán los 14 archivos restantes.

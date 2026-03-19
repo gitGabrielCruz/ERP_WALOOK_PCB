@@ -45,11 +45,11 @@
         if (dbHealthService.isConnected()) { // [N4] [PCB-N2] -> [SI: N6] [NO: N5] : ¿Hay conexión DB?
             System.out.println("[AUTH-DEBUG] Conexión DB: ACTIVA"); // [N6: PROCESO]
         } else {
-            System.err.println("[AUTH-DEBUG] Conexión DB: FALLIDA"); // [N5: PROCESO]
-            throw new RuntimeException("Error DB"); // [N5.1: FIN (EXC)]
+            System.err.println("[AUTH-DEBUG] Conexión DB: FALLIDA"); // [N5: SALIDA]
+            throw new RuntimeException("Error DB"); // (Continúa N5)
         }
 
-        Usuario usuario = usuarioRepository.findByEmail(email); // [N6: PROCESO]
+        Usuario usuario = usuarioRepository.findByEmail(email); // (Continúa N6)
 
         // [PCB-N3] usuario encontrado (Verificación de Identidad Registrada)
         if (usuario != null) { // [N7] [PCB-N3] -> [SI: N8] [NO: N14] : ¿Existe el registro?
@@ -84,9 +84,8 @@ El fragmento **PCB-001** representa el núcleo de la seguridad del sistema ERP. 
 | **Nodo 2 [PCB-N1]** | Nodo predicado | Evaluación de la condición `if ("root".equals(email) && "root".equals(password))`. Identificado con la etiqueta **PCB-N1**. |
 | **Nodo 3** | Nodo de salida | Ejecución de `return createSuperAdminUser()`. Finaliza el flujo cuando se detectan credenciales de superadministrador. |
 | **Nodo 4 [PCB-N2]** | Nodo predicado | Evaluación de `if (dbHealthService.isConnected())` para verificar diagnóstico de salud de base de datos. Identificado con la etiqueta **PCB-N2**. |
-| **Nodo 5** | Nodo de proceso | Ejecución de registro de fallo en consola ante inaccesibilidad de infraestructura. |
-| **Nodo 5.1** | Nodo de salida | Lanzamiento de `RuntimeException("Error DB")`. Interrupción del flujo por fallo de persistencia. |
-| **Nodo 6** | Nodo de proceso | Ejecución de `usuarioRepository.findByEmail(email)`. Consulta de identidad en el repositorio. |
+| **Nodo 5** | Nodo de salida | Ejecución de registro de fallo y lanzamiento de `RuntimeException("Error DB")`. Interrupción por fallo crítico de infraestructura. |
+| **Nodo 6** | Nodo de proceso | Notificación de éxito en consola y ejecución de `usuarioRepository.findByEmail(email)`. |
 | **Nodo 7 [PCB-N3]** | Nodo predicado | Evaluación de `if (usuario != null)`. Verificación de existencia del registro de identidad. Identificado con la etiqueta **PCB-N3**. |
 | **Nodo 8** | Nodo de proceso | Ejecución de `passwordEncoder.matches()`. Validación criptográfica de contraseña mediante BCrypt. |
 | **Nodo 9 [PCB-N4]** | Nodo predicado | Evaluación de `if (passwordMatch)`. Verificación de coincidencia de seguridad. Identificado con la etiqueta **PCB-N4**. |
@@ -166,7 +165,7 @@ N14 -> F
 | Total de caminos | Ruta de cada camino |
 | :--- | :--- |
 | **Camino 1** | Inicio → 1 → 2(SÍ) → 3 → Fin |
-| **Camino 2** | Inicio → 1 → 2(NO) → 4(NO) → 5 → 5.1 → Fin |
+| **Camino 2** | Inicio → 1 → 2(NO) → 4(NO) → 5 → Fin |
 | **Camino 3** | Inicio → 1 → 2(NO) → 4(SÍ) → 6 → 7(NO) → 14 → Fin |
 | **Camino 4** | Inicio → 1 → 2(NO) → 4(SÍ) → 6 → 7(SÍ) → 8 → 9(NO) → 13 → Fin |
 | **Camino 5** | Inicio → 1 → 2(NO) → 4(SÍ) → 6 → 7(SÍ) → 8 → 9(SÍ) → 10(SÍ) → 11 → Fin |

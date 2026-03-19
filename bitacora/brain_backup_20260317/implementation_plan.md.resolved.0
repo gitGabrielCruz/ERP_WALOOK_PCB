@@ -1,0 +1,18 @@
+# Plan de Implementación: Estándar UNADM v7.0 (Trazabilidad Explícita)
+
+Se actualiza el estándar de documentación para los 15 reportes PCB, transitando de una trazabilidad minimalista a una **Explícita e Integral** en el Paso 0.
+
+## User Review Required
+
+> [!IMPORTANT]
+> Se redefine la instrumentación del **Paso 0** con la siguiente sintaxis:
+> 1.  **Nodos Críticos:** Marcas obligatorias `[INICIO]` y `[FIN]`.
+> 2.  **Direccionamiento de Aristas:** En cada `if` o `ternario`, se indicará a qué nodo salta el flujo: `// [NODO X: PREDICADO PCB-N#] -> [T: NY] [F: NZ]`.
+
+## Proposed Changes
+Evolución de los comentarios en el código fuente de los 15 reportes para mostrar inequívocamente la topología del grafo.
+
+## Verification Plan
+1. Presentar prototipo de PCB-001.
+2. Obtener `/CODIFICA`.
+3. Aplicar masivamente.

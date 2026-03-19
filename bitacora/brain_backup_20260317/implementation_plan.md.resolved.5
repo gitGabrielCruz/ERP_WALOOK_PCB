@@ -1,0 +1,26 @@
+# Plan de Implementación: Estándar UNADM v11.0 (G-Style)
+
+Este plan formaliza el estándar visual final para los 15 reportes PCB, optimizando la representación gráfica de los grafos de flujo de control (CFG).
+
+## Estándar Visual de Diagramas (G-Style)
+
+> [!IMPORTANT]
+> A partir de esta versión, todos los diagramas del **Paso 1** deberán seguir estrictamente esta estructura visual:
+> 1.  **Motor:** Sintaxis `digraph` dentro de bloques `@startuml`.
+> 2.  **Geometría:** `node [shape=circle]`.
+> 3.  **Etiquetas de Aristas:** Utilizar `[label="Verdadero"]` y `[label="Falso"]` (en español).
+> 4.  **Minimalismo:** Sin temas, sin `skinparam`, sin colores de fondo (fondo blanco puro).
+
+## Proposed Changes
+
+### [Actualización de Paso 1: Diagramas]
+Se reescribirá la sección `Paso 1` de los 15 reportes existentes en `pcb_analisis/` para cumplir con el estilo minimalista G-Style.
+
+### [Consistencia con Paso 0]
+Se mantiene la instrumentación **v10.0** (Concisa) en el código fuente para garantizar que la transición visual no afecte la trazabilidad lógica.
+
+## Verification Plan
+
+### Manual Verification
+1.  **Revisión Visual:** El Ingeniero validará la estética de PCB-001 como patrón de diseño.
+2.  **Integridad:** Verificar que los 15 reportes mantengan el número correcto de nodos y aristas definidos en su propia lógica de McCabe.

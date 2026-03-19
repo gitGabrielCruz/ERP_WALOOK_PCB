@@ -1,0 +1,27 @@
+# Checklist: Estándar v12.1 (Súper-Etiquetado)
+
+## Planeación y Diseño (Auditoría)
+- [x] Identificación de inconsistencias en etiquetas `PCB-N#`.
+- [x] Definición del Estándar v12.1 (Súper-Etiquetado).
+- [x] Actualización de [implementation_plan.md](file:///C:/Users/sTIC/.gemini/antigravity/brain/1afabc1a-383f-4a4c-8287-72aade8cc6d3/implementation_plan.md).
+
+## Ejecución (Súper-Etiquetado v12.1)
+- [x] PCB-001 (Seguridad - Autenticación)
+- [x] PCB-002 (Seguridad - Permisos)
+- [x] PCB-003 (Seguridad - Saneamiento Login)
+- [x] PCB-004 (Inventario - Registro)
+- [x] PCB-005 (Inventario - Cálculo Precios)
+- [x] PCB-006 (Inventario - Eliminación)
+- [x] PCB-007 (Inventario - Kardex)
+- [x] PCB-008 (Pacientes - Integridad Fiscal)
+- [x] PCB-009 (Pacientes - Búsqueda)
+- [x] PCB-010 (Pacientes - Saneamiento)
+- [x] PCB-011 (Compras - Proveedores)
+- [x] PCB-012 (Compras - Búsqueda Predictiva)
+- [x] PCB-013 (Compras - Saneamiento Contacto)
+- [x] PCB-014 (Seguridad - Perfil)
+- [/] PCB-015 (Seguridad - Estatus)
+
+## Verificación
+- [ ] Validación de visibilidad total de etiquetas.
+- [ ] Entrega final al Ingeniero.

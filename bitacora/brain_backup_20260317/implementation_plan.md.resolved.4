@@ -1,0 +1,25 @@
+# Plan de Implementación: Estándar UNADM v10.0 (Conciso y Directo)
+
+Este plan establece el estándar definitivo de trazabilidad para los 15 reportes PCB. Se busca la máxima claridad con el mínimo de texto, asegurando que cada nodo y su flujo (SI/NO) sean identificables a primera vista.
+
+## User Review Required
+
+> [!IMPORTANT]
+> Se establece la sintaxis **v10.0** para los comentarios del **Paso 0**:
+> 1.  **Formato:** `// [NODO X] -> [SI: NODO Y] [NO: NODO Z] : Descripción breve`
+> 2.  **Nodos de Control:** `// [NODO X: INICIO]` / `// [NODO X: FIN]`
+> 3.  **Lenguaje:** Directo, sin exceder una línea de comentario.
+
+## Proposed Changes
+
+### [Instrumentación del Paso 0]
+Se actualizarán los 15 archivos en `pcb_analisis/` eliminando descripciones extensas.
+
+**Ejemplo de cambio:**
+`if (permisos.isEmpty()) { // [N3] -> [SI: N4] [NO: N7] : ¿Lista de permisos vacía? (PCB-N1)`
+
+## Verification Plan
+
+### Manual Verification
+1.  **Validación de Prototipo:** El Ingeniero revisará el Paso 0 de PCB-002 revisado.
+2.  **Normalización Masiva:** Tras aprobación, se aplicará el estándar a toda la serie.

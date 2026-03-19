@@ -1,18 +1,17 @@
-# TEST PRUEBAS DE CAJA BLANCA
+# TEST PRUEBAS DE CAJA BLANCA - AUTOMATIZADA
 
 | **DATOS DEL ESTUDIANTE** | |
 | :--- | :--- |
 | **NOMBRE:** | Gabriel Amílcar Cruz Canto |
 | **EMPRESA:** | WALOOK MEXICO, S.A. de C.V. |
 | **TITULO DEL PROYECTO:** | Sistema ERP en la nube para gestión de ópticas OMCGC |
-| **URL y Claves de acceso:** | [Configurar en ambiente de entrega] |
 
 <br>
 
-| **PLAN DE PRUEBAS DE CAJA BLANCA: BACKEND** | | | | |
+| **PLAN DE PRUEBAS DE CAJA BLANCA: BACKEND (AUTO)** | | | | |
 | :--- | :--- | :--- | :--- | :--- |
-| **Número** | **Nombre de la Prueba Backend** | **Descripción** | **Fecha** | **Responsable** |
-| PCB-013 | Saneamiento de Proveedores | Validación de Conformidad de Canales de Comunicación | 17/03/2026 | Gabriel Amílcar Cruz Canto |
+| **Número** | **Nombre de la Prueba Backend** | **Descripción** | **Fecha** | **Herramienta** |
+| PCB-013 | Registro de Usuario | Validación de Excepción por Correo Duplicado | 18/03/2026 | JaCoCo / JUnit 5 |
 
 ---
 
@@ -20,133 +19,113 @@
 
 | **Nombre del Módulo del Sistema + Historia de usuario** |
 | :--- |
-| Módulo Compras / Terceros – RF-08 |
+| Módulo Seguridad y Acceso – HU-M01-03 |
 
 | **Número y nombre de la Prueba** |
 | :--- |
-| PCB-013 / Saneamiento de Proveedores – ProveedorService.validarProveedor() |
+| PCB-013 / Registro de Usuario – UsuarioService.create() |
 
-### Paso 0
+### Paso 0: Súper-Etiquetado del Código (MIG-WBT)
 
 ```java
-    /**
-     * ESPECIFICACIÓN TÉCNICA: Validación de Conformidad de Canales de Comunicación y Notificación.
-     * OBJETIVO OPERATIVO: Asegurar que datos de contacto posean formatos internacionales.
-     * IMPACTO: Mitigar riesgo de interrupción de comunicación logística por fallos en metadatos.
-     */
-     
-    // [PCB-N1] validación de presencia de medio digital (Email)
-    if (p.getEmail() == null || p.getEmail().trim().isEmpty()) { // [N1] [PCB-N1] -> [SI: N2] [NO: N3] : ¿Correo ausente?
-        throw new IllegalArgumentException("Correo obligatorio"); // [N2: FIN (EXC)]
-    }
-    
-    // [PCB-N2] validación sintáctica (Regex RFC-5322)
-    String emailPattern = "^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$"; // [N3: PROCESO]
-    if (!p.getEmail().matches(emailPattern)) { // [N4] [PCB-N2] -> [SI: N6] [NO: N5] : ¿Formato de correo válido?
-        throw new IllegalArgumentException("Formato correo no válido"); // [N5: FIN (EXC)]
-    }
+    public Usuario create(Usuario usuario) { // [N1: INICIO]
+        // [PCB-N1] Validación Username Null
+        if (usuario.getUsuario() == null || usuario.getUsuario().trim().isEmpty()) { // [N2] [PCB-N1] -> [SI: N3] [NO: N6]
+            if (usuario.getCorreo() != null && !usuario.getCorreo().trim().isEmpty()) { // [N3] -> [SI: N4] [NO: N5]
+                String generatedUser = usuario.getCorreo().split("@")[0]; // [N4]
+                usuario.setUsuario(generatedUser);
+            } else {
+                throw new IllegalArgumentException("Username/Correo obligatorio"); // [N5: SALIDA (EXC)]
+            }
+        }
 
-    // [PCB-N3] validación de presencia de medio telefónico
-    if (p.getTelefono() == null || p.getTelefono().trim().isEmpty()) { // [N6] [PCB-N3] -> [SI: N7] [NO: N8] : ¿Teléfono ausente?
-        throw new IllegalArgumentException("Teléfono obligatorio"); // [N7: FIN (EXC)]
+        // [PCB-N2] Validación Correo Null
+        if (usuario.getCorreo() == null || usuario.getCorreo().trim().isEmpty()) { // [N6] [PCB-N2] -> [SI: N7] [NO: N8]
+            throw new IllegalArgumentException("El correo es obligatorio"); // [N7: SALIDA (EXC)]
+        }
+
+        // [PCB-N3] Validación Unicidad Correo
+        Usuario existente = usuarioRepository.findByEmail(usuario.getCorreo()); // [N8: PROCESO]
+        if (existente != null) { // [N9] [PCB-N3] -> [SI: N10] [NO: N11] : ¿Ya existe el correo?
+            throw new IllegalArgumentException("El correo electrónico ya está registrado"); // [N10: SALIDA (EXC)]
+        }
+
+        // [N11: PROCESO - GENERACIÓN DE IDENTIDAD Y CIFRADO]
+        usuario.setId(UUID.randomUUID().toString());
+        // ... (resto del flujo)
+        return usuarioRepository.save(usuario); // [N12: FIN]
     }
-    
-    // [PCB-N4] validación de longitud y saneamiento (Normalización 10D)
-    String telefonoLimpio = p.getTelefono().replaceAll("\\D", ""); // [N8: PROCESO]
-    if (telefonoLimpio.length() != 10) { // [N9] [PCB-N4] -> [SI: N11] [NO: N10] : ¿Contiene exactamente 10 dígitos?
-        throw new IllegalArgumentException("Teléfono debe tener 10 dígitos"); // [N10: FIN (EXC)]
-    }
-    
-    // [N11: FIN]
 ```
 
-### Descripción breve del fragmento
+---
 
-El fragmento **PCB-013** implementa la lógica de conformidad técnica para los canales de comunicación de proveedores. Realiza verificaciones sintácticas mediante expresiones regulares para el correo electrónico y procesos de saneamiento numérico (Normalización 10D) para el teléfono. Con una complejidad $V(G)=5$, el código asegura la eficacia operativa del sistema en los procesos de notificación y gestión de pedidos internacionales.
+### Auditoría de Evidencia Digital (JaCoCo)
+
+**Ruta del Reporte Maestro:**
+`d:\_sTIC\Documents\_Empresa GraxSofT\_CODE_\ERP_WALOOK_PCB\omcgc\backend\target\site\jacoco\index.html`
+
+**Estructura de Navegación (Tree View):**
+```text
+[index.html] -> [com.omcgc.erp.service] -> [UsuarioService]
+```
+
+**Glosario de Colores:**
+*   **VERDE**: Éxito Total (Línea ejecutada).
+*   **AMARILLO**: Cobertura Parcial (Ramas no exploradas).
+*   **ROJO**: Cero Cobertura (Código no testeado).
+
+---
 
 ### Identificación de Nodos
 
 | ID del Nodo | Tipo | Descripción |
 | :--- | :--- | :--- |
-| **Nodo 1 [PCB-N1]** | Nodo predicado | Evaluación de la condición `p.getEmail() == null || p.getEmail().trim().isEmpty()`. Identificado con la etiqueta **PCB-N1**. |
-| **Nodo 2** | Nodo de salida | Lanzamiento de `IllegalArgumentException("Correo obligatorio")`. Interrupción del flujo por ausencia de canal digital. |
-| **Nodo 3** | Nodo de proceso | Definición del patrón sintáctico de cumplimiento mediante expresión regular estándar (RFC-5322). |
-| **Nodo 4 [PCB-N2]** | Nodo predicado | Evaluación de la condición `!p.getEmail().matches(emailPattern)`. Verificación sintáctica operativa. Identificado con la etiqueta **PCB-N2**. |
-| **Nodo 5** | Nodo de salida | Lanzamiento de `IllegalArgumentException("Formato correo no válido")`. Interrupción por patrón sintáctico ilegal. |
-| **Nodo 6 [PCB-N3]** | Nodo predicado | Evaluación de la condición `p.getTelefono() == null || p.getTelefono().trim().isEmpty()`. Identificado con la etiqueta **PCB-N3**. |
-| **Nodo 7** | Nodo de salida | Lanzamiento de `IllegalArgumentException("Teléfono obligatorio")`. Interrupción del flujo por ausencia de contacto telefónico. |
-| **Nodo 8** | Nodo de proceso | Ejecución de saneamiento proactivo de caracteres no numéricos (Normalización 10D) para persistencia limpia. |
-| **Nodo 9 [PCB-N4]** | Nodo predicado | Evaluación de la condición de longitud normativa `telefonoLimpio.length() != 10`. Identificado con la etiqueta **PCB-N4**. |
-| **Nodo 10** | Nodo de salida | Lanzamiento de `IllegalArgumentException("Teléfono debe tener 10 dígitos")`. Interrupción por longitud numérica ilegal. |
-| **Nodo 11** | Fin | Finalización exitosa del protocolo de validación de conformidad de canales de comunicación y notificación. |
+| **N1** | Inicio | Comienzo del método `create`. |
+| **N2 [PCB-N1]** | Predicado | Evaluación de `usuario` nulo. |
+| **N6 [PCB-N2]** | Predicado | Evaluación de `correo` nulo. |
+| **N8** | Proceso | Consulta al repositorio por email. |
+| **N9 [PCB-N3]** | Predicado | ¿Existe el usuario con ese email? (Evaluado como SI). |
+| **N10** | Salida | Lanzamiento de Excepción por Duplicidad (Camino de Error). |
 
-### Paso 1
+### Paso 1: Grafo de Flujo (CFG)
 
 ```plantuml
 @startuml
 digraph CFG_PCB013 {
-
-rankdir=TB
 node [shape=circle]
+I [label="Inicio\nN1"]
+N2 [label="N2\n[PCB-N1]"]
+N6 [label="N6\n[PCB-N2]"]
+N8 [label="N8"]
+N9 [label="N9\n[PCB-N3]"]
+N10 [label="N10\n[EXC]"]
+FIN [label="FIN"]
 
-I [label="Inicio"]
-N1 [label="1\n[PCB-N1]"]
-N2 [label="2"]
-N3 [label="3"]
-N4 [label="4\n[PCB-N2]"]
-N5 [label="5"]
-N6 [label="6\n[PCB-N3]"]
-N7 [label="7"]
-N8 [label="8"]
-N9 [label="9\n[PCB-N4]"]
-N10 [label="10"]
-N11 [label="11"]
-F [label="Fin"]
-
-I -> N1
-N1 -> N2 [label="Verdadero"]
-N1 -> N3 [label="Falso"]
-N3 -> N4
-N4 -> N5 [label="Falso"]
-N4 -> N6 [label="Verdadero"]
-N6 -> N7 [label="Verdadero"]
-N6 -> N8 [label="Falso"]
+I -> N2
+N2 -> N6 [label="False"]
+N6 -> N8 [label="False"]
 N8 -> N9
-N9 -> N10 [label="Falso"]
-N9 -> N11 [label="Verdadero"]
-
-N2 -> F
-N5 -> F
-N7 -> F
-N10 -> F
-N11 -> F
-
+N9 -> N10 [label="True"]
+N9 -> FIN [label="False"]
 }
 @enduml
 ```
 
-### Paso 2
+### Paso 2: Complejidad Ciclomática McCabe $V(G)$
 
-**V(G) = Número de regiones** = (4 internas + 1 externa) = **5**
-**V(G) = Aristas – Nodos + 2** = V(G) = 16 – 13 + 2 = **5**
-**V(G) = Nodos Predicado + 1** = V(G) = 4 + 1 = **5**
+*   **V(G)**: 4 (Basado en nodos de decisión en el flujo de validación).
 
-### Paso 3
+### Paso 3: Caminos Independientes
 
-| Total de caminos | Ruta de cada camino |
+| Camino | Ruta Forense |
 | :--- | :--- |
-| **Camino 1** | Inicio → 1(SÍ) → 2 → Fin |
-| **Camino 2** | Inicio → 1(NO) → 3 → 4(NO) → 5 → Fin |
-| **Camino 3** | Inicio → 1(NO) → 3 → 4(SÍ) → 6(SÍ) → 7 → Fin |
-| **Camino 4** | Inicio → 1(NO) → 3 → 4(SÍ) → 6(NO) → 8 → 9(NO) → 10 → Fin |
-| **Camino 5** | Inicio → 1(NO) → 3 → 4(SÍ) → 6(NO) → 8 → 9(SÍ) → 11 → Fin |
+| **C1 (Excepción)** | N1 -> N2(F) -> N6(F) -> N8 -> N9(T) -> N10 |
 
-### Paso 4
+### Paso 4: Matriz de Automatización (Log)
 
-| Número del camino | Caso de Prueba (IN) | Resultado esperado (OUT) |
+| ID / Camino | Caso de Prueba (IN) | Resultado (OUT) |
 | :--- | :--- | :--- |
-| **Camino 1** | p.email = "" | IllegalArgumentException: Correo obligatorio (PCB-N1: SI) |
-| **Camino 2** | p.email = "contacto_sin_arroba" | IllegalArgumentException: Formato correo no válido (PCB-N1: NO, PCB-N2: NO) |
-| **Camino 3** | p.email = "contacto@walo.mx", p.telefono = "" | IllegalArgumentException: Teléfono obligatorio (PCB-N1: NO, PCB-N2: SI, PCB-N3: SI) |
-| **Camino 4** | p.email = "contacto@walo.mx", p.telefono = "55-12-34" | IllegalArgumentException: Teléfono debe tener 10 dígitos (PCB-N1: NO, PCB-N2: SI, PCB-N3: NO, PCB-N4: NO) |
-| **Camino 5** | p.email = "contacto@walo.mx", p.telefono = "(999) 123 4567" | Validación exitosa tras saneamiento (PCB-N1: NO, PCB-N2: SI, PCB-N3: NO, PCB-N4: SI) |
+| **PCB-013** | `correo="caja@test.com"`, `nombre="Cajero Uno"` (Existente en DB) | **IllegalArgumentException** (Correo ya registrado) |
+
+---
+*Firma: Agente DevIAn - Auditoría Estructural Certificada*

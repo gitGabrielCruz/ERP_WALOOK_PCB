@@ -1,0 +1,57 @@
+# Plan de Reestructuración Normativa UNADM (v6.0)
+
+Este plan detalla las acciones para transformar los 15 reportes de Caja Blanca al estándar institucional exacto extraído de las imágenes oficiales proporcionadas por el Ingeniero.
+
+## Acciones de Diseño y Estructura
+
+### 1. Encabezado Institucional (Nuevo)
+Se implementará el bloque de datos con el formato de tabla visual:
+- **NOMBRE DEL ESTUDIANTE:** Gabriel Amílcar Cruz Canto
+- **EMPRESA:** WALOOK MEXICO, S.A. de C.V.
+- **TITULO DEL PROYECTO:** Sistema ERP en la nube para gestión de ópticas OMCGC.
+- **URL y Claves de acceso.**
+
+### 2. Cuadro de Plan de Pruebas (Nuevo)
+Tabla con las columnas: **Número | Nombre de la Prueba Backend | Descripción | Fecha | Responsable.**
+*   **ID del PCB:** Se relacionará estrictamente con el **Módulo y HU** correspondiente (Ej. `PCB-001/Seguridad/HU-M01-01`).
+
+### 4. Paso 0: Código Fuente Instrumentado (Minimalista)
+- Se incluirán comentarios cortos **al final de la línea** solo para fines de trazabilidad.
+- **Formato:** `// N#` para nodos de proceso y `// N# [PCB-Nx]` para nodos predicado (decisiones).
+- Esto garantiza la "Duda Cero" entre el código y el grafo sin romper la legibilidad del código base.
+
+### 4.1 Descripción breve del fragmento
+Párrafo técnico que resume la funcionalidad analizada, los desafíos de seguridad (bypass, resiliencia, etc.) y la relevancia de la cobertura McCabe para ese módulo.
+
+### 4.2 Identificación de Nodos
+Tabla detallada con: **ID del Nodo | Tipo (Inicio, Predicado, Proceso, Final) | Descripción del Código.**
+
+### 5. Paso 1: Grafo de Flujo (Paleta de Colores Estandarizada)
+Se generará el `digraph` de GraphViz con un esquema de colores fijo para todos los reportes:
+- **Nodos:** Círculos con fondo `#D1F2EB` (Verde menta claro).
+- **Nodos Predicado (PCB-Nx):** Círculos con fondo `#FAD7A0` (Naranja suave).
+- **Aristas (Líneas):** Color `#2E86C1` (Azul corporativo).
+- **Regiones:** Se identificarán con etiquetas de texto `R1`, `R2` en color `#7D3C98` (Púrpura).
+
+### 6. Paso 2: Complejidad Ciclomática (Desglose Detallado)
+Se mostrará el origen de cada valor antes del cálculo final:
+- `V(G) = Número de regiones = (Lista de regiones internas + 1 externa) = Resultado`
+- `V(G) = Aristas (E) – Nodos (N) + 2 = (Valor E – Valor N) + 2 = Resultado`
+- `V(G) = Nodos Predicado (P) + 1 = (Valor P) + 1 = Resultado`
+
+### 7. Paso 3: Tabla de Caminos Independientes
+- Formato tabular: **Total de caminos | Ruta de cada camino.**
+
+### 8. Paso 4: Tabla de Casos de Prueba (Normativa)
+- Formato tabular (Tabla 1): **Número del camino | Caso de Prueba (IN) | Resultado esperado (OUT).**
+
+## Archivos a Modificar
+- [pcb_analisis/PCB-001_Reporte.md](file:///d:/_sTIC/Documents/_Empresa%20GraxSofT/_CODE_/ERP_WALOOK_PCB/pcb_analisis/PCB-001_Reporte.md) hasta [PCB-015_Reporte.md](file:///d:/_sTIC/Documents/_Empresa%20GraxSofT/_CODE_/ERP_WALOOK_PCB/pcb_analisis/PCB-015_Reporte.md).
+
+## Verificación
+- Generación de previsualización para `PCB-001` y `PCB-002`.
+- Validación de que el código no tiene "ruido" de etiquetas en Paso 0.
+- Confirmación de que los diagramas coinciden con la lógica de McCabe y las identidades PCB-Nx.
+
+> [!IMPORTANT]
+> Al recibir el comando `/CODIFICA`, procederé a aplicar este cambio de forma masiva a los 15 archivos.

@@ -1,0 +1,38 @@
+# Walkthrough: Consolidación Estándar v10.0 (Duda Cero)
+
+He finalizado la reestructuración masiva de los 15 reportes de Pruebas de Caja Blanca (PCB) para el proyecto ERP WALOOK. Esta intervención asegura que la documentación cumpla con los máximos estándares académicos y técnicos de la UNADM.
+
+## Objetivos Alcanzados
+
+- **Restauración de Código Fidedigno**: Se recuperó el código original desde `pcb_tests` para cada uno de los 15 casos, eliminando cualquier rastro de simplificación previa.
+- **Instrumentación v10.0**: Se implementó una trazabilidad concisa en el **Paso 0**, utilizando comentarios directos que guían al auditor a través de los nodos predicado sin redundancia narrativa.
+- **Rigor Arquitectónico**: Se incluyó el Javadoc original que describe la especificación técnica, el objetivo operativo y el impacto sistémico de cada fragmento.
+- **Validación de Métricas**: Se recalcularon las regiones, aristas y nodos para McCabe, asegurando consistencia matemática absoluta en el **Paso 2**.
+- **Modelado CFG**: Todos los grafos de flujo de control (Paso 1) fueron actualizados a sintaxis `digraph` de GraphViz con la paleta de colores oficial.
+
+## Resumen de la Serie PCB
+
+| ID | Módulo | Función | V(G) | Estatus |
+| :--- | :--- | :--- | :--- | :--- |
+| PCB-001 | Seguridad | `getPermisosPorGrupo` | 4 | [x] OK |
+| PCB-002 | Seguridad | `getPermissionsByUsuario` | 3 | [x] OK |
+| PCB-003 | Seguridad | `getPermissionsByRol` | 4 | [x] OK |
+| PCB-004 | Inventarios | `saveProduct` (GUID/SKU) | 3 | [x] OK |
+| PCB-005 | Inventarios | `saveProduct` (Precios) | 3 | [x] OK |
+| PCB-006 | Inventarios | `deleteProduct` | 1 | [x] OK |
+| PCB-007 | Inventarios | `registrarMovimiento` | 3 | [x] OK |
+| PCB-008 | Clientes | `guardarCliente` (Integridad) | 3 | [x] OK |
+| PCB-009 | Clientes | `buscarClientes` | 1 | [x] OK |
+| PCB-010 | Clientes | `guardarCliente` (Saneamiento) | 3 | [x] OK |
+| PCB-011 | Compras | `validarProveedor` (Estructura) | 5 | [x] OK |
+| PCB-012 | Compras | `search` (Predictivo) | 1 | [x] OK |
+| PCB-013 | Compras | `validarProveedor` (Formatos) | 5 | [x] OK |
+| PCB-014 | Seguridad | `update` (Perfil) | 6 | [x] OK |
+| PCB-015 | Seguridad | `findByEstatus` | 2 | [x] OK |
+
+## Verificación de Calidad
+
+Los 15 archivos en `d:\_sTIC\Documents\_Empresa GraxSofT\_CODE_\ERP_WALOOK_PCB\pcb_analisis\` han sido validados físicamente. No existen siglas técnicas ambiguas; en su lugar, se utilizan descriptores funcionales que garantizan el principio de **"Duda Cero"**.
+
+---
+**Ingeniero, la misión de normalización masiva ha concluido con éxito.**

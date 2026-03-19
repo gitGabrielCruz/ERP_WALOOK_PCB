@@ -1,0 +1,5 @@
+{
+  "artifactType": "ARTIFACT_TYPE_IMPLEMENTATION_PLAN",
+  "summary": "Plan de reestructuración integral de los 15 reportes PCB para alinearlos al estándar gráfico y académico oficial de la UNADM (v6.0).\n- Eliminación de anotaciones 'Nodo X' intrusivas en el código de Paso 0.\n- Inyección de encabezados institucionales y tablas de Plan de Pruebas.\n- Mantenimiento de la trazabilidad PCB-Nx exclusivamente en el Paso 1 (Grafo) y Paso 4 (Tabla 1) según el manual visual.\n- Ordenamiento estricto de Pasos 0 a 4 basándose en las 6 imágenes oficiales.",
+  "updatedAt": "2026-03-17T04:56:45.987799Z"
+}
