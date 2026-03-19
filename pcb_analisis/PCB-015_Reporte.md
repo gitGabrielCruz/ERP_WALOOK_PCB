@@ -142,10 +142,11 @@ N11 -> F
 | **C3 (Éxito sin Notificación)**| I -> N2 -> N3(F) -> N5 -> N6 -> N7 -> I_TRY -> N10 -> N11 |
 
 
-### Paso 4: Matriz de Automatización (Log)
 
-| ID / Camino | Caso de Prueba (IN) | Resultado (OUT) |
-| :--- | :--- | :--- |
-| **PCB-015** | `id="UUID-QUE-NO-EXISTE-999"` | `null` (Retorno controlado) |
+| ID / Camino | Escenario de Prueba | Entradas (Inputs) | Resultado Esperado (OUT) | Evidencia JaCoCo |
+| :--- | :--- | :--- | :--- | :--- |
+| **C1** | **ID Inexistente** | `id = "999-FAKE"` | `null` (Fallo controlado) | Líneas 33-37 (VERDE) |
+| **C2** | Éxito con Email | `id = "UUID-OK"`, `mail_srv: ON` | `String` (Contraseña temp) | Rama I_TRY -> N9 -> N11 |
+| **C3** | Éxito sin Email | `id = "UUID-OK"`, `mail_srv: OFF`| `String` (Contraseña temp) | Rama I_TRY -> N10 -> N11 |
 
 <br>

@@ -161,10 +161,12 @@ N13 -> F
 | **C4 (Costo Compra)** | I -> N2 -> N3 -> N4(F) -> N6(F) -> N8 -> N9 -> N10 -> N11(T) -> N12 -> N13 -> F |
 
 
-### Paso 4: Matriz de Automatización (Log)
 
-| ID / Camino | Caso de Prueba (IN) | Resultado (OUT) |
-| :--- | :--- | :--- |
-| **PCB-017** | `stock=10`, `cant=15`, `tipo="SALIDA_VENTA"` | **RuntimeException** (Stock insuficiente) |
+| ID / Camino | Escenario de Prueba | Entradas (Inputs) | Resultado Esperado (OUT) | Evidencia JaCoCo |
+| :--- | :--- | :--- | :--- | :--- |
+| **C1** | **Stock Insuficiente** | `stock = 10`, `cant = 15` | `RuntimeException: Stock insuficiente.` | Líneas 42-44 (ROJO) |
+| **C2** | Salida Normal | `tipo = "SALIDA"`, `folio = "INV-01"` | **SUCCESS** (Saldo Ajustado) | Rama N6(F) -> N13 |
+| **C3** | Entrada con Folio Auto | `tipo = "ENTRADA"`, `folio = null` | **SUCCESS** (Folio Generado) | Rama N6(T) -> N7 -> N13 |
+| **C4** | Entrada Compra (Costo) | `tipo = "ENTRADA_COMPRA"` | **SUCCESS** (Costo Actualizado) | Rama N11(T) -> N12 -> N13 |
 
 <br>

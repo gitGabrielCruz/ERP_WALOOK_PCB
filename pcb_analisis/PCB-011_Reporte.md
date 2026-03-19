@@ -288,10 +288,23 @@ N30 -> F
 | **C15 (Éxito)** | I -> N2(F) -> N4(F) -> N6(F) -> N8(F) -> N10(F) -> N12(F) -> N14(F) -> N16(F) -> N18(F) -> N20(F) -> N22(F) -> N24 -> N25(F) -> N30 -> F |
 
 
-### Paso 4: Matriz de Automatización (Log de Pruebas)
 
-| ID / Camino | Caso de Prueba (IN) | Resultado (OUT) | Evidencia JaCoCo |
-| :--- | :--- | :--- | :--- |
-| **PCB-011 (C15)** | `rfc="LACC010101ABC"`, `razonSocial="Lentes AC"`, `email="test@test.com"`, `esActualizacion=false` | **SUCCESS** (Objeto Proveedor) | Líneas 116-181 iluminadas en VERDE |
+| ID / Camino | Escenario de Prueba | Entradas (Inputs) | Resultado Esperado (OUT) | Evidencia JaCoCo |
+| :--- | :--- | :--- | :--- | :--- |
+| **C1** | Razón Social Nula | `razonSocial = null` | `IllegalArgumentException: Razón Social obligatoria.` | Rama N2(T) -> N3 |
+| **C2** | RFC Nulo | `rfc = null` | `IllegalArgumentException: RFC obligatorio.` | Rama N4(T) -> N5 |
+| **C3** | Condición Pago Nula | `condicionPago = null` | `IllegalArgumentException: Condición de Pago obligatoria.` | Rama N6(T) -> N7 |
+| **C4** | Nombre Comercial Nulo | `nombreComercial = null` | `IllegalArgumentException: Nombre Comercial obligatorio.` | Rama N8(T) -> N9 |
+| **C5** | Email Nulo | `email = null` | `IllegalArgumentException: Correo obligatorio.` | Rama N10(T) -> N11 |
+| **C6** | Formato Email Inválido | `email = "test@invalid"` | `IllegalArgumentException: Formato email inválido.` | Rama N12(T) -> N13 |
+| **C7** | Teléfono Nulo | `telefono = null` | `IllegalArgumentException: Teléfono obligatorio.` | Rama N14(T) -> N15 |
+| **C8** | Teléfono Corto | `telefono = "123"` | `IllegalArgumentException: Teléfono debe ser de 10 dígitos.` | Rama N16(T) -> N17 |
+| **C9** | RFC Longitud < 12 | `rfc = "ABC"` | `IllegalArgumentException: RFC < 12 caracteres.` | Rama N18(T) -> N19 |
+| **C10** | RFC Longitud > 13 | `rfc = "ABC1234567890123"` | `IllegalArgumentException: RFC > 13 caracteres.` | Rama N20(T) -> N21 |
+| **C11** | Formato RFC Inválido | `rfc = "123456789012"` | `IllegalArgumentException: Formato RFC inválido.` | Rama N22(T) -> N23 |
+| **C12** | RFC Duplicado (Otro) | `esActualizacion = true`, `idMismatch = true` | `IllegalArgumentException: RFC ya registrado por otro.` | Rama N27(T) -> N28 |
+| **C13** | RFC Duplicado (Alta) | `esActualizacion = false` | `IllegalArgumentException: RFC ya registrado.` | Rama N26(F) -> N29 |
+| **C14** | Éxito (Actualización) | `esActualizacion = true`, `idMatch = true` | **SUCCESS** (Proveedor Actualizado) | Rama N27(F) -> N30 |
+| **C15** | **Éxito (Alta Nueva)** | `rfc = "VAL-123..."`, `esActualizacion = false`| **SUCCESS** (Proveedor Registrado) | Líneas 116-181 (VERDE) |
 
 <br>

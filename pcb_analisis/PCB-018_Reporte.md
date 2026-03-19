@@ -125,10 +125,12 @@ N7 -> N8
 | **C2 (Sin Cálculo)** | I -> N2 -> N3 -> N4(F) -> N6 -> N7 -> N8 |
 
 
-### Paso 4: Matriz de Automatización (Log)
 
-| ID / Camino | Caso de Prueba (IN) | Resultado (OUT) |
-| :--- | :--- | :--- |
-| **PCB-018** | `costo=100.00`, `utilidad=50.00` | **PVP=150.00** (Cálculo exacto) |
+| ID / Camino | Escenario de Prueba | Entradas (Inputs) | Resultado Esperado (OUT) | Evidencia JaCoCo |
+| :--- | :--- | :--- | :--- | :--- |
+| **C1** | **Cálculo de PVP Exitoso** | `costo = 100`, `util = 50` | `precioVenta = 150.00` | Líneas 42-45 (VERDE) |
+| **C2** | Producto sin Utilidad | `costo = 100`, `util = null` | `precioVenta = null` (Sin cambio) | Rama N4(F) -> N6 |
+| **C3** | Producto Nuevo (UUID) | `id = null` | **SUCCESS** (UUID Generado) | Rama N2(T) -> N3 |
+| **C4** | SKU Autogenerado | `sku = "Autogenerado"` | **SUCCESS** (SKU: 75...) | Rama N3(T) -> N4 |
 
 <br>

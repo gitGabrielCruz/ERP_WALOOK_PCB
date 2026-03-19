@@ -182,8 +182,15 @@ N17 -> F
 | **C7** | I -> N2(T) -> N3(T) -> N4 -> N6(T) -> N7 -> F |
 
 
-### Paso 4: Matriz de Automatización (Log)
 
-| **PCB-013** | `correo="caja@test.com"`, `nombre="Cajero Uno"` (Existente en DB) | **IllegalArgumentException** (Correo ya registrado) |
+| ID / Camino | Escenario de Prueba | Entradas (Inputs) | Resultado Esperado (OUT) | Evidencia JaCoCo |
+| :--- | :--- | :--- | :--- | :--- |
+| **C1** | Identidad Nula (Total) | `user = null`, `mail = null` | `IllegalArgumentException: Username/Correo obligatorio` | Rama N3(F) -> N5 |
+| **C2** | Correo Nulo | `user = "gabriel"`, `mail = null` | `IllegalArgumentException: El correo es obligatorio` | Rama N6(T) -> N7 |
+| **C3** | **Correo Duplicado** | `mail = "caja@test.com"` | `IllegalArgumentException: El correo electrónico ya está registrado` | Líneas 49-52 (ROJO) |
+| **C4** | Éxito (Status Default) | `user = "gabriel"`, `status = null` | **SUCCESS** (Status: activo) | Rama N14(T) -> N15 -> N17 |
+| **C5** | Éxito (Status Manual) | `user = "gabriel"`, `status = "master"`| **SUCCESS** (Status: master) | Rama N14(F) -> N16 -> N17 |
+| **C6** | Éxito (User Auto) | `user = null`, `mail = "g@t.com"` | **SUCCESS** (User: "g") | Rama N3(T) -> N4 -> N17 |
+| **C7** | Fallo (User Auto Malform) | `user = null`, `mail = ""` | `IllegalArgumentException` | Rama N6(T) -> N7 |
 
 <br>

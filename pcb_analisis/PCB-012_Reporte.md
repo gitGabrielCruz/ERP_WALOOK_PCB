@@ -280,8 +280,23 @@ N30 -> F
 | **C15 (Éxito)** | I -> N2(F) -> N4(F) -> N6(F) -> N8(F) -> N10(F) -> N12(F) -> N14(F) -> N16(F) -> N18(F) -> N20(F) -> N22(F) -> N24 -> N25(F) -> N30 -> F |
 
 
-### Paso 4: Matriz de Automatización (Log)
 
-| **PCB-012 (C12)** | `id="Prov-01"`, `rfc="LMX840315KH3"` (Existente en ID "Prov-02"), `esActualizacion=true` | **IllegalArgumentException** (RFC ya registrado por otro) |
+| ID / Camino | Escenario de Prueba | Entradas (Inputs) | Resultado Esperado (OUT) | Evidencia JaCoCo |
+| :--- | :--- | :--- | :--- | :--- |
+| **C1** | Razón Social Nula | `razonSocial = null` | `IllegalArgumentException: Razón Social obligatoria.` | Rama N2(T) -> N3 |
+| **C2** | RFC Nulo | `rfc = null` | `IllegalArgumentException: RFC obligatorio.` | Rama N4(T) -> N5 |
+| **C3** | Condición Pago Nula | `condicionPago = null` | `IllegalArgumentException: Condición de Pago obligatoria.` | Rama N6(T) -> N7 |
+| **C4** | Nombre Comercial Nulo | `nombreComercial = null` | `IllegalArgumentException: Nombre Comercial obligatorio.` | Rama N8(T) -> N9 |
+| **C5** | Email Nulo | `email = null` | `IllegalArgumentException: Correo obligatorio.` | Rama N10(T) -> N11 |
+| **C6** | Formato Email Inválido | `email = "bad-mail"` | `IllegalArgumentException: Formato email inválido.` | Rama N12(T) -> N13 |
+| **C7** | Teléfono Nulo | `telefono = null` | `IllegalArgumentException: Teléfono obligatorio.` | Rama N14(T) -> N15 |
+| **C8** | Teléfono Corto | `telefono = "55"` | `IllegalArgumentException: Teléfono debe ser de 10 dígitos.` | Rama N16(T) -> N17 |
+| **C9** | RFC Corto | `rfc = "A1"` | `IllegalArgumentException: RFC < 12 caracteres.` | Rama N18(T) -> N19 |
+| **C10** | RFC Largo | `rfc = "A1..."` (>13) | `IllegalArgumentException: RFC > 13 caracteres.` | Rama N20(T) -> N21 |
+| **C11** | RFC Formato Inválido | `rfc = "!!!"` | `IllegalArgumentException: Formato RFC inválido.` | Rama N22(T) -> N23 |
+| **C12** | **RFC Duplicado (Otro)** | `esActualizacion = true`, `ids mismatch` | `IllegalArgumentException: RFC ya registrado por otro.` | Líneas 95-103 (ROJO/AMARILLO) |
+| **C13** | RFC Duplicado (Alta) | `esActualizacion = false` | `IllegalArgumentException: RFC ya registrado.` | Rama N26(F) -> N29 |
+| **C14** | Éxito (Mismo ID) | `esActualizacion = true`, `ids match` | **SUCCESS** (Sin cambios en RFC) | Rama N27(F) -> N30 |
+| **C15** | Éxito (Alta/Cambio) | `rfc = "NEW-VAL-1"`, `esActualizacion = true` | **SUCCESS** (Proveedor Actualizado) | Rama N25(F) -> N30 |
 
 <br>

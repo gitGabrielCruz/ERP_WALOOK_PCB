@@ -110,10 +110,10 @@ N5 -> N6
 | **C2 (Excepción)** | N1 -> N2 -> N3(T) -> N4 |
 
 
-### Paso 4: Matriz de Automatización (Log)
 
-| ID / Camino | Caso de Prueba (IN) | Resultado (OUT) |
-| :--- | :--- | :--- |
-| **PCB-014** | `id="UUID-EXISTENTE"`, `status="activo"` | `true` (status="inactivo" en BD) |
+| ID / Camino | Escenario de Prueba | Entradas (Inputs) | Resultado Esperado (OUT) | Evidencia JaCoCo |
+| :--- | :--- | :--- | :--- | :--- |
+| **C1** | **Baja Lógica Exitosa** | `id = "UUID-EXISTENTE"` | `true` (status: inactivo) | Líneas 39-44 (VERDE) |
+| **C2** | Usuario Inexistente | `id = "UUID-FALSO"` | `false` (Retorno controlado) | Rama N3(T) -> N4 |
 
 <br>

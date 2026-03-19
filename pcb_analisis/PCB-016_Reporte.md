@@ -163,10 +163,14 @@ N15 -> F
 | **C6 (Éxito)** | I -> N2(F) -> N4(T) -> N7 -> N8(T) -> N10(T) -> N11(F) -> N15 -> F |
 
 
-### Paso 4: Matriz de Automatización (Log)
 
-| ID / Camino | Caso de Prueba (IN) | Resultado (OUT) |
-| :--- | :--- | :--- |
-| **PCB-016** | `email="root"`, `password="root"` | **Usuario (SUPER ADMIN)** con UUID ceros. |
+| ID / Camino | Escenario de Prueba | Entradas (Inputs) | Resultado Esperado (OUT) | Evidencia JaCoCo |
+| :--- | :--- | :--- | :--- | :--- |
+| **C1** | **Bypass Administrativo** | `user = "root"`, `pass = "root"` | **SUCCESS** (Usuario SuperAdmin) | Líneas 33-35 (VERDE) |
+| **C2** | Fallo Conexión DB | `db.isConnected() = false` | `RuntimeException: Error Crítico...` | Rama N4(F) -> N6 |
+| **C3** | Usuario Inexistente | `user = "fake@test.com"` | `RuntimeException: Identidad no encontrada.` | Rama N8(F) -> N14 |
+| **C4** | Contraseña Incorrecta | `pass = "wrong"` | `RuntimeException: Credenciales inválidas.` | Rama N10(F) -> N13 |
+| **C5** | Usuario Inactivo | `usuario.isActivo() = false` | `RuntimeException: Usuario INACTIVO.` | Rama N11(T) -> N12 |
+| **C6** | Inicio de Sesión Exitoso | `user = "ok@t.com"`, `pass = "ok"` | **SUCCESS** (Objeto Usuario) | Línea 55 (VERDE) |
 
 <br>

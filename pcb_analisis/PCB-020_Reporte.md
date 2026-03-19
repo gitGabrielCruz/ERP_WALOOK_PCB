@@ -122,10 +122,10 @@ N5 -> F [label="End"]
 | **C2 (Iteración)**| I -> N2 -> N3 -> N4 -> N5 -> N6 -> N5 -> F |
 
 
-### Paso 4: Matriz de Automatización (Log)
 
-| ID / Camino | Caso de Prueba (IN) | Resultado (OUT) |
-| :--- | :--- | :--- |
-| **PCB-020** | `audit_dictionary.dat` (Binario Cifrado) | **Map patterns** poblado con 28+ patrones de auditoría. |
+| ID / Camino | Escenario de Prueba | Entradas (Inputs) | Resultado Esperado (OUT) | Evidencia JaCoCo |
+| :--- | :--- | :--- | :--- | :--- |
+| **C1** | **Carga Exitosa (Lote)** | `dat = 28 patrones` | `Map.size() = 28` | Línea 49 (VERDE) |
+| **C2** | Diccionario Vacío | `dat = empty list` | `Map.size() = 0` | Rama N5 -> N7 (End) |
 
 <br>
