@@ -234,7 +234,7 @@ N18 -> N19 [label="True"]
 N18 -> N20 [label="False"]
 N20 -> N21 [label="True"]
 N20 -> N22 [label="False"]
-N22 -> N23 [label="True"]
+22 -> N23 [label="True"]
 N22 -> N24 [label="False"]
 N24 -> N25
 N25 -> N26 [label="True"]
