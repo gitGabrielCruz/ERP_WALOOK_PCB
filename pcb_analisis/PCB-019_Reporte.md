@@ -28,29 +28,33 @@
 ### Paso 0: Súper-Etiquetado del Código (MIG-WBT)
 
 ```java
+    /**
+     * UNIDAD BAJO AUDITORÍA: BitacoraService.registrarEvento()
+     * ESTÁNDAR: MIG v12.1 (Captura de Flujos Excepcionales y Ciclos)
+     */
     public void registrarEvento(String idUsuario, String idPatron, String ip, String paramX, String paramS) { // [N1: INICIO]
         try { // [N2: INICIO TRY]
             // [N3] Construcción de Log y Fragmentación
-            String logCompleto = auditPatternService.buildLog(idPatron, paramX, paramS); // [N3]
-            String[] parts = logCompleto.split("\\|"); // [N4]
+            String logCompleto = auditPatternService.buildLog(idPatron, paramX, paramS); // [N3: PROCESO]
+            String[] parts = logCompleto.split("\\|"); // [N4: PROCESO]
             int n = parts.length;
 
             // [N5] Reconstrucción de Análisis Técnico (Bucle)
             StringBuilder sbAnalisis = new StringBuilder();
-            for (int i = 3; i < n - 1; i++) { // [N5] [LOOP]
-                sbAnalisis.append(parts[i].trim());
+            for (int i = 3; i < n - 1; i++) { // [N5: PREDICADO LOOP]
+                sbAnalisis.append(parts[i].trim()); // [N6: PROCESO LOOP]
             }
 
-            Bitacora b = new Bitacora(); // [N6]
+            Bitacora b = new Bitacora(); // [N7: PROCESO]
             b.setIdUsuario(idUsuario);
 
             // [PCB-N1] Normalización de IP Nula y Cifrado AES
-            b.setIpOrigen(encrypt(ip != null ? ip : "0.0.0.0")); // [N7] [PCB-N1] -> [SI: N8] [NO: N9]
+            b.setIpOrigen(encrypt(ip != null ? ip : "0.0.0.0")); // [N8: PREDICADO] -> [SI: N9] [NO: N10]
 
-            // [N10] Persistencia con Capa de Privacidad
+            // [N11] Persistencia con Capa de Privacidad
             b.setDetalles(encrypt(parts[2] + " | " + sbAnalisis.toString())); 
-            bitacoraRepository.save(b); // [N11]
-        } catch (Exception e) { // [N12: SALIDA (EXC)]
+            bitacoraRepository.save(b); // [N11: PROCESO]
+        } catch (Exception e) { // [N12: EXCEPCIÓN]
             System.err.println("Error: " + e.getMessage());
         }
     } // [N13: FIN]
@@ -72,9 +76,6 @@ Glosario de Semántica de Cobertura (White Box Analysis — Análisis de Caja Bl
 •	VERDE — Cobertura Total (Full Coverage): Indica que la línea de código y todas sus decisiones lógicas (if/else) fueron ejecutadas satisfactoriamente. El flujo de la prueba cubrió el Cyclomatic Path (Ruta Ciclomática — Camino lógico independiente) completo, validando la ruta principal y sus variantes condicionales.
 •	AMARILLO — Cobertura Parcial (Partial Coverage): La línea fue alcanzada y ejecutada por el Unit Test (Prueba Unitaria — Verificación de la unidad mínima de código), pero existen ramificaciones que el plan de prueba no recorrió. Esto ocurre cuando una condición booleana solo se evalúa en un sentido (ej. solo true), dejando caminos lógicos sin explorar.
 •	ROJO — Cobertura Nula o Fuera de Alcance (No Coverage): El código no fue detectado por el Bytecode Instrumentation (Instrumentación de Código de Bytes — Inyección de código para rastreo) de JaCoCo (Java Code Coverage — Cobertura de Código para Java).
-Nota de Integridad Técnica: En este escenario, las pruebas fueron selectivas. Si el algoritmo de JaCoCo detecta código que no estaba considerado en el plan de ejecución or que fue omitido por los criterios de filtrado, lo reporta como "no detectado". Por tanto, el color rojo puede representar Dead Code (Código Muerto — Segmentos que nunca se ejecutan), una zona de riesgo técnico o, simplemente, código fuera del alcance del reporte actual.
-
----
 
 ---
 
@@ -83,14 +84,17 @@ Nota de Integridad Técnica: En este escenario, las pruebas fueron selectivas. S
 | ID del Nodo | Tipo | Descripción |
 | :--- | :--- | :--- |
 | **N1** | Inicio | Comienzo del protocolo de auditoría. |
-| **N2** | Inicio Try | Apertura del bloque robusto de captura de eventos. |
-| **N3/N4** | Proceso | Obtención del patrón maestro y tokenización mediante divisor pipe (`|`). |
-| **N5 [LOOP]** | Predicado | Iteración para reconstruir el análisis técnico del log. |
-| **N7 [PCB-N1]** | Predicado | ¿La IP de origen es nula? (Evaluado como SI para este test). |
-| **N8** | Proceso | Normalización a `0.0.0.0` y cifrado AES-256. |
-| **N11** | Proceso | Persistencia cifrada en `bitacoraRepository`. |
-| **N12** | Excepción | Captura de falla en el sistema de auditoría (Excepción controlada). |
-| **N13** | Fin | Finalización del registro documental de privacidad. |
+| **N2** | Try | Apertura del bloque de captura robusta. |
+| **N3/N4** | Proceso | Construcción de log y tokenización por pipe. |
+| **N5** | Predicado | Control de bucle (i < n - 1) para análisis técnico. |
+| **N6** | Proceso | Concatenación de fragmentos del log. |
+| **N7** | Proceso | Instanciación del objeto Bitacora. |
+| **N8 [PCB-N1]** | Predicado | ¿La IP es nula? (Ternaria). |
+| **N9** | Proceso | Normalización a "0.0.0.0". |
+| **N10** | Proceso | Uso de IP de origen real. |
+| **N11** | Proceso | Cifrado AES y persistencia en repositorio. |
+| **N12** | Excepción | Captura de falla (Catch block). |
+| **N13** | Fin | Término del registro de evento. |
 
 ### Paso 1: Grafo de Flujo (CFG)
 
@@ -102,51 +106,53 @@ I [label="Inicio\nN1"]
 N2 [label="2\n[TRY]"]
 N3 [label="3/4"]
 N5 [label="5\n[LOOP]"]
-N7 [label="7\n[PCB-N1]"]
-N8 [label="8\n[0.0.0.0]"]
-N9 [label="9\n[IP_REAL]"]
+N6 [label="6"]
+N7 [label="7"]
+N8 [label="8\n[IP?]"]
+N9 [label="9\n[0.0.0.0]"]
+N10 [label="10\n[REAL]"]
 N11 [label="11\n[SAVE]"]
-N12 [label="12\n[EXC]"]
-N13 [label="13\n[FIN]"]
-F [label="Fin"]
+N12 [label="12\n[CATCH]"]
+F [label="Fin\n13"]
 
 I -> N2
 N2 -> N3
 N3 -> N5
-N5 -> N5 [label="Next"]
+N5 -> N6 [label="Next"]
+N6 -> N5
 N5 -> N7 [label="End"]
-N7 -> N8 [label="True (Null)"]
-N7 -> N9 [label="False (Not Null)"]
-N8 -> N11
+N7 -> N8
+N8 -> N9 [label="True (Null)"]
+N8 -> N10 [label="False (Not Null)"]
 N9 -> N11
-N11 -> N13
+N10 -> N11
+N11 -> F
 N2 -> N12 [style=dotted, label="Exception"]
-N12 -> N13
-N13 -> F
+N12 -> F
 }
 @enduml
 ```
 
 ### Paso 2: Complejidad Ciclomática McCabe $V(G)$
 
-*   **V(G)** = Nodos Predicado + 1 = 3 + 1 = **4** (Loop, Null Check, Try-Catch).
+*   **V(G) = Nodos Predicado + 1** = 3 + 1 = **4** (Loop, Ternary IP, Try-Catch).
 
-### Paso 3: Caminos Independientes
+### Paso 3: Caminos Independientes (Basis Paths)
 
 | Camino | Ruta Forense |
 | :--- | :--- |
-| **C1 (Normalización IP)** | I -> N2 -> N3 -> N5(E) -> N7(T) -> N8 -> N11 -> N13 -> F |
-| **C2 (IP Real)** | I -> N2 -> N3 -> N5(E) -> N7(F) -> N9 -> N11 -> N13 -> F |
-| **C3 (Loop Iteración)** | I -> N2 -> N3 -> N5(N) -> N5(E) -> N7(F) -> N9 -> N11 -> N13 -> F |
-| **C4 (Fallo Auditoría)** | I -> N2 -> N12 -> N13 -> F |
+| **C1** | I -> N2 -> N3 -> N5(End) -> N7 -> N8(True) -> N9 -> N11 -> F |
+| **C2** | I -> N2 -> N3 -> N5(End) -> N7 -> N8(False) -> N10 -> N11 -> F |
+| **C3** | I -> N2 -> N3 -> N5(Next) -> N6 -> N5(End) -> N7 -> N8 -> N11 -> F |
+| **C4** | I -> N2 -> N12 -> F |
 
-
+### Paso 4: Matriz de Automatización (Log de Pruebas)
 
 | ID / Camino | Escenario de Prueba | Entradas (Inputs) | Resultado Esperado (OUT) | Evidencia JaCoCo |
 | :--- | :--- | :--- | :--- | :--- |
-| **C1** | **Normalización de IP** | `ip = null` | `ipOrigen = "0.0.0.0"` (AES) | Líneas 48-49 (VERDE) |
-| **C2** | Registro con IP Real | `ip = "192.168.1.1"` | `ipOrigen = "192.168.1.1"` (AES)| Rama N7(F) -> N9 |
-| **C3** | Bucle de Análisis | `parts.length > 5` | `sbAnalisis.length > 0` | Rama N5 -> N5 (Next) |
-| **C4** | Fallo en Construcción Log| `idPatron = "INVALID"` | `Error capturado en System.err` | Rama N2 -> N12 (Catch) |
+| **C1** | Normalización IP Nula | `ip = null` | `ipOrigen = "0.0.0.0"` (AES) | Rama N8(T) -> N9 |
+| **C2** | Registro con IP Real | `ip = "192.168.1.1"` | `ipOrigen = "192.168.1.1"` (AES)| Rama N8(F) -> N10 |
+| **C3** | Procesamiento de Bucle | `parts.length > 5` | `sbAnalisis` con contenido | Rama N5 -> N6 (Next) |
+| **C4** | Fallo en Construcción Log | `idPatron = "INVALID"` | `System.err.println` | Bloque Catch N12 |
 
 <br>
