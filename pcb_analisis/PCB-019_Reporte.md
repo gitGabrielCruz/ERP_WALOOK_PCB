@@ -135,9 +135,10 @@ N13 -> F
 
 | Camino | Ruta Forense |
 | :--- | :--- |
-| **C1 (Normalización)** | I -> N2 -> N3 -> N5(E) -> N7(T) -> N8 -> N11 -> N13 -> F |
+| **C1 (Normalización IP)** | I -> N2 -> N3 -> N5(E) -> N7(T) -> N8 -> N11 -> N13 -> F |
 | **C2 (IP Real)** | I -> N2 -> N3 -> N5(E) -> N7(F) -> N9 -> N11 -> N13 -> F |
-| **C3 (Fallo Auditoría)** | I -> N2 -> N12 -> N13 -> F |
+| **C3 (Loop Iteración)** | I -> N2 -> N3 -> N5(N) -> N5(E) -> N7(F) -> N9 -> N11 -> N13 -> F |
+| **C4 (Fallo Auditoría)** | I -> N2 -> N12 -> N13 -> F |
 
 
 
@@ -145,6 +146,7 @@ N13 -> F
 | :--- | :--- | :--- | :--- | :--- |
 | **C1** | **Normalización de IP** | `ip = null` | `ipOrigen = "0.0.0.0"` (AES) | Líneas 48-49 (VERDE) |
 | **C2** | Registro con IP Real | `ip = "192.168.1.1"` | `ipOrigen = "192.168.1.1"` (AES)| Rama N7(F) -> N9 |
-| **C3** | Fallo en Construcción Log | `idPatron = "INVALID"` | `Error capturado en System.err` | Rama N2 -> N12 (Catch) |
+| **C3** | Bucle de Análisis | `parts.length > 5` | `sbAnalisis.length > 0` | Rama N5 -> N5 (Next) |
+| **C4** | Fallo en Construcción Log| `idPatron = "INVALID"` | `Error capturado en System.err` | Rama N2 -> N12 (Catch) |
 
 <br>
