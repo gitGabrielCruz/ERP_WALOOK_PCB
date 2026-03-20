@@ -167,7 +167,7 @@ N15 -> F
 | ID / Camino | Escenario de Prueba | Entradas (Inputs) | Resultado Esperado (OUT) | Evidencia JaCoCo |
 | :--- | :--- | :--- | :--- | :--- |
 | **C1** | **Bypass Administrativo** | `user = "root"`, `pass = "root"` | **SUCCESS** (Usuario SuperAdmin) | Líneas 33-35 (VERDE) |
-| **C2** | Fallo Conexión DB | `db.isConnected() = false` | `RuntimeException: Error Crítico...` | Rama N4(F) -> N6 |
+| **C2** | Fallo Conexión DB | `db.isConnected() = false` | `RuntimeException: Error Crítico: Sin conexión con DB.` | Rama N4(F) -> N6 |
 | **C3** | Usuario Inexistente | `user = "fake@test.com"` | `RuntimeException: Identidad no encontrada.` | Rama N8(F) -> N14 |
 | **C4** | Contraseña Incorrecta | `pass = "wrong"` | `RuntimeException: Credenciales inválidas.` | Rama N10(F) -> N13 |
 | **C5** | Usuario Inactivo | `usuario.isActivo() = false` | `RuntimeException: Usuario INACTIVO.` | Rama N11(T) -> N12 |

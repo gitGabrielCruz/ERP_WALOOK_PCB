@@ -292,7 +292,7 @@ N30 -> F
 | **C7** | Teléfono Nulo | `telefono = null` | `IllegalArgumentException: Teléfono obligatorio.` | Rama N14(T) -> N15 |
 | **C8** | Teléfono Corto | `telefono = "55"` | `IllegalArgumentException: Teléfono debe ser de 10 dígitos.` | Rama N16(T) -> N17 |
 | **C9** | RFC Corto | `rfc = "A1"` | `IllegalArgumentException: RFC < 12 caracteres.` | Rama N18(T) -> N19 |
-| **C10** | RFC Largo | `rfc = "A1..."` (>13) | `IllegalArgumentException: RFC > 13 caracteres.` | Rama N20(T) -> N21 |
+| **C10** | RFC Largo | `rfc = "XAXX010101000123"` (>13) | `IllegalArgumentException: RFC > 13 caracteres.` | Rama N20(T) -> N21 |
 | **C11** | RFC Formato Inválido | `rfc = "!!!"` | `IllegalArgumentException: Formato RFC inválido.` | Rama N22(T) -> N23 |
 | **C12** | **RFC Duplicado (Otro)** | `esActualizacion = true`, `ids mismatch` | `IllegalArgumentException: RFC ya registrado por otro.` | Líneas 95-103 (ROJO/AMARILLO) |
 | **C13** | RFC Duplicado (Alta) | `esActualizacion = false` | `IllegalArgumentException: RFC ya registrado.` | Rama N26(F) -> N29 |
