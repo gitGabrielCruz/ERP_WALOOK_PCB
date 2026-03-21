@@ -143,4 +143,4 @@ N7 -> F
 | :--- | :--- | :--- |
 | **Camino 1** | p.idProducto = "GUID-EXISTENTE", p.sku = "EAN-123" | Persistencia sin cambios de ID/SKU (PCB-N1: NO, PCB-N2: NO) |
 | **Camino 2** | p.idProducto = null, p.sku = "EAN-123" | Genera UUID y respeta SKU original (PCB-N1: SI, PCB-N2: NO) |
-| **Camino 3** | p.idProducto = "GUID-EXISTENTE", p.sku = "Autogenerado" | Respeta ID y genera SKU corporativo '75...' (PCB-N1: NO, PCB-N2: SI) |
+| **Camino 3** | p.idProducto = "GUID-EXISTENTE", p.sku = "Autogenerado" | Respeta ID y genera SKU corporativo '75-UUID-SKU' (PCB-N1: NO, PCB-N2: SI) |
