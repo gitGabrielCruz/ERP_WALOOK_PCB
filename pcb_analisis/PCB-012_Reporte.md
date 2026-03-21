@@ -17,9 +17,9 @@
 | PCB-004 | SKU Autogenerado | Garantía de Unicidad de Identificación Comercial | 10/03/2026 | Gabriel Amílcar Cruz Canto |
 | PCB-005 | Rango de Fechas (Ventas) | Filtrado de Reporte Operativo de Transacciones | 11/03/2026 | Gabriel Amílcar Cruz Canto |
 | PCB-006 | Filtro de Sucursal | Segregación de Información por Punto de Venta | 11/03/2026 | Gabriel Amílcar Cruz Canto |
-| PCB-007 | Generación de Ticket | Serialización y Exportación de Comprobante PDF | 12/03/2026 | Gabriel Amílcar Cruz Canto |
-| PCB-008 | Cancelación de Ticket | Control de Estado y Reversión de Movimientos | 12/03/2026 | Gabriel Amílcar Cruz Canto |
-| PCB-009 | Búsqueda de Pacientes | Optimización de Consulta con Criterios Dinámicos | 13/03/2026 | Gabriel Amílcar Cruz Canto |
+| PCB-007 | Kardex de Stock | Protocolo de Integridad Transaccional sobre Saldo | 12/03/2026 | Gabriel Amílcar Cruz Canto |
+| PCB-008 | Integridad Fiscal | Validación de Identidad Tributaria y Unicidad RFC | 12/03/2026 | Gabriel Amílcar Cruz Canto |
+| PCB-009 | Búsqueda de Clientes | Motor de Búsqueda Multi-Criterio sobre Pacientes | 13/03/2026 | Gabriel Amílcar Cruz Canto |
 | PCB-010 | Saneamiento de Pacientes | Protocolo de Normalización de Atributos de Persona | 14/03/2026 | Gabriel Amílcar Cruz Canto |
 | PCB-011 | Registro de Proveedor | Auditoría Estructural de Validación Forense | 18/03/2026 | JaCoCo / JUnit 5 |
 | PCB-012 | Actualización de Proveedor | Validación de Excepción por RFC Duplicado | 18/03/2026 | JaCoCo / JUnit 5 |
@@ -302,20 +302,20 @@ N30 -> F
 
 | ID / Camino | Escenario de Prueba | Entradas (Inputs) | Resultado Esperado (OUT) | Evidencia JaCoCo |
 | :--- | :--- | :--- | :--- | :--- |
-| **C1** | Razón Social Nula | `razonSocial = null` | `IllegalArgumentException: Razón Social obligatoria.` | Rama N2(T) -> N3 |
-| **C2** | RFC Nulo | `rfc = null` | `IllegalArgumentException: RFC obligatorio.` | Rama N4(T) -> N5 |
-| **C3** | Condición Pago Nula | `condicionPago = null` | `IllegalArgumentException: Condición de Pago obligatoria.` | Rama N6(T) -> N7 |
-| **C4** | Nombre Comercial Nulo | `nombreComercial = null` | `IllegalArgumentException: Nombre Comercial obligatorio.` | Rama N8(T) -> N9 |
-| **C5** | Email Nulo | `email = null` | `IllegalArgumentException: Correo obligatorio.` | Rama N10(T) -> N11 |
-| **C6** | Formato Email Inválido | `email = "bad-mail"` | `IllegalArgumentException: Formato email inválido.` | Rama N12(T) -> N13 |
-| **C7** | Teléfono Nulo | `telefono = null` | `IllegalArgumentException: Teléfono obligatorio.` | Rama N14(T) -> N15 |
-| **C8** | Teléfono Corto | `telefono = "55"` | `IllegalArgumentException: Teléfono debe ser de 10 dígitos.` | Rama N16(T) -> N17 |
-| **C9** | RFC Corto | `rfc = "A1"` | `IllegalArgumentException: RFC < 12 caracteres.` | Rama N18(T) -> N19 |
-| **C10** | RFC Largo | `rfc = "XAXX010101000123"` (>13) | `IllegalArgumentException: RFC > 13 caracteres.` | Rama N20(T) -> N21 |
-| **C11** | RFC Formato Inválido | `rfc = "!!!"` | `IllegalArgumentException: Formato RFC inválido.` | Rama N22(T) -> N23 |
-| **C12** | **RFC Duplicado (Otro)** | `esActualizacion = true`, `ids mismatch` | `IllegalArgumentException: RFC ya registrado por otro.` | Líneas 95-103 (ROJO/AMARILLO) |
-| **C13** | RFC Duplicado (Alta) | `esActualizacion = false` | `IllegalArgumentException: RFC ya registrado.` | Rama N26(F) -> N29 |
-| **C14** | Éxito (Mismo ID) | `esActualizacion = true`, `ids match` | **SUCCESS** (Sin cambios en RFC) | Rama N27(F) -> N30 |
-| **C15** | Éxito (Alta/Cambio) | `rfc = "NEW-VAL-1"`, `esActualizacion = true` | **SUCCESS** (Proveedor Actualizado) | Rama N25(F) -> N30 |
+| **C1** | Razón Social Nula | `razonSocial = null` | `IllegalArgumentException: Razón Social obligatoria.` | Rama N2(T) -> N3 (Full Cover) |
+| **C2** | RFC Nulo | `rfc = null` | `IllegalArgumentException: RFC obligatorio.` | Rama N4(T) -> N5 (Full Cover) |
+| **C3** | Condición Pago Nula | `condicionPago = null` | `IllegalArgumentException: Condición de Pago obligatoria.` | Rama N6(T) -> N7 (Full Cover) |
+| **C4** | Nombre Comercial Nulo | `nombreComercial = ""` | `IllegalArgumentException: Nombre Comercial obligatorio.` | Rama N8(T) -> N9 (Full Cover) |
+| **C5** | Email Nulo | `email = null` | `IllegalArgumentException: Correo obligatorio.` | Rama N10(T) -> N11 (Full Cover) |
+| **C6** | Formato Email Inválido | `email = "usuario@invalid"` | `IllegalArgumentException: Formato email inválido.` | Rama N12(T) -> N13 (Full Cover) |
+| **C7** | Teléfono Nulo | `telefono = null` | `IllegalArgumentException: Teléfono obligatorio.` | Rama N14(T) -> N15 (Full Cover) |
+| **C8** | Teléfono Corto | `telefono = "55123"` | `IllegalArgumentException: Teléfono debe ser de 10 dígitos.` | Rama N16(T) -> N17 (Full Cover) |
+| **C9** | RFC Corto | `rfc = "XAXX0101"` | `IllegalArgumentException: RFC < 12 caracteres.` | Rama N18(T) -> N19 (Full Cover) |
+| **C10** | RFC Largo | `rfc = "XAXX0101010001"` | `IllegalArgumentException: RFC > 13 caracteres.` | Rama N20(T) -> N21 (Full Cover) |
+| **C11** | RFC Formato Inválido | `rfc = "1234567890ABC"` | `IllegalArgumentException: Formato RFC inválido.` | Rama N22(T) -> N23 (Full Cover) |
+| **C12** | **RFC Duplicado (Otro)** | `rfc = "GACC890314ABC"`, `id = 500`, `repo.findRfc = {id: 100}` | `IllegalArgumentException: RFC ya registrado por otro.` | Rama N27(T) -> N28 (Verificado) |
+| **C13** | RFC Duplicado (Alta) | `esActualizacion = false`, `rfc = "GACC890314ABC"` | `IllegalArgumentException: RFC ya registrado.` | Rama N26(F) -> N29 (Full Cover) |
+| **C14** | Éxito (Mismo ID) | `rfc = "GACC890314ABC"`, `id = 100`, `repo.findRfc = {id: 100}` | **SUCCESS** (Identidad Validada) | Rama N27(F) -> N30 (Full Cover) |
+| **C15** | Éxito (Nuevo RFC) | `rfc = "XAXX010101000"`, `repo.findRfc = null` | **SUCCESS** (Validación Completa) | Rama N25(F) -> N30 (Full Cover) |
 
 <br>

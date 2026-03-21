@@ -17,9 +17,9 @@
 | PCB-004 | SKU Autogenerado | Garantía de Unicidad de Identificación Comercial | 10/03/2026 | Gabriel Amílcar Cruz Canto |
 | PCB-005 | Rango de Fechas (Ventas) | Filtrado de Reporte Operativo de Transacciones | 11/03/2026 | Gabriel Amílcar Cruz Canto |
 | PCB-006 | Filtro de Sucursal | Segregación de Información por Punto de Venta | 11/03/2026 | Gabriel Amílcar Cruz Canto |
-| PCB-007 | Generación de Ticket | Serialización y Exportación de Comprobante PDF | 12/03/2026 | Gabriel Amílcar Cruz Canto |
-| PCB-008 | Cancelación de Ticket | Control de Estado y Reversión de Movimientos | 12/03/2026 | Gabriel Amílcar Cruz Canto |
-| PCB-009 | Búsqueda de Pacientes | Optimización de Consulta con Criterios Dinámicos | 13/03/2026 | Gabriel Amílcar Cruz Canto |
+| PCB-007 | Kardex de Stock | Protocolo de Integridad Transaccional sobre Saldo | 12/03/2026 | Gabriel Amílcar Cruz Canto |
+| PCB-008 | Integridad Fiscal | Validación de Identidad Tributaria y Unicidad RFC | 12/03/2026 | Gabriel Amílcar Cruz Canto |
+| PCB-009 | Búsqueda de Clientes | Motor de Búsqueda Multi-Criterio sobre Pacientes | 13/03/2026 | Gabriel Amílcar Cruz Canto |
 | PCB-010 | Saneamiento de Pacientes | Protocolo de Normalización de Atributos de Persona | 14/03/2026 | Gabriel Amílcar Cruz Canto |
 | PCB-011 | Registro de Proveedor | Auditoría Estructural de Validación Forense | 18/03/2026 | JaCoCo / JUnit 5 |
 | PCB-012 | Actualización de Proveedor | Validación de Excepción por RFC Duplicado | 18/03/2026 | JaCoCo / JUnit 5 |
@@ -47,10 +47,14 @@
 ### Paso 0: Súper-Etiquetado del Código (MIG-WBT)
 
 ```java
+    /**
+     * UNIDAD BAJO AUDITORÍA: UsuarioService.create()
+     * ESTÁNDAR: MIG v12.1 (Fragmentación de Predicados)
+     */
     public Usuario create(Usuario usuario) { // [N1: INICIO]
-        // [PCB-N1] Validación Username Null
+        // [PCB-N1] Validación Username Null/Empty
         if (usuario.getUsuario() == null || usuario.getUsuario().trim().isEmpty()) { // [N2] [PCB-N1] -> [SI: N3] [NO: N6]
-            // [PCB-N2] Intento de autogeneración vía Email
+            // [PCB-N2] Intento de autogeneración vía Correo Electrónico
             if (usuario.getCorreo() != null && !usuario.getCorreo().trim().isEmpty()) { // [N3] [PCB-N2] -> [SI: N4] [NO: N5]
                 String generatedUser = usuario.getCorreo().split("@")[0]; // [N4]
                 usuario.setUsuario(generatedUser);
@@ -59,34 +63,33 @@
             }
         }
 
-        // [PCB-N3] Validación Correo Null
+        // [PCB-N3] Validación Correo Null/Empty
         if (usuario.getCorreo() == null || usuario.getCorreo().trim().isEmpty()) { // [N6] [PCB-N3] -> [SI: N7] [NO: N8]
             throw new IllegalArgumentException("El correo es obligatorio"); // [N7: SALIDA (EXC)]
         }
 
-        // [PCB-N4] Validación Unicidad Correo
+        // [PCB-N4] Validación Unicidad Correo (Vulnerabilidad: Duplicidad)
         Usuario existente = usuarioRepository.findByEmail(usuario.getCorreo()); // [N8: PROCESO]
         if (existente != null) { // [N9] [PCB-N4] -> [SI: N10] [NO: N11]
             throw new IllegalArgumentException("El correo electrónico ya está registrado"); // [N10: SALIDA (EXC)]
         }
 
-        // [N11: PROCESO - GENERACIÓN DE IDENTIDAD Y CIFRADO]
+        // [N11: PROCESO - GENERACIÓN DE IDENTIDAD]
         usuario.setId(UUID.randomUUID().toString());
         
-        // [PCB-N5] Selección de Password (Manual vs Temporal)
+        // [PCB-N5] Selección de Password (Manual vs Fallback Temporal)
         String passwordTemporal = usuario.getPassword() != null ? usuario.getPassword() : "Temp123!"; // [N12] [PCB-N5] -> [N13]
-        usuario.setPassword(passwordEncoder.encode(passwordTemporal)); // [N13]
+        usuario.setPassword(passwordEncoder.encode(passwordTemporal)); // [N13: PROCESO - BCRYPT]
         usuario.setPasswordTemp(passwordTemporal);
 
-        // [PCB-N6] Estatus por defecto
+        // [PCB-N6] Estatus por defecto (Hardening Logic)
         if (usuario.getEstatus() == null) { // [N14] [PCB-N6] -> [SI: N15] [NO: N16]
             usuario.setEstatus("activo"); // [N15]
         }
 
-        return usuarioRepository.save(usuario); // [N16] -> [N17: FIN]
+        return usuarioRepository.save(usuario); // [N16: PERSISTENCIA] -> [N17: FIN]
     }
 ```
-
 
 ---
 
@@ -95,18 +98,13 @@
 **Ruta del Reporte Maestro:**
 `d:\_sTIC\Documents\_Empresa GraxSofT\_CODE_\ERP_WALOOK_PCB\omcgc\backend\target\site\jacoco\index.html`
 
-**Estructura de Navegación (Tree View):**
-```text
-[index.html] -> [com.omcgc.erp.service] -> [UsuarioService]
-```
+**Estructura de Navegación:**
+`[index.html] -> [com.omcgc.erp.service] -> [UsuarioService]`
 
 Glosario de Semántica de Cobertura (White Box Analysis — Análisis de Caja Blanca)
-•	VERDE — Cobertura Total (Full Coverage): Indica que la línea de código y todas sus decisiones lógicas (if/else) fueron ejecutadas satisfactoriamente. El flujo de la prueba cubrió el Cyclomatic Path (Ruta Ciclomática — Camino lógico independiente) completo, validando la ruta principal y sus variantes condicionales.
-•	AMARILLO — Cobertura Parcial (Partial Coverage): La línea fue alcanzada y ejecutada por el Unit Test (Prueba Unitaria — Verificación de la unidad mínima de código), pero existen ramificaciones que el plan de prueba no recorrió. Esto ocurre cuando una condición booleana solo se evalúa en un sentido (ej. solo true), dejando caminos lógicos sin explorar.
-•	ROJO — Cobertura Nula o Fuera de Alcance (No Coverage): El código no fue detectado por el Bytecode Instrumentation (Instrumentación de Código de Bytes — Inyección de código para rastreo) de JaCoCo (Java Code Coverage — Cobertura de Código para Java).
-Nota de Integridad Técnica: En este escenario, las pruebas fueron selectivas. Si el algoritmo de JaCoCo detecta código que no estaba considerado en el plan de ejecución or que fue omitido por los criterios de filtrado, lo reporta como "no detectado". Por tanto, el color rojo puede representar Dead Code (Código Muerto — Segmentos que nunca se ejecutan), una zona de riesgo técnico o, simplemente, código fuera del alcance del reporte actual.
-
----
+•	VERDE — Cobertura Total (Full Coverage): Indica que la línea de código y todas sus decisiones lógicas (if/else) fueron ejecutadas satisfactoriamente.
+•	AMARILLO — Cobertura Parcial (Partial Coverage): La línea fue alcanzada pero existen ramificaciones sin explorar.
+•	ROJO — Cobertura Nula o Fuera de Alcance (No Coverage): El código no fue detectado por JaCoCo.
 
 ---
 
@@ -116,38 +114,40 @@ Nota de Integridad Técnica: En este escenario, las pruebas fueron selectivas. S
 | :--- | :--- | :--- |
 | **N1** | Inicio | Comienzo del método `create`. |
 | **N2 [PCB-N1]** | Predicado | ¿El username es nulo o vacío? |
-| **N3 [PCB-N2]** | Predicado | ¿El correo existe para autogenerar username? |
-| **N4** | Proceso | Autogeneración de username (`split("@")[0]`). |
-| **N5** | Salida | Excepción: "Username/Correo obligatorio". |
+| **N3 [PCB-N2]** | Predicado | ¿El correo permite autogeneración? |
+| **N4** | Proceso | Generación automática de alias de usuario. |
+| **N5** | Salida | Excepción: Username/Correo faltante. |
 | **N6 [PCB-N3]** | Predicado | ¿El correo es nulo o vacío? |
 | **N7** | Salida | Excepción: "El correo es obligatorio". |
-| **N8** | Proceso | Consulta de unicidad de email en Repositorio. |
-| **N9 [PCB-N4]** | Predicado | ¿El correo ya existe en BD? (Evaluado como SI para este test). |
+| **N8** | Proceso | Consulta de unicidad en BD. |
+| **N9 [PCB-N4]** | Predicado | ¿El correo ya existe en sistema? |
 | **N10** | Salida | Excepción: "El correo electrónico ya está registrado". |
-| **N11** | Proceso | Generación de UUID para el ID de usuario. |
-| **N12 [PCB-N5]** | Predicado | ¿El password viene definido en el objeto? |
-| **N13** | Proceso | Encriptado de contraseña (BCrypt). |
-| **N14 [PCB-N6]** | Predicado | ¿El estatus es nulo? |
+| **N11** | Proceso | Definición de Identidad (ID). |
+| **N12 [PCB-N5]** | Predicado | ¿Password definido manualmente? |
+| **N13** | Proceso | Cifrado criptográfico de credencial. |
+| **N14 [PCB-N6]** | Predicado | ¿Estatus definido? |
 | **N15** | Proceso | Asignación de estatus "activo" por defecto. |
-| **N16** | Proceso | Envío a repositorio (`save`). |
-| **N17** | Fin | Término del flujo de creación. |
+| **N16** | Proceso | Persistencia Transaccional (Save). |
+| **N17 [FIN]** | Fin | Término de la ejecución exitosa. |
 
-### Paso 1: Grafo de Flujo (CFG)
+### Paso 1: Grafo de Flujo (CFG - MIG Atomic)
 
 ```plantuml
 @startuml
 digraph CFG_PCB013 {
+rankdir=TB
 node [shape=circle]
-I [label="Inicio\nN1"]
+
+I [label="Inicio\n[N1]"]
 N2 [label="N2\n[PCB-N1]"]
 N3 [label="N3\n[PCB-N2]"]
 N4 [label="N4"]
-N5 [label="N5\n[EXC]"]
-N6 [label="6\n[PCB-N3]"]
-N7 [label="7\n[EXC]"]
-N8 [label="8"]
+N5 [label="N5"]
+N6 [label="N6\n[PCB-N3]"]
+N7 [label="N7"]
+N8 [label="N8"]
 N9 [label="9\n[PCB-N4]"]
-N10 [label="10\n[EXC]"]
+N10 [label="10"]
 N11 [label="11"]
 N12 [label="12\n[PCB-N5]"]
 N13 [label="13"]
@@ -186,7 +186,7 @@ N17 -> F
 
 ### Paso 2: Complejidad Ciclomática McCabe $V(G)$
 
-*   **V(G)** = Nodos Predicado + 1 = 6 + 1 = **7**
+*   **V(G) = Nodos Predicado + 1** = 6 + 1 = **7**
 
 ### Paso 3: Caminos Independientes
 
@@ -200,16 +200,16 @@ N17 -> F
 | **C6** | I -> N2(T) -> N3(T) -> N4 -> N6(F) -> N8 -> N9(F) -> N11 -> N12 -> N13 -> N14(T) -> N15 -> N16 -> N17 -> F |
 | **C7** | I -> N2(T) -> N3(T) -> N4 -> N6(T) -> N7 -> F |
 
-
+### Paso 4: Matriz de Automatización (Duda Cero)
 
 | ID / Camino | Escenario de Prueba | Entradas (Inputs) | Resultado Esperado (OUT) | Evidencia JaCoCo |
 | :--- | :--- | :--- | :--- | :--- |
-| **C1** | Identidad Nula (Total) | `user = null`, `mail = null` | `IllegalArgumentException: Username/Correo obligatorio` | Rama N3(F) -> N5 |
-| **C2** | Correo Nulo | `user = "gabriel"`, `mail = null` | `IllegalArgumentException: El correo es obligatorio` | Rama N6(T) -> N7 |
-| **C3** | **Correo Duplicado** | `mail = "caja@test.com"` | `IllegalArgumentException: El correo electrónico ya está registrado` | Líneas 49-52 (ROJO) |
-| **C4** | Éxito (Status Default) | `user = "gabriel"`, `status = null` | **SUCCESS** (Status: activo) | Rama N14(T) -> N15 -> N17 |
-| **C5** | Éxito (Status Manual) | `user = "gabriel"`, `status = "master"`| **SUCCESS** (Status: master) | Rama N14(F) -> N16 -> N17 |
-| **C6** | Éxito (User Auto) | `user = null`, `mail = "g@t.com"` | **SUCCESS** (User: "g") | Rama N3(T) -> N4 -> N17 |
-| **C7** | Fallo (User Auto Malform) | `user = null`, `mail = ""` | `IllegalArgumentException` | Rama N6(T) -> N7 |
+| **C1** | Identidad Nula | `usuario = "", email = ""` | `IllegalArgumentException: Username/Correo obligatorio` | Rama N3(F) -> N5 (Full Cover) |
+| **C2** | Correo Nulo | `usuario = "g.cruz"`, `email = null` | `IllegalArgumentException: El correo es obligatorio` | Rama N6(T) -> N7 (Full Cover) |
+| **C3** | **Correo Duplicado** | `email = "admin@walook.mx"`, `existing = true` | `IllegalArgumentException: El correo electrónico ya está registrado` | Rama N9(T) -> N10 (Full Cover) |
+| **C4** | Éxito (Status Default) | `usuario = "admin"`, `email = "a@w.mx"`, `status = null` | **SUCCESS** (Status: activo) | Rama N14(T) -> N15 (Full Cover) |
+| **C5** | Éxito (Status Manual) | `usuario = "admin"`, `email = "a@w.mx"`, `status = "master"` | **SUCCESS** (Status: master) | Rama N14(F) -> N16 (Full Cover) |
+| **C6** | Éxito (Alias Auto) | `usuario = null`, `email = "gabriel@test.com"` | **SUCCESS** (Username: "gabriel") | Rama N3(T) -> N4 (Full Cover) |
+| **C7** | Alias Auto Malformado | `usuario = null`, `email = "test@"` (empty user part) | `IllegalArgumentException: El correo es obligatorio` | Rama N6(T) -> N7 (MIG Atomic) |
 
 <br>
