@@ -2,59 +2,59 @@
 
 | **DATOS DEL ESTUDIANTE** | |
 | :--- | :--- |
-| **NOMBRE:** | Gabriel Amílcar Cruz Canto |
+| **NOMBRE:** | Gabriel AmÃ­lcar Cruz Canto |
 | **EMPRESA:** | WALOOK MEXICO, S.A. de C.V. |
-| **TITULO DEL PROYECTO:** | Sistema ERP en la nube para gestión de ópticas OMCGC |
+| **TITULO DEL PROYECTO:** | Sistema ERP en la nube para gestiÃ³n de Ã³pticas OMCGC |
 
 <br>
 
 | **PLAN DE PRUEBAS DE CAJA BLANCA: BACKEND (MIG-MASTER)** | | | | |
 | :--- | :--- | :--- | :--- | :--- |
-| **Número** | **Nombre de la Prueba Backend** | **Descripción** | **Fecha** | **Herramienta / Responsable** |
-| PCB-001 | Autenticación de usuario | Protocolo de Acceso y Validación de Infraestructura | 09/03/2026 | Gabriel Amílcar Cruz Canto |
-| PCB-002 | Manejo de Credenciales Inválidas | Interrupción de Seguridad por Fallo de Contraseña | 09/03/2026 | Gabriel Amílcar Cruz Canto |
-| PCB-003 | Registro de Producto | Validación de Integridad de Campos Obligatorios | 10/03/2026 | Gabriel Amílcar Cruz Canto |
-| PCB-004 | SKU Autogenerado | Garantía de Unicidad de Identificación Comercial | 10/03/2026 | Gabriel Amílcar Cruz Canto |
-| PCB-005 | Rango de Fechas (Ventas) | Filtrado de Reporte Operativo de Transacciones | 11/03/2026 | Gabriel Amílcar Cruz Canto |
-| PCB-006 | Filtro de Sucursal | Segregación de Información por Punto de Venta | 11/03/2026 | Gabriel Amílcar Cruz Canto |
-| PCB-007 | Kardex de Stock | Protocolo de Integridad Transaccional sobre Saldo | 12/03/2026 | Gabriel Amílcar Cruz Canto |
-| PCB-008 | Integridad Fiscal | Validación de Identidad Tributaria y Unicidad RFC | 12/03/2026 | Gabriel Amílcar Cruz Canto |
-| PCB-009 | Búsqueda de Clientes | Motor de Búsqueda Multi-Criterio sobre Pacientes | 13/03/2026 | Gabriel Amílcar Cruz Canto |
-| PCB-010 | Saneamiento de Pacientes | Protocolo de Normalización de Atributos de Persona | 14/03/2026 | Gabriel Amílcar Cruz Canto |
-| PCB-011 | Registro de Proveedor | Auditoría Estructural de Validación Forense | 18/03/2026 | JaCoCo / JUnit 5 |
-| PCB-012 | Actualización de Proveedor | Validación de Excepción por RFC Duplicado | 18/03/2026 | JaCoCo / JUnit 5 |
-| PCB-013 | Registro de Usuario | Validación de Excepción por Correo Duplicado | 18/03/2026 | JaCoCo / JUnit 5 |
-| PCB-014 | Baja de Usuario | Validación de Desactivación Lógica (inactivo) | 18/03/2026 | JaCoCo / JUnit 5 |
-| PCB-015 | Reset de Contraseña | Manejo de Excepción por Usuario Inexistente | 18/03/2026 | JaCoCo / JUnit 5 |
-| PCB-016 | Autenticación Root | Validación de Bypass Administrativo (Local) | 18/03/2026 | JaCoCo / JUnit 5 |
-| PCB-017 | Registro de Movimiento | Validación de Stock Insuficiente (Venta) | 18/03/2026 | JaCoCo / JUnit 5 |
-| PCB-018 | Cálculo de PVP | Validación de Fórmula Financiera (Utilidad) | 18/03/2026 | JaCoCo / JUnit 5 |
-| PCB-019 | Robustez de Auditoría | Normalización de IP Nula (Default 0.0.0.0) | 18/03/2026 | JaCoCo / JUnit 5 |
-| PCB-020 | Carga de Diccionario | Validación de Descifrado AES-256 (Binario) | 18/03/2026 | JaCoCo / JUnit 5 |
+| **NÃºmero** | **Nombre de la Prueba Backend** | **DescripciÃ³n** | **Fecha** | **Herramienta / Responsable** |
+| PCB-001 | AutenticaciÃ³n de usuario | Protocolo de Acceso y ValidaciÃ³n de Infraestructura | 09/03/2026 | Gabriel AmÃ­lcar Cruz Canto |
+| PCB-002 | Manejo de Credenciales InvÃ¡lidas | InterrupciÃ³n de Seguridad por Fallo de ContraseÃ±a | 09/03/2026 | Gabriel AmÃ­lcar Cruz Canto |
+| PCB-003 | Registro de Producto | ValidaciÃ³n de Integridad de Campos Obligatorios | 10/03/2026 | Gabriel AmÃ­lcar Cruz Canto |
+| PCB-004 | SKU Autogenerado | GarantÃ­a de Unicidad de IdentificaciÃ³n Comercial | 10/03/2026 | Gabriel AmÃ­lcar Cruz Canto |
+| PCB-005 | Rango de Fechas (Ventas) | Filtrado de Reporte Operativo de Transacciones | 11/03/2026 | Gabriel AmÃ­lcar Cruz Canto |
+| PCB-006 | Filtro de Sucursal | SegregaciÃ³n de InformaciÃ³n por Punto de Venta | 11/03/2026 | Gabriel AmÃ­lcar Cruz Canto |
+| PCB-007 | Kardex de Stock | Protocolo de Integridad Transaccional sobre Saldo | 12/03/2026 | Gabriel AmÃ­lcar Cruz Canto |
+| PCB-008 | Integridad Fiscal | ValidaciÃ³n de Identidad Tributaria y Unicidad RFC | 12/03/2026 | Gabriel AmÃ­lcar Cruz Canto |
+| PCB-009 | BÃºsqueda de Clientes | Motor de BÃºsqueda Multi-Criterio sobre Pacientes | 13/03/2026 | Gabriel AmÃ­lcar Cruz Canto |
+| PCB-010 | Saneamiento de Pacientes | Protocolo de NormalizaciÃ³n de Atributos de Persona | 14/03/2026 | Gabriel AmÃ­lcar Cruz Canto |
+| PCB-011 | Registro de Proveedor | AuditorÃ­a Estructural de ValidaciÃ³n Forense | 18/03/2026 | JaCoCo / JUnit 5 |
+| PCB-012 | ActualizaciÃ³n de Proveedor | ValidaciÃ³n de ExcepciÃ³n por RFC Duplicado | 18/03/2026 | JaCoCo / JUnit 5 |
+| PCB-013 | Registro de Usuario | ValidaciÃ³n de ExcepciÃ³n por Correo Duplicado | 18/03/2026 | JaCoCo / JUnit 5 |
+| PCB-014 | Baja de Usuario | ValidaciÃ³n de DesactivaciÃ³n LÃ³gica (inactivo) | 18/03/2026 | JaCoCo / JUnit 5 |
+| PCB-015 | Reset de ContraseÃ±a | Manejo de ExcepciÃ³n por Usuario Inexistente | 18/03/2026 | JaCoCo / JUnit 5 |
+| PCB-016 | AutenticaciÃ³n Root | ValidaciÃ³n de Bypass Administrativo (Local) | 18/03/2026 | JaCoCo / JUnit 5 |
+| PCB-017 | Registro de Movimiento | ValidaciÃ³n de Stock Insuficiente (Venta) | 18/03/2026 | JaCoCo / JUnit 5 |
+| PCB-018 | CÃ¡lculo de PVP | ValidaciÃ³n de FÃ³rmula Financiera (Utilidad) | 18/03/2026 | JaCoCo / JUnit 5 |
+| PCB-019 | Robustez de AuditorÃ­a | NormalizaciÃ³n de IP Nula (Default 0.0.0.0) | 18/03/2026 | JaCoCo / JUnit 5 |
+| PCB-020 | Carga de Diccionario | ValidaciÃ³n de Descifrado AES-256 (Binario) | 18/03/2026 | JaCoCo / JUnit 5 |
 
 ---
 
 # FASE DE PRUEBAS
 
-| **Nombre del Módulo del Sistema + Historia de usuario** |
+| **Nombre del MÃ³dulo del Sistema + Historia de usuario** |
 | :--- |
-| Módulo Seguridad y Acceso – HU-M01-03 |
+| MÃ³dulo Seguridad y Acceso â€“ HU-M01-03 |
 
-| **Número y nombre de la Prueba** |
+| **NÃºmero y nombre de la Prueba** |
 | :--- |
-| PCB-013 / Registro de Usuario – UsuarioService.create() |
+| PCB-013 / Registro de Usuario â€“ UsuarioService.create() |
 
-### Paso 0: Súper-Etiquetado del Código (MIG-WBT)
+### Paso 0: SÃºper-Etiquetado del CÃ³digo (MIG-WBT)
 
 ```java
     /**
-     * UNIDAD BAJO AUDITORÍA: UsuarioService.create()
-     * ESTÁNDAR: MIG v12.1 (Fragmentación de Predicados)
+     * UNIDAD BAJO AUDITORÃA: UsuarioService.create()
+     * ESTÃNDAR: MIG v12.1 (FragmentaciÃ³n de Predicados)
      */
     public Usuario create(Usuario usuario) { // [N1: INICIO]
-        // [PCB-N1] Validación Username Null/Empty
+        // [PCB-N1] ValidaciÃ³n Username Null/Empty
         if (usuario.getUsuario() == null || usuario.getUsuario().trim().isEmpty()) { // [N2] [PCB-N1] -> [SI: N3] [NO: N6]
-            // [PCB-N2] Intento de autogeneración vía Correo Electrónico
+            // [PCB-N2] Intento de autogeneraciÃ³n vÃ­a Correo ElectrÃ³nico
             if (usuario.getCorreo() != null && !usuario.getCorreo().trim().isEmpty()) { // [N3] [PCB-N2] -> [SI: N4] [NO: N5]
                 String generatedUser = usuario.getCorreo().split("@")[0]; // [N4]
                 usuario.setUsuario(generatedUser);
@@ -63,21 +63,21 @@
             }
         }
 
-        // [PCB-N3] Validación Correo Null/Empty
+        // [PCB-N3] ValidaciÃ³n Correo Null/Empty
         if (usuario.getCorreo() == null || usuario.getCorreo().trim().isEmpty()) { // [N6] [PCB-N3] -> [SI: N7] [NO: N8]
             throw new IllegalArgumentException("El correo es obligatorio"); // [N7: SALIDA (EXC)]
         }
 
-        // [PCB-N4] Validación Unicidad Correo (Vulnerabilidad: Duplicidad)
+        // [PCB-N4] ValidaciÃ³n Unicidad Correo (Vulnerabilidad: Duplicidad)
         Usuario existente = usuarioRepository.findByEmail(usuario.getCorreo()); // [N8: PROCESO]
         if (existente != null) { // [N9] [PCB-N4] -> [SI: N10] [NO: N11]
-            throw new IllegalArgumentException("El correo electrónico ya está registrado"); // [N10: SALIDA (EXC)]
+            throw new IllegalArgumentException("El correo electrÃ³nico ya estÃ¡ registrado"); // [N10: SALIDA (EXC)]
         }
 
-        // [N11: PROCESO - GENERACIÓN DE IDENTIDAD]
+        // [N11: PROCESO - GENERACIÃ“N DE IDENTIDAD]
         usuario.setId(UUID.randomUUID().toString());
         
-        // [PCB-N5] Selección de Password (Manual vs Fallback Temporal)
+        // [PCB-N5] SelecciÃ³n de Password (Manual vs Fallback Temporal)
         String passwordTemporal = usuario.getPassword() != null ? usuario.getPassword() : "Temp123!"; // [N12] [PCB-N5] -> [N13]
         usuario.setPassword(passwordEncoder.encode(passwordTemporal)); // [N13: PROCESO - BCRYPT]
         usuario.setPasswordTemp(passwordTemporal);
@@ -93,42 +93,42 @@
 
 ---
 
-### Auditoría de Evidencia Digital (JaCoCo)
+### AuditorÃ­a de Evidencia Digital (JaCoCo)
 
 **Ruta del Reporte Maestro:**
 `d:\_sTIC\Documents\_Empresa GraxSofT\_CODE_\ERP_WALOOK_PCB\omcgc\backend\target\site\jacoco\index.html`
 
-**Estructura de Navegación:**
+**Estructura de NavegaciÃ³n:**
 `[index.html] -> [com.omcgc.erp.service] -> [UsuarioService]`
 
-Glosario de Semántica de Cobertura (White Box Analysis — Análisis de Caja Blanca)
-•	VERDE — Cobertura Total (Full Coverage): Indica que la línea de código y todas sus decisiones lógicas (if/else) fueron ejecutadas satisfactoriamente.
-•	AMARILLO — Cobertura Parcial (Partial Coverage): La línea fue alcanzada pero existen ramificaciones sin explorar.
-•	ROJO — Cobertura Nula o Fuera de Alcance (No Coverage): El código no fue detectado por JaCoCo.
+Glosario de SemÃ¡ntica de Cobertura (White Box Analysis â€” AnÃ¡lisis de Caja Blanca)
+â€¢	VERDE â€” Cobertura Total (Full Coverage): Indica que la lÃ­nea de cÃ³digo y todas sus decisiones lÃ³gicas (if/else) fueron ejecutadas satisfactoriamente.
+â€¢	AMARILLO â€” Cobertura Parcial (Partial Coverage): La lÃ­nea fue alcanzada pero existen ramificaciones sin explorar.
+â€¢	ROJO â€” Cobertura Nula o Fuera de Alcance (No Coverage): El cÃ³digo no fue detectado por JaCoCo.
 
 ---
 
-### Identificación de Nodos
+### IdentificaciÃ³n de Nodos
 
-| ID del Nodo | Tipo | Descripción |
+| ID del Nodo | Tipo | DescripciÃ³n |
 | :--- | :--- | :--- |
-| **N1** | Inicio | Comienzo del método `create`. |
-| **N2 [PCB-N1]** | Predicado | ¿El username es nulo o vacío? |
-| **N3 [PCB-N2]** | Predicado | ¿El correo permite autogeneración? |
-| **N4** | Proceso | Generación automática de alias de usuario. |
-| **N5** | Salida | Excepción: Username/Correo faltante. |
-| **N6 [PCB-N3]** | Predicado | ¿El correo es nulo o vacío? |
-| **N7** | Salida | Excepción: "El correo es obligatorio". |
+| **N1** | Inicio | Comienzo del mÃ©todo `create`. |
+| **N2 [PCB-N1]** | Predicado | Â¿El username es nulo o vacÃ­o? |
+| **N3 [PCB-N2]** | Predicado | Â¿El correo permite autogeneraciÃ³n? |
+| **N4** | Proceso | GeneraciÃ³n automÃ¡tica de alias de usuario. |
+| **N5** | Salida | ExcepciÃ³n: Username/Correo faltante. |
+| **N6 [PCB-N3]** | Predicado | Â¿El correo es nulo o vacÃ­o? |
+| **N7** | Salida | ExcepciÃ³n: "El correo es obligatorio". |
 | **N8** | Proceso | Consulta de unicidad en BD. |
-| **N9 [PCB-N4]** | Predicado | ¿El correo ya existe en sistema? |
-| **N10** | Salida | Excepción: "El correo electrónico ya está registrado". |
-| **N11** | Proceso | Definición de Identidad (ID). |
-| **N12 [PCB-N5]** | Predicado | ¿Password definido manualmente? |
-| **N13** | Proceso | Cifrado criptográfico de credencial. |
-| **N14 [PCB-N6]** | Predicado | ¿Estatus definido? |
-| **N15** | Proceso | Asignación de estatus "activo" por defecto. |
+| **N9 [PCB-N4]** | Predicado | Â¿El correo ya existe en sistema? |
+| **N10** | Salida | ExcepciÃ³n: "El correo electrÃ³nico ya estÃ¡ registrado". |
+| **N11** | Proceso | DefiniciÃ³n de Identidad (ID). |
+| **N12 [PCB-N5]** | Predicado | Â¿Password definido manualmente? |
+| **N13** | Proceso | Cifrado criptogrÃ¡fico de credencial. |
+| **N14 [PCB-N6]** | Predicado | Â¿Estatus definido? |
+| **N15** | Proceso | AsignaciÃ³n de estatus "activo" por defecto. |
 | **N16** | Proceso | Persistencia Transaccional (Save). |
-| **N17 [FIN]** | Fin | Término de la ejecución exitosa. |
+| **N17 [FIN]** | Fin | TÃ©rmino de la ejecuciÃ³n exitosa. |
 
 ### Paso 1: Grafo de Flujo (CFG - MIG Atomic)
 
@@ -184,9 +184,19 @@ N17 -> F
 @enduml
 ```
 
-### Paso 2: Complejidad Ciclomática McCabe $V(G)$
+### Paso 2: Complejidad Ciclomática McCabe `$V(G)$`
 
-*   **V(G) = Nodos Predicado + 1** = 6 + 1 = **7**
+La métrica de complejidad se calcula mediante la fórmula formal de McCabe para grafos de flujo:
+
+*   **V(G) = E - N + 2P**
+*   **Donde:**
+    *   **E (Aristas):** 22 (Conexiones entre nodos)
+    *   **N (Nodos):** 17 (Puntos de control, incluye Inicio/Fin)
+    *   **P (Componentes):** 1 (Unidad funcional única)
+*   **Cálculo:** 22 - 17 + (2 * 1) = **7**
+
+> [!NOTE]
+> El resultado `$V(G) = 7$` coincide con la métrica simplificada de nodos predicado (`P + 1`), lo que valida la ruta crítica del grafo CFG bajo el estándar MIG v12.1.
 
 ### Paso 3: Caminos Independientes
 
@@ -200,16 +210,17 @@ N17 -> F
 | **C6** | I -> N2(T) -> N3(T) -> N4 -> N6(F) -> N8 -> N9(F) -> N11 -> N12 -> N13 -> N14(T) -> N15 -> N16 -> N17 -> F |
 | **C7** | I -> N2(T) -> N3(T) -> N4 -> N6(T) -> N7 -> F |
 
-### Paso 4: Matriz de Automatización (Duda Cero)
+### Paso 4: Matriz de AutomatizaciÃ³n (Duda Cero)
 
 | ID / Camino | Escenario de Prueba | Entradas (Inputs) | Resultado Esperado (OUT) | Evidencia JaCoCo |
 | :--- | :--- | :--- | :--- | :--- |
 | **C1** | Identidad Nula | `usuario = "", email = ""` | `IllegalArgumentException: Username/Correo obligatorio` | Rama N3(F) -> N5 (Full Cover) |
 | **C2** | Correo Nulo | `usuario = "g.cruz"`, `email = null` | `IllegalArgumentException: El correo es obligatorio` | Rama N6(T) -> N7 (Full Cover) |
-| **C3** | **Correo Duplicado** | `email = "admin@walook.mx"`, `existing = true` | `IllegalArgumentException: El correo electrónico ya está registrado` | Rama N9(T) -> N10 (Full Cover) |
-| **C4** | Éxito (Status Default) | `usuario = "admin"`, `email = "a@w.mx"`, `status = null` | **SUCCESS** (Status: activo) | Rama N14(T) -> N15 (Full Cover) |
-| **C5** | Éxito (Status Manual) | `usuario = "admin"`, `email = "a@w.mx"`, `status = "master"` | **SUCCESS** (Status: master) | Rama N14(F) -> N16 (Full Cover) |
-| **C6** | Éxito (Alias Auto) | `usuario = null`, `email = "gabriel@test.com"` | **SUCCESS** (Username: "gabriel") | Rama N3(T) -> N4 (Full Cover) |
+| **C3** | **Correo Duplicado** | `email = "admin@walook.mx"`, `existing = true` | `IllegalArgumentException: El correo electrÃ³nico ya estÃ¡ registrado` | Rama N9(T) -> N10 (Full Cover) |
+| **C4** | Ã‰xito (Status Default) | `usuario = "admin"`, `email = "a@w.mx"`, `status = null` | **SUCCESS** (Status: activo) | Rama N14(T) -> N15 (Full Cover) |
+| **C5** | Ã‰xito (Status Manual) | `usuario = "admin"`, `email = "a@w.mx"`, `status = "master"` | **SUCCESS** (Status: master) | Rama N14(F) -> N16 (Full Cover) |
+| **C6** | Ã‰xito (Alias Auto) | `usuario = null`, `email = "gabriel@test.com"` | **SUCCESS** (Username: "gabriel") | Rama N3(T) -> N4 (Full Cover) |
 | **C7** | Alias Auto Malformado | `usuario = null`, `email = "test@"` (empty user part) | `IllegalArgumentException: El correo es obligatorio` | Rama N6(T) -> N7 (MIG Atomic) |
 
 <br>
+
