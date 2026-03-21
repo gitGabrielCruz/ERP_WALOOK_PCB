@@ -86,7 +86,7 @@
 
 ### Descripción breve del fragmento
 
-El fragmento **PCB-003** representa el orquestador final del acceso al sistema. Su función es normalizar los metadatos de la identidad (IdRol, NombreRol, IdSucursal) mediante operadores ternarios preventivos para garantizar que el payload JSON entregado al Frontend sea íntegro y carezca de nulos. Con una complejidad $V(G)=4$, asegura que ninguna sesión sea establecida sin su correspondiente matriz de facultades sincronizada.
+El fragmento **PCB-003** representa el orquestador final del acceso al sistema. Su función es normalizar los metadatos de la identidad (IdRol, NombreRol, IdSucursal) mediante operadores ternarios preventivos para garantizar que el payload JSON entregado al Frontend sea íntegro y carezca de nulos. Con una complejidad $V(G)=5$, asegura que ninguna sesión sea establecida sin su correspondiente matriz de facultades sincronizada.
 
 ### Identificación de Nodos
 
@@ -168,6 +168,7 @@ N13 -> F
 | **Camino 2** | Inicio → 1 → 2 → 3 → 4 → 5(NO) → 6 → 7(SÍ) → 9(SÍ) → 11 → 12 → Fin |
 | **Camino 3** | Inicio → 1 → 2 → 3 → 4 → 5(SÍ) → 7(NO) → 8 → 9(SÍ) → 11 → 12 → Fin |
 | **Camino 4** | Inicio → 1 → 2 → 3 → 4 → 5(SÍ) → 7(SÍ) → 9(NO) → 10 → 11 → 12 → Fin |
+| **Camino 5** | Inicio → 1 → 2 → 3 → 4 → 5(SÍ) → 7(SÍ) → 9(SÍ) → 11 → 12 → Fin |
 
 ### Paso 4
 
@@ -177,3 +178,4 @@ N13 -> F
 | **Camino 2** | usuario.idRol = null, usuario.nombreRol != null, usuario.idSucursal != null | Payload con rolId: "" (PCB-N1: NO, PCB-N2: SI, PCB-N3: SI) |
 | **Camino 3** | usuario.idRol != null, usuario.nombreRol = null, usuario.idSucursal != null | Payload con nombreRol: "" (PCB-N1: SI, PCB-N2: NO, PCB-N3: SI) |
 | **Camino 4** | usuario.idRol != null, usuario.nombreRol != null, usuario.idSucursal = null | Payload con idSucursal: "" (PCB-N1: SI, PCB-N2: SI, PCB-N3: NO) |
+| **Camino 5** | usuario.idRol != null, usuario.nombreRol != null, usuario.idSucursal != null | Payload íntegro (Éxito Nominal) (PCB-N1: SI, PCB-N2: SI, PCB-N3: SI) |

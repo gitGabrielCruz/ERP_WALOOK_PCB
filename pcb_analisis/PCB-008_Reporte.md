@@ -78,7 +78,7 @@
 
 ### Descripción breve del fragmento
 
-El fragmento **PCB-008** implementa las reglas de negocio para el empadronamiento de pacientes. Su función es garantizar la integridad fiscal mediante la validación obligatoria del nombre y la verificación de unicidad del RFC para evitar registros redundantes que afecten la facturación. Con una complejidad $V(G)=3$, el código asegura que la base de datos de clientes mantenga un estándar de calidad apto para procesos contables.
+El fragmento **PCB-008** implementa las reglas de negocio para el empadronamiento de pacientes. Su función es garantizar la integridad fiscal mediante la validación obligatoria del nombre y la verificación de unicidad del RFC para evitar registros redundantes que afecten la facturación. Con una complejidad $V(G)=4$, el código asegura que la base de datos de clientes mantenga un estándar de calidad apto para procesos contables.
 
 ### Identificación de Nodos
 
