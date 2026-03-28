@@ -27,7 +27,81 @@
 
 | **Número y nombre de la Prueba** |
 | :--- |
-| PCB-013 / Registro de Usuario – UsuarioService.create() |
+| ### Paso 0: Súper-Etiquetado del Código (MIG-WBT)
+
+```java
+    public Usuario create(Usuario usuario) { // [N1: INICIO]
+        if (usuario.getUsuario() == null || usuario.getUsuario().trim().isEmpty()) { // [N2: PCB-N1]
+            if (usuario.getCorreo() != null && !usuario.getCorreo().trim().isEmpty()) { // [N3: PCB-N2]
+                String generatedUser = usuario.getCorreo().split("@")[0];
+                usuario.setUsuario(generatedUser);
+            } else {
+                throw new IllegalArgumentException("Username obligatorio"); // [N4] -> F
+            }
+        }
+
+        if (usuario.getCorreo() == null || usuario.getCorreo().trim().isEmpty()) { // [N5: PCB-N3]
+            throw new IllegalArgumentException("Correo obligatorio"); // [N15] -> F
+        }
+
+        Usuario existente = usuarioRepository.findByEmail(usuario.getCorreo()); // [N10]
+        if (existente != null) { // [N11: PCB-N4]
+            throw new IllegalArgumentException("Correo duplicado"); // [N16] -> F
+        }
+
+        usuario.setId(UUID.randomUUID().toString()); // [N12]
+        String passwordTemp = usuario.getPassword() != null ? usuario.getPassword() : "Temp123!"; // [N13: PCB-N5]
+        
+        if (usuario.getEstatus() == null) { // [N14: PCB-N6]
+            usuario.setEstatus("activo");
+        }
+
+        return usuarioRepository.save(usuario); // [F: FIN]
+    }
+```
+
+### Paso 1: Grafo de Control de Flujo (CFG)
+
+```dot
+@startuml
+digraph G {
+rankdir=TB;
+node [shape=circle, fixedsize=true, width=0.5];
+I [label="Inicio", shape=ellipse];
+F [label="Fin", shape=ellipse];
+N1 [label="1"]
+N2 [label="2\nPCB-N1"]
+N3 [label="3\nPCB-N2"]
+N4 [label="4"]
+N5 [label="5\nPCB-N3"]
+N10 [label="10"]
+N11 [label="11\nPCB-N4"]
+N12 [label="12"]
+N13 [label="13\nPCB-N5"]
+N14 [label="14\nPCB-N6"]
+N15 [label="15"]
+N16 [label="16"]
+
+I -> N1
+N1 -> N2
+N2 -> N3 [label="Verdadero"]
+N2 -> N5 [label="Falso"]
+N3 -> N5 [label="Verdadero"]
+N3 -> N4 [label="Falso"]
+N4 -> F
+N5 -> N15 [label="Verdadero"]
+N5 -> N10 [label="Falso"]
+N10 -> N11
+N11 -> N16 [label="Verdadero"]
+N11 -> N12 [label="Falso"]
+N12 -> N13
+N13 -> N14
+N14 -> F
+N15 -> F
+N16 -> F
+}
+@enduml
+```
 
 ### Paso 2: Complejidad Ciclomática McCabe $V(G)$
 

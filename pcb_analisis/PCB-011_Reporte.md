@@ -93,6 +93,95 @@
     } // [N30] -> [F: FIN]
 ```
 
+### Paso 1: Grafo de Control de Flujo (CFG)
+
+```dot
+@startuml
+digraph G {
+rankdir=TB;
+node [shape=circle, fixedsize=true, width=0.5];
+I [label="Inicio", shape=ellipse];
+F [label="Fin", shape=ellipse];
+N1 [label="1"]
+N2 [label="2\nPCB-N1"]
+N3 [label="3"]
+N4 [label="4\nPCB-N2"]
+N5 [label="5"]
+N6 [label="6\nPCB-N3"]
+N7 [label="7"]
+N8 [label="8\nPCB-N4"]
+N9 [label="9"]
+N10 [label="10\nPCB-N5"]
+N11 [label="11"]
+N12 [label="12\nPCB-N6"]
+N13 [label="13"]
+N14 [label="14\nPCB-N7"]
+N15 [label="15"]
+N16 [label="16\nPCB-N8"]
+N17 [label="17"]
+N18 [label="18\nPCB-N9"]
+N19 [label="19"]
+N20 [label="20\nPCB-N10"]
+N21 [label="21"]
+N22 [label="22\nPCB-N11"]
+N23 [label="23"]
+N24 [label="24"]
+N25 [label="25\nPCB-N12"]
+N26 [label="26\nPCB-N13"]
+N27 [label="27\nPCB-N14"]
+N28 [label="28"]
+N29 [label="29"]
+N30 [label="30"]
+
+I -> N1
+N1 -> N2
+N2 -> N3 [label="Verdadero"]
+N2 -> N4 [label="Falso"]
+N3 -> F
+N4 -> N5 [label="Verdadero"]
+N4 -> N6 [label="Falso"]
+N5 -> F
+N6 -> N7 [label="Verdadero"]
+N6 -> N8 [label="Falso"]
+N7 -> F
+N8 -> N9 [label="Verdadero"]
+N8 -> N10 [label="Falso"]
+N9 -> F
+N10 -> N11 [label="Verdadero"]
+N10 -> N12 [label="Falso"]
+N11 -> F
+N12 -> N13 [label="Verdadero"]
+N12 -> N14 [label="Falso"]
+N13 -> F
+N14 -> N15 [label="Verdadero"]
+N14 -> N16 [label="Falso"]
+N15 -> F
+N16 -> N17 [label="Verdadero"]
+N16 -> N18 [label="Falso"]
+N17 -> F
+N18 -> N19 [label="Verdadero"]
+N18 -> N20 [label="Falso"]
+N19 -> F
+N20 -> N21 [label="Verdadero"]
+N20 -> N22 [label="Falso"]
+N21 -> F
+N22 -> N23 [label="Verdadero"]
+N22 -> N24 [label="Falso"]
+N23 -> F
+N24 -> N25
+N25 -> N26 [label="Verdadero"]
+N25 -> N30 [label="Falso"]
+N26 -> N27 [label="Verdadero"]
+N26 -> N29 [label="Falso"]
+N27 -> N28 [label="Verdadero"]
+N27 -> N30 [label="Falso"]
+N28 -> F
+N29 -> F
+N30 -> F
+}
+@enduml
+```
+
 ### Paso 2: Complejidad Ciclomática McCabe $V(G)$
 
 *   **V(G) = Número de regiones** = (14 internas + 1 externa) = **15**

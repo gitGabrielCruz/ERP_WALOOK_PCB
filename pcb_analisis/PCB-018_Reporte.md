@@ -28,7 +28,71 @@
 
 | **Número y nombre de la Prueba** |
 | :--- |
-| PCB-018 / Persistencia de Producto – InventarioService.saveProduct() |
+| ### Paso 0: Súper-Etiquetado del Código (MIG-WBT)
+
+```java
+    public void saveProduct(Producto p, String ip) { // [N1: INICIO]
+        boolean isNew = (p.getIdProducto() == null || p.getIdProducto().isEmpty()); // [N2: PCB-N1]
+
+        if (isNew) { // [N3]
+            p.setIdProducto(java.util.UUID.randomUUID().toString());
+        }
+
+        if (p.getSku() == null || p.getSku().isEmpty() || p.getSku().equalsIgnoreCase("Autogenerado")) { 
+            // [N4: PCB-N2] [N5: PCB-N3]
+            String timestamp = String.valueOf(System.currentTimeMillis());
+            p.setSku("75" + timestamp.substring(timestamp.length() - 8)); // [N6]
+        }
+
+        if (p.getCostoUnitario() != null && p.getPorcentajeUtilidad() != null) { // [N7: PCB-N4] [N8: PCB-N5]
+            BigDecimal factor = BigDecimal.ONE.add(p.getPorcentajeUtilidad().divide(new BigDecimal("100"), 4, RoundingMode.HALF_UP));
+            p.setPrecioVenta(p.getCostoUnitario().multiply(factor).setScale(2, RoundingMode.HALF_UP)); // [N9]
+        }
+
+        inventarioRepository.save(p); // [N10]
+        bitacoraService.registrarEvento(p.getIdUsuarioOperacion(), isNew ? "PRO-01" : "PRO-02", ip, p.getSku(), p.getNombre());
+    } // [F: FIN]
+```
+
+### Paso 1: Grafo de Control de Flujo (CFG)
+
+```dot
+@startuml
+digraph G {
+rankdir=TB;
+node [shape=circle, fixedsize=true, width=0.5];
+I [label="Inicio", shape=ellipse];
+F [label="Fin", shape=ellipse];
+N1 [label="1"]
+N2 [label="2\nPCB-N1"]
+N3 [label="3"]
+N4 [label="4\nPCB-N2"]
+N5 [label="5\nPCB-N3"]
+N6 [label="6"]
+N7 [label="7\nPCB-N4"]
+N8 [label="8\nPCB-N5"]
+N9 [label="9"]
+N10 [label="10"]
+
+I -> N1
+N1 -> N2
+N2 -> N3 [label="Verdadero"]
+N2 -> N4 [label="Falso"]
+N3 -> N4
+N4 -> N6 [label="Verdadero"]
+N4 -> N5 [label="Falso"]
+N5 -> N6 [label="Verdadero"]
+N5 -> N7 [label="Falso"]
+N6 -> N7
+N7 -> N8 [label="Verdadero"]
+N7 -> N10 [label="Falso"]
+N8 -> N9 [label="Verdadero"]
+N8 -> N10 [label="Falso"]
+N9 -> N10
+N10 -> F
+}
+@enduml
+```
 
 ### Paso 2: Complejidad Ciclomática McCabe $V(G)$
 

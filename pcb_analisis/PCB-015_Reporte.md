@@ -27,7 +27,62 @@
 
 | **Número y nombre de la Prueba** |
 | :--- |
-| PCB-015 / Reset de Contraseña – UsuarioService.resetPassword() |
+| ### Paso 0: Súper-Etiquetado del Código (MIG-WBT)
+
+```java
+    public String resetPassword(String id) { // [N1: INICIO]
+        Usuario usuario = usuarioRepository.findById(id);
+
+        if (usuario == null) { // [N2: PCB-N1]
+            return null; // [N3: EXC]
+        }
+
+        String nuevaPassword = generarPasswordTemporal(); // [N4]
+        usuario.setPassword(passwordEncoder.encode(nuevaPassword));
+        usuarioRepository.update(usuario); // [N5]
+
+        try {
+            // [N6: PCB-N2] Attempt Email
+            emailService.sendEmail(usuario.getCorreo(), "Reset", "Body"); 
+        } catch (Exception e) {
+            // [N7: EXC LOG] Handled
+        }
+        return nuevaPassword; // [N8]
+    } // [F: FIN]
+```
+
+### Paso 1: Grafo de Control de Flujo (CFG)
+
+```dot
+@startuml
+digraph G {
+rankdir=TB;
+node [shape=circle, fixedsize=true, width=0.5];
+I [label="Inicio", shape=ellipse];
+F [label="Fin", shape=ellipse];
+N1 [label="1"]
+N2 [label="2\nPCB-N1"]
+N3 [label="3"]
+N4 [label="4"]
+N5 [label="5"]
+N6 [label="6\nPCB-N2"]
+N7 [label="7"]
+N8 [label="8"]
+
+I -> N1
+N1 -> N2
+N2 -> N3 [label="Verdadero (null)"]
+N2 -> N4 [label="Falso"]
+N3 -> F
+N4 -> N5
+N5 -> N6
+N6 -> N7 [label="Error Correo"]
+N6 -> N8 [label="Éxito"]
+N7 -> N8
+N8 -> F
+}
+@enduml
+```
 
 ### Paso 2: Complejidad Ciclomática McCabe $V(G)$
 

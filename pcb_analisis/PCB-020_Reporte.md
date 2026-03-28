@@ -25,7 +25,62 @@
 
 | **Número y nombre de la Prueba** |
 | :--- |
-| PCB-020 / Carga de Diccionario – AuditPatternService.loadDictionary() |
+| ### Paso 0: Súper-Etiquetado del Código (MIG-WBT)
+
+```java
+    @SuppressWarnings("unchecked")
+    private void loadDictionary() throws Exception { // [N1: INICIO]
+        try {
+            byte[] encryptedBytes = Files.readAllBytes(Paths.get(FILE_PATH)); // [N2: PCB-N1]
+
+            // Descifrar
+            Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+            cipher.init(Cipher.DECRYPT_MODE, generateKey());
+            byte[] decryptedBytes = cipher.doFinal(encryptedBytes); // [N4: PCB-N2]
+
+            // Deserializar
+            ByteArrayInputStream bis = new ByteArrayInputStream(decryptedBytes);
+            ObjectInputStream ois = new ObjectInputStream(bis);
+            List<LogPattern> list = (List<LogPattern>) ois.readObject(); // [N5]
+
+            patterns.clear();
+            for (LogPattern lp : list) { // [N6]
+                patterns.put(lp.getId(), lp);
+            }
+        } catch (Exception e) { // [N2 / N4 Handles]
+            throw e;
+        }
+    } // [F: FIN]
+```
+
+### Paso 1: Grafo de Control de Flujo (CFG)
+
+```dot
+@startuml
+digraph G {
+rankdir=TB;
+node [shape=circle, fixedsize=true, width=0.5];
+I [label="Inicio", shape=ellipse];
+F [label="Fin", shape=ellipse];
+N1 [label="1"]
+N2 [label="2\nPCB-N1"]
+N3 [label="3"]
+N4 [label="4\nPCB-N2"]
+N5 [label="5"]
+N6 [label="6"]
+
+I -> N1
+N1 -> N2 [label="Error IO"]
+N1 -> N3 [label="Éxito"]
+N2 -> F
+N3 -> N4 [label="Error Crypto"]
+N3 -> N5 [label="Éxito"]
+N4 -> F
+N5 -> N6
+N6 -> F
+}
+@enduml
+```
 
 ### Paso 2: Complejidad Ciclomática McCabe $V(G)$
 

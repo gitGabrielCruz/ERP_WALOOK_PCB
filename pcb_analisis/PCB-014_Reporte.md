@@ -27,7 +27,72 @@
 
 | **Número y nombre de la Prueba** |
 | :--- |
-| PCB-014 / Actualización de Usuario – UsuarioService.update() |
+| ### Paso 0: Súper-Etiquetado del Código (MIG-WBT)
+
+```java
+    public Usuario update(Usuario usuario) { // [N1: INICIO]
+        Usuario existente = usuarioRepository.findById(usuario.getId());
+
+        if (existente == null) { // [N2: PCB-N1]
+            return null; // [F: FIN]
+        }
+
+        if (usuario.getNombre() != null) { // [N3: PCB-N2]
+            existente.setNombre(usuario.getNombre());
+        }
+        if (usuario.getCorreo() != null) { // [N4: PCB-N3]
+            existente.setCorreo(usuario.getCorreo());
+        }
+        if (usuario.getRolId() != null) { // [N5: PCB-N4]
+            existente.setRolId(usuario.getRolId());
+        }
+        if (usuario.getRolNombre() != null) { // [N6: PCB-N5]
+            existente.setRolNombre(usuario.getRolNombre());
+        }
+        if (usuario.getEstatus() != null) { // [N7: PCB-N6]
+            existente.setEstatus(usuario.getEstatus());
+        }
+
+        return usuarioRepository.update(existente); // [N8]
+    } // [F: FIN]
+```
+
+### Paso 1: Grafo de Control de Flujo (CFG)
+
+```dot
+@startuml
+digraph G {
+rankdir=TB;
+node [shape=circle, fixedsize=true, width=0.5];
+I [label="Inicio", shape=ellipse];
+F [label="Fin", shape=ellipse];
+N1 [label="1"]
+N2 [label="2\nPCB-N1"]
+N3 [label="3\nPCB-N2"]
+N4 [label="4\nPCB-N3"]
+N5 [label="5\nPCB-N4"]
+N6 [label="6\nPCB-N5"]
+N7 [label="7\nPCB-N6"]
+N8 [label="8"]
+
+I -> N1
+N1 -> N2
+N2 -> F [label="Verdadero"]
+N2 -> N3 [label="Falso"]
+N3 -> N4 [label="Verdadero"]
+N3 -> N4 [label="Falso"]
+N4 -> N5 [label="Verdadero"]
+N4 -> N5 [label="Falso"]
+N5 -> N6 [label="Verdadero"]
+N5 -> N6 [label="Falso"]
+N6 -> N7 [label="Verdadero"]
+N6 -> N7 [label="Falso"]
+N7 -> N8 [label="Verdadero"]
+N7 -> N8 [label="Falso"]
+N8 -> F
+}
+@enduml
+```
 
 ### Paso 2: Complejidad Ciclomática McCabe $V(G)$
 

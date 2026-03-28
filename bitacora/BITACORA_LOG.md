@@ -48,6 +48,20 @@
 
 ---
 
+### [2026-03-28] - Sesión Infraestructura: Nodo Kali, MiroFish y Agencia Autónoma (OpenHands)
+**Hora inicio:** 08:00 AM | **Hora cierre:** 11:40 AM
+**Conversacion ID:** 4721d5e0-c65b-4051-b497-ef22ff19a1ed
+**Resumen:**
+1. **Aprovisionamiento de Hardware:** Se migró satisfactoriamente el motor Docker al disco **ADATA SU630 (500GB)** montado en `/modelos`.
+2. **Despliegue MiroFish:** Inicialización del enjambre MiroFish en Docker, configurado con el disco de 500GB para persistencia.
+3. **Cerebro Local (Ollama):** Descarga de 9 modelos técnicos (`llama3`, `mixtral`, `qwen2`, etc.). Se aplicó un **Fix Crítico** de bindeo (`OLLAMA_HOST=0.0.0.0`) para permitir acceso desde contenedores.
+4. **Agencia Autónoma (DevIAn):** Despliegue de **OpenHands** en el puerto **3001**. Se resolvió el error de permisos JWT y bindeo de red.
+5. **Estatus:** ✅ Sistema Operativo e Inferencia Lista. Pendiente validación de misión autónoma inicial.
+
+**REPOSITORIO AGENTE_DevIAn ACTUALIZADO** ✅ (Pendiente Push final).
+
+---
+
 ### [2026-02-22] - Sesion Post-Reinicio: Activacion IDS5v + Continuacion
 
 **Hora inicio:** 04:22 AM
@@ -1690,6 +1704,33 @@
 - Iniciar con la validación académica de `PCB-011_Reporte.md`.
 - Verificar consistencia 20/20 en el lote saneado.
 - MiroFish permanece en `/MiroFish` en estado pausado.
+
+---
+
+### [2026-03-24] - Sesión DevIAn v5.0: Investigación de Estándares de Display
+**Hora inicio:** 07:42 PM | **Hora cierre:** 07:55 PM
+**Conversacion ID:** 15cf0cf1-da17-40d4-9e1f-bd1940d112a7
+
+#### Solicitud 1: Investigación de tamaños estándar de display
+**Tipo:** Investigación / Consulta
+**Hora:** 07:47 PM
+**Solicitud del Ingeniero:** "chat, investiga cualess son los tamaños estandar de los diferentes display, como el caso de una laptop, un celular android, de un celular mac, etc."
+**Respuesta:** Se realizó una búsqueda web para el año 2026. Se categorizaron las resoluciones en: Laptops (FHD, QHD, 4K), Android (FHD+, QHD+), iPhones (Serie 16: 2556x1179 y 2868x1320) y Tablets (iPad Pro, Android WUXGA). Se entregó reporte técnico detallado con recomendaciones de diseño responsivo.
+**Archivos consultados/creados:** `temporal_20260324_1947_InvestigacionPantallas.md` (Artefacto).
+**Decisión del Ingeniero:** Realizado. Se solicita tabla consolidada.
+
+#### Solicitud 2: Tabla simple consolidada con IDs
+**Tipo:** Diseño / Consolidación
+**Hora:** 07:50 PM
+**Solicitud del Ingeniero:** "crea una tabla simple con los datos, todos en la misma tabla y asignales un ID"
+**Respuesta:** Se generó la tabla **MIG-DIS-2026** integrando Laptops, Android, iPhone y Tablets en una matriz única con identificadores Seriales (DIS-001 al DIS-011). Archivo actualizado.
+**Archivos consultados/creados:** `temporal_20260324_1947_InvestigacionPantallas.md` (Artefacto).
+**Decisión del Ingeniero:** Pendiente de revisión.
+
+---
+**PUNTO DE REANUDACIÓN:**
+- Revisión del reporte técnico de pantallas por el Ingeniero.
+- Retorno a la inspección física de reportes PCB-011 a PCB-020.
 
 ---
 **--- PROTOCOLO DE PAUSA/REINICIO ACTIVADO (CERROJAZO AUTOMÁTICO) ---**

@@ -28,7 +28,76 @@
 
 | **Número y nombre de la Prueba** |
 | :--- |
-| PCB-019 / Robustez de Auditoría – BitacoraService.registrarEvento() |
+| ### Paso 0: Súper-Etiquetado del Código (MIG-WBT)
+
+```java
+    public void registrarEvento(String idUsuario, String idPatron, String ip, String paramX, String paramS) { // [N1: INICIO]
+        try {
+            String logCompleto = auditPatternService.buildLog(idPatron, paramX, paramS);
+            String[] parts = logCompleto.split("\\|");
+            int n = parts.length;
+
+            StringBuilder sbAnalisis = new StringBuilder();
+            for (int i = 3; i < n - 1; i++) { // [N2: PCB-N1]
+                sbAnalisis.append(parts[i].trim()); // [N4]
+                if (i < n - 2) { // [N3: PCB-N2]
+                    sbAnalisis.append(" | "); // [N5]
+                }
+            }
+            String analisis = sbAnalisis.toString();
+            if (analisis.isEmpty()) { // [N6: PCB-N3]
+                analisis = "Sin detalle técnico adicional"; // [N7]
+            }
+
+            Bitacora b = new Bitacora();
+            b.setIdUsuario(idUsuario);
+            b.setIpOrigen(encrypt(ip != null ? ip : "0.0.0.0")); // [N8: PCB-N4] -> [N9]
+
+            bitacoraRepository.save(b); // [N10]
+        } catch (Exception e) {
+            // Error handling
+        }
+    } // [F: FIN]
+```
+
+### Paso 1: Grafo de Control de Flujo (CFG)
+
+```dot
+@startuml
+digraph G {
+rankdir=TB;
+node [shape=circle, fixedsize=true, width=0.5];
+I [label="Inicio", shape=ellipse];
+F [label="Fin", shape=ellipse];
+N1 [label="1"]
+N2 [label="2\nPCB-N1"]
+N3 [label="3\nPCB-N2"]
+N4 [label="4"]
+N5 [label="5"]
+N6 [label="6\nPCB-N3"]
+N7 [label="7"]
+N8 [label="8\nPCB-N4"]
+N9 [label="9"]
+N10 [label="10"]
+
+I -> N1
+N1 -> N2
+N2 -> N3 [label="Verdadero"]
+N2 -> N6 [label="Falso"]
+N3 -> N4 [label="Verdadero"]
+N3 -> N5 [label="Falso"]
+N4 -> N5
+N5 -> N2
+N6 -> N7 [label="Verdadero"]
+N6 -> N8 [label="Falso"]
+N7 -> N8
+N8 -> N9 [label="Verdadero"]
+N8 -> N10 [label="Falso"]
+N9 -> N10
+N10 -> F
+}
+@enduml
+```
 
 ### Paso 2: Complejidad Ciclomática McCabe $V(G)$
 
